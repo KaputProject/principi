@@ -47,7 +47,7 @@ class PdfParser {
 
             val lines = pdfText.lines()
 
-            statement = parseStatement(lines, statement)
+            statement = parseStatement(lines, statement, parameters)
 
             return statement
         } catch (e: Exception) {
@@ -56,7 +56,7 @@ class PdfParser {
         }
     }
 
-    fun parseStatement(lines: List<String>, statement: Statement): Statement {
+    fun parseStatement(lines: List<String>, statement: Statement, parameters: StatementParameters): Statement {
         var i = 0
         while (i < lines.size) {
             var currentLine = lines[i].trim()
@@ -73,7 +73,8 @@ class PdfParser {
                     currentLine += " " + lines[i].trim()
                     i++
                 }
-                statement.transactions.add(parseTransaction(currentLine))
+
+                statement.transactions.add(parseTransaction(currentLine, parameters, statement.transactions.lastOrNull()))
             } else if (startBalanceRegex.containsMatchIn(currentLine)) {
                 statement.startBalance = parseEuropeanNumber(currentLine.replace(startBalanceRegex, "").trim())
                 i++
@@ -98,10 +99,15 @@ class PdfParser {
         statement.startDate = statement.transactions[0].date
         statement.endDate = statement.transactions[statement.transactions.size - 1].date
 
+        // Handles the first transactions direction
+        if (statement.transactions.isNotEmpty()) {
+            statement.transactions[0].outgoing = statement.startBalance > statement.transactions[0].balance
+        }
+
         return statement
     }
 
-    fun parseTransaction(line: String): Transaction {
+    fun parseTransaction(line: String, parameters: StatementParameters, previous: Transaction?): Transaction {
         val parts = line.trim().split(" ")
 
         if (parts.size >= 7) {
@@ -109,9 +115,13 @@ class PdfParser {
             val ref = parts[1]
             val change = parseEuropeanNumber(parts[parts.size - 2])
             val balance = parseEuropeanNumber(parts[parts.size - 1])
+            var outgoing = true
 
-            val partner = parts.subList(2, 4).joinToString(" ")
-            val description = parts.subList(4, parts.size - 2).joinToString(" ")
+            val (partner, description, existing) = handlePartnerDescription(parts.subList(2, parts.size - 2), parameters)
+
+            if (previous != null && previous.balance < balance) {
+                outgoing = false
+            }
 
             return Transaction(
                 date = date,
@@ -119,10 +129,40 @@ class PdfParser {
                 partner = partner,
                 description = description,
                 change = change,
-                balance = balance
+                balance = balance,
+                known_partner = existing,
+                outgoing = outgoing
             )
         }
 
         throw IllegalArgumentException("Transaction line with ref: ${parts[1]} is not valid")
+    }
+
+    fun handlePartnerDescription(parts: List<String>, parameters: StatementParameters): Triple<String, String, Boolean> {
+        var i = 1
+        var existing = false
+
+        var temp = parts[0]
+        var partner = ""
+        var description = ""
+
+        while (i < parts.size) {
+            if (parameters.partners.contains(temp)) {
+                existing = true
+                partner = temp
+                description = parts.subList(i, parts.size).joinToString(" ")
+                break
+            }
+
+            temp += " " + parts[i]
+            i++
+        }
+
+        if (!existing) {
+            partner = parts.subList(0, 2).joinToString(" ")
+            description = parts.subList(2, parts.size).joinToString(" ")
+        }
+
+        return Triple(partner, description, existing)
     }
 }
