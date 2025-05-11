@@ -1,8 +1,6 @@
 package classes
 
-import Statement
 import StatementParameters
-import Transaction
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.text.PDFTextStripper
 import java.io.File
@@ -30,11 +28,11 @@ class PdfParser {
     }
 
     /**
-     * Parses the PDF file and extracts transactions.
+     * Parses a PDF file and extracts the statement information.
      *
-     * @param file The path to the PDF file.
+     * @param parameters The statement parameters.
      *
-     * @return A list of transactions extracted from the PDF.
+     * @return A Statement object containing the extracted information.
      */
     fun parse(parameters: StatementParameters): Statement {
         try {
@@ -56,6 +54,15 @@ class PdfParser {
         }
     }
 
+    /**
+     * Parses the lines of the PDF and extracts transactions and other information.
+     *
+     * @param lines The lines of the PDF.
+     * @param statement The statement object to populate.
+     * @param parameters The statement parameters.
+     *
+     * @return The populated statement object.
+     */
     fun parseStatement(lines: List<String>, statement: Statement, parameters: StatementParameters): Statement {
         var i = 0
         while (i < lines.size) {
@@ -107,6 +114,15 @@ class PdfParser {
         return statement
     }
 
+    /**
+     * Parses a transaction line and returns a Transaction object.
+     *
+     * @param line The line to parse.
+     * @param parameters The statement parameters.
+     * @param previous The previous transaction (if any).
+     *
+     * @return A Transaction object.
+     */
     fun parseTransaction(line: String, parameters: StatementParameters, previous: Transaction?): Transaction {
         val parts = line.trim().split(" ")
 
@@ -138,6 +154,14 @@ class PdfParser {
         throw IllegalArgumentException("Transaction line with ref: ${parts[1]} is not valid")
     }
 
+    /**
+     * Handles the partner description and returns the partner name, description, and whether the partner is known.
+     *
+     * @param parts The parts of the transaction line.
+     * @param parameters The statement parameters.
+     *
+     * @return A Triple containing the partner name, description, and whether the partner is known.
+     */
     fun handlePartnerDescription(parts: List<String>, parameters: StatementParameters): Triple<String, String, Boolean> {
         var i = 1
         var existing = false
@@ -147,6 +171,7 @@ class PdfParser {
         var description = ""
 
         while (i < parts.size) {
+            // Check if the current part is a known partner
             if (parameters.partners.contains(temp)) {
                 existing = true
                 partner = temp
@@ -158,6 +183,7 @@ class PdfParser {
             i++
         }
 
+        // If no known partner is found, assign the first two parts as the partner and the rest as the description
         if (!existing) {
             partner = parts.subList(0, 2).joinToString(" ")
             description = parts.subList(2, parts.size).joinToString(" ")

@@ -33,6 +33,10 @@ data class StatementParameters(
 )
 
 fun main() {
+    pdfTest()
+}
+
+fun pdfTest() {
     val parser = PdfParser()
 
     val parameters = StatementParameters(file = "scraper/app/src/main/resources/statements/test.pdf")
