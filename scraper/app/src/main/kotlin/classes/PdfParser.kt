@@ -10,10 +10,11 @@ import java.math.BigDecimal
 
 class PdfParser {
     val dateRegex = Regex("""\d{2}\.\d{2}\.\d{4}""")
-    val initialBalanceRegex = Regex("""Predhodno stanje na računu (v EUR): """)
-    val inflowRegex = Regex("""Promet v dobro:""")
-    val outflowRegex = Regex("""Promet v breme:""")
-    val endBalanceRegex = Regex("""Novo stanje na računu (v EUR): """)
+    val startBalanceRegex = Regex("""^Predhodno stanje na računu.*?:""")
+    val inflowRegex = Regex("""^Promet v dobro.*?:""")
+    val outflowRegex = Regex("""^Promet v breme.*?:""")
+    val endBalanceRegex = Regex("""^Novo stanje na računu.*?:""")
+    val ibanRegex = Regex("""^Št. računa v IBAN strukturi:""")
 
     /**
      * Parses a string representing a number in European format (e.g., "1.234,56") to a BigDecimal.
@@ -35,10 +36,9 @@ class PdfParser {
      *
      * @return A list of transactions extracted from the PDF.
      */
-    fun parse(parameters: StatementParameters): List<Transaction> {
+    fun parse(parameters: StatementParameters): Statement {
         try {
-            val statement = Statement()
-            val transactions = mutableListOf<Transaction>()
+            var statement = Statement()
 
             // Loads the PDF as a string
             val document = PDDocument.load(File(parameters.file))
@@ -47,22 +47,16 @@ class PdfParser {
 
             val lines = pdfText.lines()
 
-            val cleaned = cleanLines(lines, statement)
+            statement = parseStatement(lines, statement)
 
-            for (line in cleaned) {
-                transactions.add(parseTransaction(line))
-            }
-
-            return transactions
+            return statement
         } catch (e: Exception) {
             println("Error parsing PDF: ${e.message}")
-            return emptyList()
+            return Statement()
         }
     }
 
-    fun cleanLines(lines: List<String>, statement: Statement): List<String> {
-        val cleanedLines = mutableListOf<String>()
-
+    fun parseStatement(lines: List<String>, statement: Statement): Statement {
         var i = 0
         while (i < lines.size) {
             var currentLine = lines[i].trim()
@@ -72,19 +66,39 @@ class PdfParser {
                 continue
             }
 
+            // Parses the lines depending on which regex matches or skips the line
             if (dateRegex.matchesAt(currentLine, 0)) {
                 i++
                 while (i < lines.size && !dateRegex.matches(lines[i]) && lines[i].isNotBlank()) {
                     currentLine += " " + lines[i].trim()
                     i++
                 }
-                cleanedLines.add(currentLine)
+                statement.transactions.add(parseTransaction(currentLine))
+            } else if (startBalanceRegex.containsMatchIn(currentLine)) {
+                statement.startBalance = parseEuropeanNumber(currentLine.replace(startBalanceRegex, "").trim())
+                i++
+            } else if (inflowRegex.containsMatchIn(currentLine)) {
+                statement.inflow = parseEuropeanNumber(currentLine.replace(inflowRegex, "").trim())
+                i++
+            } else if (outflowRegex.containsMatchIn(currentLine)) {
+                statement.outflow = parseEuropeanNumber(currentLine.replace(outflowRegex, "").trim())
+                i++
+            } else if (endBalanceRegex.containsMatchIn(currentLine)) {
+                statement.endBalance = parseEuropeanNumber(currentLine.replace(endBalanceRegex, "").trim())
+                i++
+            } else if (ibanRegex.containsMatchIn(currentLine)) {
+                statement.iban = currentLine.replace(ibanRegex, "").trim()
+                i++
             } else {
                 i++
             }
         }
 
-        return cleanedLines
+        // Assigns the start and end date of the statement
+        statement.startDate = statement.transactions[0].date
+        statement.endDate = statement.transactions[statement.transactions.size - 1].date
+
+        return statement
     }
 
     fun parseTransaction(line: String): Transaction {

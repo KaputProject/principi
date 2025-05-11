@@ -45,9 +45,8 @@ data class Statement(
     var user: String = "KUDER LUKA",
     var iban: String = "SI56 6100 0000 0000 000",
     var transactions: MutableList<Transaction> = mutableListOf(),
-    var startDate: Date? = null,
-    var endDate: Date? = null,
-    var month: String? = null,
+    var startDate: String? = null,
+    var endDate: String? = null,
 
     var startBalance: BigDecimal = BigDecimal.ZERO,
     var endBalance: BigDecimal = BigDecimal.ZERO,
@@ -57,8 +56,12 @@ data class Statement(
 
 fun main() {
     val parser = PdfParser()
-    val transactions = parser.parse(StatementParameters())
 
-    println("Extracted ${transactions.size} transactions:")
-    transactions.forEach { println(it) }
+    val parameters = StatementParameters(file = "scraper/app/src/main/resources/statements/test.pdf")
+
+    val statement = parser.parse(parameters)
+
+    println(statement)
+    println("Extracted ${statement.transactions.size} transactions:")
+    statement.transactions.forEach { println(it) }
 }
