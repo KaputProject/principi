@@ -32,32 +32,6 @@ data class StatementParameters(
     )
 )
 
-data class Transaction(
-    val date: String,
-    val reference: String,
-    val partner: String,
-    val description: String,
-    val change: BigDecimal,
-    val balance: BigDecimal,
-
-    var outgoing: Boolean? = null,
-    var known_partner: Boolean? = null,
-)
-
-data class Statement(
-    var user: String = "KUDER LUKA",
-    var iban: String = "SI56 6100 0000 0000 000",
-    var startDate: String? = null,
-    var endDate: String? = null,
-
-    var startBalance: BigDecimal = BigDecimal.ZERO,
-    var endBalance: BigDecimal = BigDecimal.ZERO,
-    var inflow: BigDecimal = BigDecimal.ZERO,
-    var outflow: BigDecimal = BigDecimal.ZERO,
-
-    var transactions: MutableList<Transaction> = mutableListOf(),
-)
-
 fun main() {
     val parser = PdfParser()
 
