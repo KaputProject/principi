@@ -32,6 +32,13 @@ dependencies {
 
     // This dependency is used by the application.
     implementation(libs.guava)
+
+    // Both used for Google API
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.google.code.gson:gson:2.10.1")
+
+    // Used for dotenv
+    implementation("io.github.cdimascio:dotenv-kotlin:6.5.1")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
