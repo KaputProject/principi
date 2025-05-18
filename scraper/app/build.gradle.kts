@@ -37,6 +37,8 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.google.code.gson:gson:2.10.1")
 
+    implementation("org.json:json:20240303")
+
     // Used for dotenv
     implementation("io.github.cdimascio:dotenv-kotlin:6.5.1")
 }

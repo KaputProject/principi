@@ -1,6 +1,7 @@
 import java.math.BigDecimal
 import java.util.Date
 import classes.*
+import exchange.ExchangeRatesApi
 import google.*
 import io.github.cdimascio.dotenv.dotenv
 
@@ -36,7 +37,16 @@ data class StatementParameters(
 
 fun main() {
     //pdfTest()
-    mapsTest()
+    //mapsTest()
+    exchangeRateTest()
+}
+
+fun exchangeRateTest() {
+    val exchangeRates = ExchangeRatesApi().get("EUR")
+
+    for (rate in exchangeRates) {
+        println("${rate.key}: ${rate.value}")
+    }
 }
 
 /**
