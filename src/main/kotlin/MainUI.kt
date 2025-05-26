@@ -21,7 +21,7 @@ fun Header() {
         contentAlignment = Alignment.CenterStart
     ) {
         Text(
-            text = "Moj Header",
+            text = "Kaput admin panel",
             color = Color.White,
             modifier = Modifier.padding(start = 16.dp),
             style = MaterialTheme.typography.h6
@@ -117,7 +117,7 @@ fun App() {
 }
 
 fun main() = application {
-    Window(onCloseRequest = ::exitApplication, title = "Ukazna vrstica z gumbi in header") {
+    Window(onCloseRequest = ::exitApplication, title = "Compose Database Admin") {
         App()
     }
 }
