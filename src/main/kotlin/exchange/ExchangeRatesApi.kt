@@ -15,7 +15,7 @@ class ExchangeRatesApi {
      */
     fun get(base: String): MutableMap<String, BigDecimal> {
         val dotenv = dotenv {
-            directory = "scraper"
+            directory = "src/main/resources"
         }
 
         val key = dotenv["EXCHANGE_RATE_API_KEY"] ?: System.getenv("EXCHANGE_RATE_API_KEY") ?: error("EXCHANGE_RATE_API_KEY is not set.")

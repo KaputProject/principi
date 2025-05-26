@@ -22,7 +22,7 @@ import io.github.cdimascio.dotenv.dotenv
  *  }
  */
 data class StatementParameters(
-    val file: String = "scraper/app/src/main/resources/statements/test.pdf",
+    val file: String = "src/main/resources/statements/test.pdf",
     val user: String = "KUDER LUKA",
     val partners: List<String> = listOf(
         "LANA K.",
@@ -36,9 +36,9 @@ data class StatementParameters(
 )
 
 fun main() {
-    //pdfTest()
-    //mapsTest()
-    exchangeRateTest()
+    //pdfTest() //dela
+    //mapsTest() //dela
+    //exchangeRateTest() //dela
 }
 
 fun exchangeRateTest() {
@@ -56,7 +56,7 @@ fun exchangeRateTest() {
 fun pdfTest() {
     val parser = PdfParser()
 
-    val parameters = StatementParameters(file = "scraper/app/src/main/resources/statements/test.pdf")
+    val parameters = StatementParameters(file = "src/main/resources/statements/test.pdf")
 
     val statement = parser.parse(parameters)
 
@@ -71,7 +71,7 @@ fun pdfTest() {
 
 fun mapsTest() {
     val dotenv = dotenv {
-        directory = "scraper/app"
+        directory = "src/main/resources"
         ignoreIfMissing = true
     }
     val apiKey = dotenv["GOOGLE_API_KEY"] ?: System.getenv("GOOGLE_API_KEY")
