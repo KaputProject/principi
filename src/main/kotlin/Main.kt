@@ -1,9 +1,14 @@
+import Database.DatabaseUtil
 import java.math.BigDecimal
 import java.util.Date
 import classes.*
+import com.mongodb.client.MongoClients
 import exchange.ExchangeRatesApi
 import google.*
 import io.github.cdimascio.dotenv.dotenv
+import org.bson.Document
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 /**
  * The program should receive the following parameters:
@@ -39,7 +44,12 @@ fun main() {
     //pdfTest() //dela
     //mapsTest() //dela
     //exchangeRateTest() //dela
+
+
+
+
 }
+
 
 fun exchangeRateTest() {
     val exchangeRates = ExchangeRatesApi().get("EUR")
@@ -74,8 +84,7 @@ fun mapsTest() {
         directory = "src/main/resources"
         ignoreIfMissing = true
     }
-    val apiKey = dotenv["GOOGLE_API_KEY"] ?: System.getenv("GOOGLE_API_KEY")
-    ?: error("API ključ ni nastavljen.")
+    val apiKey = dotenv["GOOGLE_API_KEY"] ?: System.getenv("GOOGLE_API_KEY") ?: error("API ključ ni nastavljen.")
 
     val searcher = MapSearch(apiKey)
     val places = searcher.search("Mango")
