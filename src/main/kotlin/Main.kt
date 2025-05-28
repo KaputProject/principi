@@ -10,6 +10,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okio.IOException
 import org.bson.Document
+import pdfFileTransfer.PdfFileTransfer
 import java.io.File
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -48,7 +49,8 @@ fun main() {
     //pdfTest() //dela
     //mapsTest() //dela
     //exchangeRateTest() //dela
-
+    val server = PdfFileTransfer()
+    server.startServer()
 }
 
 
