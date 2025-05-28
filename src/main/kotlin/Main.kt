@@ -6,7 +6,11 @@ import com.mongodb.client.MongoClients
 import exchange.ExchangeRatesApi
 import google.*
 import io.github.cdimascio.dotenv.dotenv
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okio.IOException
 import org.bson.Document
+import java.io.File
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -45,10 +49,9 @@ fun main() {
     //mapsTest() //dela
     //exchangeRateTest() //dela
 
-
-
-
 }
+
+
 
 
 fun exchangeRateTest() {
