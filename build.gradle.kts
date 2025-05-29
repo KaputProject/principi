@@ -8,6 +8,8 @@ plugins {
     kotlin("jvm")
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
+    kotlin("plugin.serialization") version "1.9.0" // Must match the Kotlin version
+
     // Apply the application plugin to add support for building a CLI application in Java.
 //    application
 }
@@ -23,18 +25,41 @@ repositories {
     google()
 }
 dependencies {
+    // 🖥️ UI: JetBrains Compose za Desktop
     implementation(compose.desktop.currentOs)
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    implementation("org.apache.pdfbox:pdfbox:2.0.27")
-    implementation("org.mongodb:mongodb-driver-sync:4.10.2")
-    implementation("org.slf4j:slf4j-api:2.0.9")
-    implementation("org.slf4j:slf4j-simple:2.0.9")
+
+    // 🧪 Testiranje
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5") // Kotlin test z JUnit 5
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher") // Potreben za JUnit platformo
+
+    // 📄 Delo z PDF datotekami
+    implementation("org.apache.pdfbox:pdfbox:2.0.27") // Branje/pisanje PDF datotek
+
+    // 📢 Logging (SLF4J API + Simple backend)
+    implementation("org.slf4j:slf4j-api:2.0.9")        // SLF4J logging vmesnik
+    implementation("org.slf4j:slf4j-simple:2.0.9")     // Preprosta implementacija za SLF4J
+
+    // 🌱 Environment spremenljivke iz .env datoteke
     implementation("io.github.cdimascio:dotenv-kotlin:6.5.1")
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
-    implementation("com.google.code.gson:gson:2.10.1")
-    implementation("org.json:json:20240303")
+
+    // 🌐 HTTP klient
+    implementation("com.squareup.okhttp3:okhttp:4.12.0") // Pošiljanje HTTP zahtev (GET/POST itd.)
+
+    // 🔄 JSON parserji
+    implementation("com.google.code.gson:gson:2.10.1")   // Google GSON za JSON serializacijo
+    implementation("org.json:json:20240303")             // Alternativa: org.json parser
+
+    // 🛢️ MongoDB driver (synchronous)
+    implementation("org.mongodb:mongodb-driver-sync:4.11.0") // MongoDB dostop prek BSON Document
+
+    // file transfer
+    implementation("io.ktor:ktor-server-netty:2.3.4")
+    implementation("io.ktor:ktor-server-core:2.3.4")
+    implementation("io.ktor:ktor-server-content-negotiation:2.3.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3") // Match your version
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.7")
 }
+
 
 //dependencies {
 //    // Note, if you develop a library, you should use compose.desktop.common.

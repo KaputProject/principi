@@ -6,7 +6,12 @@ import com.mongodb.client.MongoClients
 import exchange.ExchangeRatesApi
 import google.*
 import io.github.cdimascio.dotenv.dotenv
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okio.IOException
 import org.bson.Document
+import pdfFileTransfer.PdfFileTransfer
+import java.io.File
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -26,29 +31,16 @@ import java.time.format.DateTimeFormatter
  *      ]
  *  }
  */
-data class StatementParameters(
-    val file: String = "src/main/resources/statements/test.pdf",
-    val user: String = "KUDER LUKA",
-    val partners: List<String> = listOf(
-        "LANA K.",
-        "UNIFITNES, D.O.O.",
-        "MDDSZ-DRZAVNE STIPENDIJE - ISCSD 2",
-        "ASPIRIA d.o.o.",
-        "HUMANITARNO DRUŠTVO LIONS KLUB KONJICE",
-        "PayPal Europe S.a.r.l. et Cie S.C.A",
-        "TELEKOM SLOVENIJE D.D.",
-    )
-)
 
 fun main() {
     //pdfTest() //dela
     //mapsTest() //dela
     //exchangeRateTest() //dela
-
-
-
-
+    val server = PdfFileTransfer()
+    server.startServer()
 }
+
+
 
 
 fun exchangeRateTest() {
