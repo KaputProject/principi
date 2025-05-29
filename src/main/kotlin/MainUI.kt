@@ -1,4 +1,4 @@
-
+import org.mindrot.jbcrypt.BCrypt
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -84,11 +84,15 @@ fun PersonCard(name: String, surname: String) {
 }
 
 
+fun hashPassword(password: String): String {
+    return BCrypt.hashpw(password, BCrypt.gensalt(10))
+}
+
 @Composable
 fun Page1() {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
-    var dateOfBirth by remember { mutableStateOf("2025-05-27") }
+    var dateOfBirth by remember { mutableStateOf("2025.05.27") }
     var surname by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }

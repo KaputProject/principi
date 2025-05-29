@@ -67,6 +67,7 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.4")  // JSON podpora
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.7.3")
     implementation("io.ktor:ktor-client-logging:2.3.7") // ali najnovejša različica
+    implementation("org.mindrot:jbcrypt:0.4")
 
 
 
