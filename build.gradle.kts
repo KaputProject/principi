@@ -8,6 +8,8 @@ plugins {
     kotlin("jvm")
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
+    kotlin("plugin.serialization") version "1.9.0" // Must match the Kotlin version
+
     // Apply the application plugin to add support for building a CLI application in Java.
 //    application
 }
@@ -54,7 +56,8 @@ dependencies {
     implementation("io.ktor:ktor-server-netty:2.3.4")
     implementation("io.ktor:ktor-server-core:2.3.4")
     implementation("io.ktor:ktor-server-content-negotiation:2.3.4")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3") // Match your version
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.7")
 }
 
 
