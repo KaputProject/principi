@@ -120,6 +120,7 @@ class PdfFileTransfer {
                             metadata = metadataJson,
                             ime = imeJson,
                         )
+
                     } else {
                         UploadResponse(
                             message = "Manjkajo datoteka ali metadata JSON.",
@@ -128,7 +129,16 @@ class PdfFileTransfer {
                             ime = imeJson
                         )
                     }
-
+                    val file = File(path)
+                    if (file.exists()) {
+                        if (file.delete()) {
+                            println("File deleted successfully.")
+                        } else {
+                            println("Failed to delete the file.")
+                        }
+                    } else {
+                        println("File does not exist.")
+                    }
                     lastUpload = response
                     call.respond(if (savedFilePath != null && metadataJson != null) HttpStatusCode.OK else HttpStatusCode.BadRequest, response)
                 }

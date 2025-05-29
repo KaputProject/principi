@@ -33,11 +33,11 @@ import java.time.format.DateTimeFormatter
  */
 
 fun main() {
-    pdfTest() //dela
+    //pdfTest() //dela
     //mapsTest() //dela
     //exchangeRateTest() //dela
-//    val server = PdfFileTransfer()
-//    server.startServer()
+    val server = PdfFileTransfer()
+    server.startServer()
 }
 
 
