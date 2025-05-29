@@ -30,47 +30,49 @@ dependencies {
 
     // 🧪 Testiranje
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5") // Kotlin test z JUnit 5
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher") // Potreben za JUnit platformo
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher") // Potrebno za JUnit platformo
 
     // 📄 Delo z PDF datotekami
-    implementation("org.apache.pdfbox:pdfbox:2.0.27") // Branje/pisanje PDF datotek
+    implementation("org.apache.pdfbox:pdfbox:2.0.27")
 
     // 📢 Logging (SLF4J API + Simple backend)
-    implementation("org.slf4j:slf4j-api:2.0.9")        // SLF4J logging vmesnik
-    implementation("org.slf4j:slf4j-simple:2.0.9")     // Preprosta implementacija za SLF4J
+    implementation("org.slf4j:slf4j-api:2.0.9")
+    implementation("org.slf4j:slf4j-simple:2.0.9")
 
     // 🌱 Environment spremenljivke iz .env datoteke
     implementation("io.github.cdimascio:dotenv-kotlin:6.5.1")
 
-    // 🌐 HTTP klient
-    implementation("com.squareup.okhttp3:okhttp:4.12.0") // Pošiljanje HTTP zahtev (GET/POST itd.)
-
-    // 🔄 JSON parserji
-    implementation("com.google.code.gson:gson:2.10.1")   // Google GSON za JSON serializacijo
-    implementation("org.json:json:20240303")             // Alternativa: org.json parser
-
-    // 🛢️ MongoDB driver (synchronous)
-    implementation("org.mongodb:mongodb-driver-sync:4.11.0") // MongoDB dostop prek BSON Document
-
-    // file transfer
-    implementation("io.ktor:ktor-server-netty:2.3.4")
-    implementation("io.ktor:ktor-server-core:2.3.4")
-    implementation("io.ktor:ktor-server-content-negotiation:2.3.4")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3") // Match your version
-    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.7")
+    // 🌐 HTTP klient (OkHttp + logging)
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-    implementation("io.ktor:ktor-client-core:2.3.4")        // osnovni klient
-    implementation("io.ktor:ktor-client-cio:2.3.4")         // CIO engine za JVM
-    implementation("io.ktor:ktor-client-content-negotiation:2.3.4") // za serializacijo
-    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.4")  // JSON podpora
+
+    // 🔄 JSON parserji
+    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("org.json:json:20240303")
+
+    // 🛢️ MongoDB (synchronous driver)
+    implementation("org.mongodb:mongodb-driver-sync:4.11.0")
+
+    // 🔐 Bcrypt (združljiv z Node.js bcrypt hash)
+    implementation("org.springframework.security:spring-security-crypto:6.1.5")
+
+    // 🔁 Kotlinx serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
+    // 🧵 Kotlin coroutines (JVM in Swing)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.7.3")
-    implementation("io.ktor:ktor-client-logging:2.3.7") // ali najnovejša različica
-    implementation("org.mindrot:jbcrypt:0.4")
 
+    // 📦 Ktor strežnik (file transfer)
+    implementation("io.ktor:ktor-server-core:2.3.4")
+    implementation("io.ktor:ktor-server-netty:2.3.4")
+    implementation("io.ktor:ktor-server-content-negotiation:2.3.4")
 
-
+    // 🌐 Ktor HTTP klient
+    implementation("io.ktor:ktor-client-core:2.3.4")
+    implementation("io.ktor:ktor-client-cio:2.3.4")
+    implementation("io.ktor:ktor-client-content-negotiation:2.3.4")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.4")
 }
 
 
