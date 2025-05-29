@@ -361,7 +361,6 @@ fun App() {
                     Spacer(modifier = Modifier.weight(1f))
                     SidebarButton("About") { /* lahko dodaš Page5 */ }
                 }
-
                 // Main content
                 Box(
                     modifier = Modifier.fillMaxSize().background(Color.White).padding(8.dp)
