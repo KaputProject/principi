@@ -1,7 +1,6 @@
-package GUI
-
 import Database.DatabaseUtil
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.text.KeyboardOptions
@@ -263,20 +262,67 @@ fun PersonCard(name: String, surname: String) {
 
 @Composable
 fun Page3() {
+    var inputText1 by remember { mutableStateOf("") }
+    var inputText2 by remember { mutableStateOf("") }
     var consoleOutput by remember { mutableStateOf("Čakam na podatke...") }
 
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
+            .verticalScroll(rememberScrollState())
     ) {
+        // Prvo vnosno polje in gumb
+        OutlinedTextField(
+            value = inputText1,
+            onValueChange = { inputText1 = it },
+            label = { Text("Vnesi besedilo 1") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Button(
+            onClick = { consoleOutput += "\n$inputText1" },
+            modifier = Modifier
+                .padding(top = 8.dp)
+                .align(Alignment.End)
+        ) {
+            Text("Izpiši 1")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Drugo vnosno polje in gumb
+        OutlinedTextField(
+            value = inputText2,
+            onValueChange = { inputText2 = it },
+            label = { Text("Vnesi besedilo 2") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Button(
+            onClick = { consoleOutput += "\n$inputText2" },
+            modifier = Modifier
+                .padding(top = 8.dp)
+                .align(Alignment.End)
+        ) {
+            Text("Izpiši 2")
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // Izhodni zaslon
         Text(
             text = consoleOutput,
-            modifier = Modifier.verticalScroll(rememberScrollState()),
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 100.dp)
+                .border(1.dp, Color.Gray)
+                .padding(8.dp),
             style = MaterialTheme.typography.body1
         )
     }
 }
+
 
 
 @Composable
