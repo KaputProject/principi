@@ -58,6 +58,18 @@ dependencies {
     implementation("io.ktor:ktor-server-content-negotiation:2.3.4")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3") // Match your version
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.7")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("io.ktor:ktor-client-core:2.3.4")        // osnovni klient
+    implementation("io.ktor:ktor-client-cio:2.3.4")         // CIO engine za JVM
+    implementation("io.ktor:ktor-client-content-negotiation:2.3.4") // za serializacijo
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.4")  // JSON podpora
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.7.3")
+    implementation("io.ktor:ktor-client-logging:2.3.7") // ali najnovejša različica
+
+
+
 }
 
 

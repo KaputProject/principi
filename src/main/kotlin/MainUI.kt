@@ -1,45 +1,52 @@
-import Database.DatabaseUtil
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import org.bson.Document
-import java.time.LocalDate
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.encodeToString
+import io.ktor.client.plugins.logging.*
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
+import kotlinx.coroutines.swing.Swing
+
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class UploadResponse(
-    val message: String,
-    val filename: String? = null,
-    val metadata: String? = null,
-    val ime: String? = null
+    val message: String, val filename: String? = null, val metadata: String? = null, val ime: String? = null
 )
 
 @Composable
 fun Header() {
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(60.dp)
-            .background(Color(0xFFE6F2F3)), // svetla pastelna modra
+        modifier = Modifier.fillMaxWidth().height(60.dp).background(Color(0xFFE6F2F3)), // svetla pastelna modra
         contentAlignment = Alignment.CenterStart
     ) {
         Text(
@@ -48,6 +55,31 @@ fun Header() {
             modifier = Modifier.padding(start = 16.dp),
             style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Bold)
         )
+    }
+}
+
+@Composable
+fun PersonCard(name: String, surname: String) {
+    Card(
+        shape = RoundedCornerShape(16.dp),
+        elevation = 4.dp,
+        backgroundColor = Color(0xFFE6F2F3),
+        modifier = Modifier.padding(8.dp).fillMaxWidth().height(140.dp)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.Person,
+                contentDescription = null,
+                modifier = Modifier.size(36.dp),
+                tint = Color(0xFF00796B)
+            )
+            Text(name, style = MaterialTheme.typography.subtitle1)
+            Text(surname, style = MaterialTheme.typography.subtitle1, fontWeight = FontWeight.Bold)
+        }
     }
 }
 
@@ -62,10 +94,10 @@ fun Page1() {
     var username by remember { mutableStateOf("") }
     var message by remember { mutableStateOf("") }
 
+    val coroutineScope = rememberCoroutineScope()
+
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+        modifier = Modifier.fillMaxSize().padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
         Card(
@@ -77,9 +109,7 @@ fun Page1() {
                 .width(400.dp)
         ) {
             Column(
-                modifier = Modifier
-                    .padding(24.dp)
-                    .fillMaxWidth(),
+                modifier = Modifier.padding(24.dp).fillMaxWidth(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -146,22 +176,50 @@ fun Page1() {
 
                 Button(
                     onClick = {
-                        try {
-                            val datum = LocalDate.parse(dateOfBirth)
-                            val user = Document()
-                                .append("name", name)
-                                .append("email", email)
-                                .append("dateOfBirth", datum)
-                                .append("surname", surname)
-                                .append("password", password)
-                                .append("username", username)
+                        coroutineScope.launch {
+                            val client = HttpClient(CIO) {
+                                install(ContentNegotiation) {
+                                    json()
+                                }
+                                install(Logging) {
+                                    logger = Logger.DEFAULT
+                                    level = LogLevel.ALL
+                                }
+                            }
 
-                            val collection = DatabaseUtil().database.getCollection("users")
-                            collection.insertOne(user)
 
-                            message = "Uporabnik uspešno dodan!"
-                        } catch (e: Exception) {
-                            message = "Napaka: ${e.message}"
+                            try {
+                                val response: HttpResponse = client.post("http://localhost:5000/users") {
+                                    contentType(ContentType.Application.Json)
+                                    val requestBody = mapOf(
+                                        "username" to username,
+                                        "password" to password,
+                                        "name" to name,
+                                        "surname" to surname,
+                                        "email" to email,
+                                        "dateOfBirth" to dateOfBirth
+                                    )
+
+                                    println("Request payload: ${Json.encodeToString(requestBody)}") // ali to samo kot map
+
+                                    setBody(requestBody)
+
+                                }
+
+                                withContext(Dispatchers.Swing) {
+                                    message = if (response.status.isSuccess()) {
+                                        "Uporabnik uspešno dodan!"
+                                    } else {
+                                        "Napaka: ${response.status.value}"
+                                    }
+                                }
+                            } catch (e: Exception) {
+                                withContext(Dispatchers.Swing)  {
+                                    message = "Napaka pri pošiljanju: ${e.message}"
+                                }
+                            } finally {
+                                client.close()
+                            }
                         }
                     },
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFB2DFDB)),
@@ -185,13 +243,14 @@ fun Page1() {
     }
 }
 
+
+
+
 @Composable
 fun SidebarButton(label: String, onClick: () -> Unit) {
     Button(
         onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 6.dp),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 6.dp),
         colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFE6F2F3)),
         shape = RoundedCornerShape(12.dp),
         elevation = ButtonDefaults.elevation(4.dp)
@@ -201,22 +260,17 @@ fun SidebarButton(label: String, onClick: () -> Unit) {
 }
 
 
-
 @Composable
 fun Page2() {
     val people = listOf(
-        "Daysi" to "ZBONCAK",
-        "Brady" to "BERGNAUM",
-        "Simon" to "WEST",
-        "Wendell" to "SCHILLER"
+        "Daysi" to "ZBONCAK", "Brady" to "BERGNAUM", "Simon" to "WEST", "Wendell" to "SCHILLER"
     )
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Text("People", style = MaterialTheme.typography.h5, modifier = Modifier.padding(bottom = 12.dp))
         LazyVerticalGrid(
             columns = GridCells.Fixed(2), // popravljen parameter
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(8.dp)
+            modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(8.dp)
         ) {
             items(people.size) { index ->
                 val (name, surname) = people[index]
@@ -227,38 +281,6 @@ fun Page2() {
     }
 }
 
-@Composable
-fun PersonCard(name: String, surname: String) {
-    Card(
-        shape = RoundedCornerShape(16.dp),
-        elevation = 4.dp,
-        backgroundColor = Color(0xFFE6F2F3),
-        modifier = Modifier
-            .padding(8.dp)
-            .fillMaxWidth()
-            .height(140.dp)
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Icon(
-                imageVector = Icons.Default.Person,
-                contentDescription = null,
-                modifier = Modifier.size(36.dp),
-                tint = Color(0xFF00796B)
-            )
-            Text(name, style = MaterialTheme.typography.subtitle1)
-            Text(surname, style = MaterialTheme.typography.subtitle1, fontWeight = FontWeight.Bold)
-        }
-    }
-}
-
-
-
-
-
 
 @Composable
 fun Page3() {
@@ -267,10 +289,7 @@ fun Page3() {
     var consoleOutput by remember { mutableStateOf("Čakam na podatke...") }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState())
+        modifier = Modifier.fillMaxSize().padding(16.dp).verticalScroll(rememberScrollState())
     ) {
         // Prvo vnosno polje in gumb
         OutlinedTextField(
@@ -281,10 +300,7 @@ fun Page3() {
         )
 
         Button(
-            onClick = { consoleOutput += "\n$inputText1" },
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .align(Alignment.End)
+            onClick = { consoleOutput += "\n$inputText1" }, modifier = Modifier.padding(top = 8.dp).align(Alignment.End)
         ) {
             Text("Izpiši 1")
         }
@@ -300,10 +316,7 @@ fun Page3() {
         )
 
         Button(
-            onClick = { consoleOutput += "\n$inputText2" },
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .align(Alignment.End)
+            onClick = { consoleOutput += "\n$inputText2" }, modifier = Modifier.padding(top = 8.dp).align(Alignment.End)
         ) {
             Text("Izpiši 2")
         }
@@ -313,23 +326,17 @@ fun Page3() {
         // Izhodni zaslon
         Text(
             text = consoleOutput,
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 100.dp)
-                .border(1.dp, Color.Gray)
-                .padding(8.dp),
+            modifier = Modifier.fillMaxWidth().heightIn(min = 100.dp).border(1.dp, Color.Gray).padding(8.dp),
             style = MaterialTheme.typography.body1
         )
     }
 }
 
 
-
 @Composable
 fun Page4() {
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
     ) {
         Text(text = "Številka strani: 4", style = MaterialTheme.typography.h4)
     }
@@ -346,10 +353,7 @@ fun App() {
             Row(modifier = Modifier.weight(1f)) {
                 // Sidebar
                 Column(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .width(180.dp)
-                        .background(Color(0xFFF2F2F2)),
+                    modifier = Modifier.fillMaxHeight().width(180.dp).background(Color(0xFFF2F2F2)),
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -364,10 +368,7 @@ fun App() {
 
                 // Main content
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.White)
-                        .padding(8.dp)
+                    modifier = Modifier.fillMaxSize().background(Color.White).padding(8.dp)
                 ) {
                     when (currentPage) {
                         1 -> Page1()
@@ -380,7 +381,6 @@ fun App() {
         }
     }
 }
-
 
 
 fun main() = application {

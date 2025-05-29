@@ -16,11 +16,9 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.modules.SerializersModule
 import java.io.File
 import org.json.JSONArray
-import kotlinx.serialization.modules.contextual
-import java.math.BigDecimal
+
 
 @Serializable
 data class UploadResponse(
