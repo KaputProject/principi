@@ -29,20 +29,21 @@ dependencies {
     implementation(compose.desktop.currentOs)
 
     // 🧪 Testiranje
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5") // Kotlin test z JUnit 5
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher") // Potrebno za JUnit platformo
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     // 📄 Delo z PDF datotekami
     implementation("org.apache.pdfbox:pdfbox:2.0.27")
 
-    // 📢 Logging (SLF4J API + Simple backend)
+    // 📢 Logging (SLF4J + Ktor)
     implementation("org.slf4j:slf4j-api:2.0.9")
     implementation("org.slf4j:slf4j-simple:2.0.9")
+    implementation("io.ktor:ktor-client-logging:2.3.4") // 🔍 Ktor logging
 
     // 🌱 Environment spremenljivke iz .env datoteke
     implementation("io.github.cdimascio:dotenv-kotlin:6.5.1")
 
-    // 🌐 HTTP klient (OkHttp + logging)
+    // 🌐 HTTP klient (OkHttp)
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
@@ -50,30 +51,28 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("org.json:json:20240303")
 
-    // 🛢️ MongoDB (synchronous driver)
+    // 🛢️ MongoDB driver
     implementation("org.mongodb:mongodb-driver-sync:4.11.0")
 
-    // 🔐 Bcrypt (združljiv z Node.js bcrypt hash)
-    implementation("org.springframework.security:spring-security-crypto:6.1.5")
-
-    // 🔁 Kotlinx serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
-
-    // 🧵 Kotlin coroutines (JVM in Swing)
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.7.3")
-
-    // 📦 Ktor strežnik (file transfer)
-    implementation("io.ktor:ktor-server-core:2.3.4")
+    // 🔌 Ktor server
     implementation("io.ktor:ktor-server-netty:2.3.4")
+    implementation("io.ktor:ktor-server-core:2.3.4")
     implementation("io.ktor:ktor-server-content-negotiation:2.3.4")
 
-    // 🌐 Ktor HTTP klient
+    // 🔄 Ktor klient in serializacija
     implementation("io.ktor:ktor-client-core:2.3.4")
     implementation("io.ktor:ktor-client-cio:2.3.4")
     implementation("io.ktor:ktor-client-content-negotiation:2.3.4")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.4")
+
+    // 🧵 Korutine
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.7.3")
+
+    // 📦 Kotlinx JSON
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 }
+
 
 
 //dependencies {

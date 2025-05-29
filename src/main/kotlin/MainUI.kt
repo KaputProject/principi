@@ -1,4 +1,3 @@
-import org.mindrot.jbcrypt.BCrypt
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -21,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import androidx.compose.ui.window.rememberWindowState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -82,12 +82,6 @@ fun PersonCard(name: String, surname: String) {
         }
     }
 }
-
-
-fun hashPassword(password: String): String {
-    return BCrypt.hashpw(password, BCrypt.gensalt(10))
-}
-
 @Composable
 fun Page1() {
     var name by remember { mutableStateOf("") }
@@ -190,8 +184,6 @@ fun Page1() {
                                     level = LogLevel.ALL
                                 }
                             }
-
-
                             try {
                                 val response: HttpResponse = client.post("http://localhost:5000/users") {
                                     contentType(ContentType.Application.Json)
@@ -388,7 +380,16 @@ fun App() {
 
 
 fun main() = application {
-    Window(onCloseRequest = ::exitApplication, title = "Compose Database Admin") {
+    val windowState = rememberWindowState(
+        width = 1200.dp,
+        height = 800.dp
+    )
+
+    Window(
+        onCloseRequest = ::exitApplication,
+        title = "Compose Database Admin",
+        state = windowState
+    ) {
         App()
     }
 }

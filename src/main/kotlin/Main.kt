@@ -10,7 +10,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okio.IOException
 import org.bson.Document
-import org.mindrot.jbcrypt.BCrypt
 import pdfFileTransfer.PdfFileTransfer
 import java.io.File
 import java.time.LocalDate
