@@ -13,11 +13,10 @@ import ui.api.users
 import ui.components.UserCard
 
 @Composable
-fun Users() {
+fun Users(onNavigate: (User) -> Unit) {
     val usersState = produceState<List<User>>(initialValue = emptyList()) {
         value = users()
     }
-
     Column(Modifier.fillMaxSize().padding(16.dp)) {
         Text("Users", style = MaterialTheme.typography.h5, modifier = Modifier.padding(bottom = 12.dp))
 
@@ -35,11 +34,18 @@ fun Users() {
                         name = user.name ?: "No Name",
                         surname = user.surname ?: "",
                         email = user.email,
-                        dateOfBirth = user.dateOfBirth
+                        dateOfBirth = user.dateOfBirth,
+                        onClick = {
+                            onNavigate(user)
+                        }
                     )
                 }
             }
         }
     }
 }
+
+
+
+
 

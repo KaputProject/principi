@@ -1,5 +1,6 @@
 package ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -17,7 +18,8 @@ fun UserCard(
     name: String,
     surname: String,
     email: String? = null,
-    dateOfBirth: String? = null
+    dateOfBirth: String? = null,
+    onClick: () -> Unit
 ) {
     Card(
         shape = RoundedCornerShape(16.dp),
@@ -27,6 +29,7 @@ fun UserCard(
             .padding(8.dp)
             .fillMaxWidth()
             .heightIn(min = 140.dp)
+            .clickable(onClick = onClick) // Klikabilnost kartice
     ) {
         Column(
             modifier = Modifier
