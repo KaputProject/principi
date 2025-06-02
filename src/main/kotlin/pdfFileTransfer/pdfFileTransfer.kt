@@ -68,7 +68,7 @@ class PdfFileTransfer {
                                         metadataJson = part.value
                                         println("Prejet JSON niz metadata: $metadataJson")
                                     }
-                                    "ime" -> {
+                                    "name" -> {
                                         imeJson = part.value
                                         println("Prejeto ime: $imeJson")
                                     }
