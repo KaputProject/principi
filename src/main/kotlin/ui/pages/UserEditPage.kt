@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import ui.AuthState
+import ui.api.deleteUser
 import ui.api.updateUser
 
 @Composable
@@ -144,6 +145,24 @@ fun UserEditPage(initialUser: User = User()) {
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Save")
+        }
+        Spacer(Modifier.height(12.dp))
+
+        Button(
+            onClick = {
+                coroutineScope.launch {
+                    message = null
+                    val result = deleteUser(userId)
+                    message = result.fold(
+                        onSuccess = { "User deleted successfully" },
+                        onFailure = { "Delete failed: ${it.message}" }
+                    )
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.error)
+        ) {
+            Text("Delete", color = MaterialTheme.colors.onError)
         }
 
     }

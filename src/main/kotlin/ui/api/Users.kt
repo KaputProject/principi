@@ -34,6 +34,24 @@ suspend fun login(username: String, password: String): String? {
     }
 }
 
+suspend fun deleteUser(userId: String): Result<String> {
+    return try {
+        val response = client.delete("$url/users/$userId") {
+            header("Authorization", "Bearer ${AuthState.token}")
+            contentType(ContentType.Application.Json)
+            setBody(mapOf("userId" to userId)) // <-- telo zahteve
+        }
+
+        if (response.status.isSuccess()) {
+            Result.success("User deleted successfully")
+        } else {
+            val errorBody = response.bodyAsText()
+            Result.failure(Exception("Server error: $errorBody"))
+        }
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+}
 suspend fun createUser(
     username: String, password: String, name: String,
     surname: String, email: String, dateOfBirth: String
