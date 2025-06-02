@@ -17,6 +17,8 @@ import ui.api.updateUser
 @Composable
 fun UserEditPage(initialUser: User = User()) {
     val coroutineScope = rememberCoroutineScope()
+    val userId = initialUser.id ?: ""
+    val initialUserJson = remember(initialUser) { Json.encodeToString(initialUser) }
 
     var username by remember { mutableStateOf(initialUser.username ?: "") }
     var name by remember { mutableStateOf(initialUser.name ?: "") }
@@ -26,19 +28,7 @@ fun UserEditPage(initialUser: User = User()) {
     var isAdmin by remember { mutableStateOf(initialUser.isAdmin ?: false) }
     var password by remember { mutableStateOf("") }
     var repeatPassword by remember { mutableStateOf("") }
-    val userId = initialUser.id ?: ""
-
     var message by remember { mutableStateOf<String?>(null) }
-    val initialUserJson = remember(initialUser) { Json.encodeToString(initialUser) }
-    val currentUser = User(
-        username = username,
-        name = name,
-        surname = surname,
-        email = email,
-        dateOfBirth = dateOfBirth,
-        isAdmin = isAdmin
-    )
-    val currentUserJson = Json.encodeToString(currentUser)
 
     Column(
         Modifier
@@ -91,7 +81,6 @@ fun UserEditPage(initialUser: User = User()) {
             placeholder = { Text("7.10.2004") },
             modifier = Modifier.fillMaxWidth()
         )
-
 
         OutlinedTextField(
             value = password,
@@ -150,7 +139,6 @@ fun UserEditPage(initialUser: User = User()) {
                             onFailure = { "Update failed: ${it.message}" }
                         )
                     }
-
                 }
             },
             modifier = Modifier.fillMaxWidth()
