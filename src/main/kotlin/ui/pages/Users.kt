@@ -1,27 +1,45 @@
 package ui.pages
 
+import User
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ui.components.PersonCard
+import ui.api.users
+import ui.components.UserCard
 
 @Composable
 fun Users() {
-    val people = listOf(
-        "Daysi" to "ZBONCAK", "Brady" to "BERGNAUM", "Simon" to "WEST", "Wendell" to "SCHILLER"
-    )
+    val usersState = produceState<List<User>>(initialValue = emptyList()) {
+        value = users()
+    }
 
     Column(Modifier.fillMaxSize().padding(16.dp)) {
-        Text("People", style = MaterialTheme.typography.h5, modifier = Modifier.padding(bottom = 12.dp))
-        LazyVerticalGrid(columns = GridCells.Fixed(2), modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(8.dp)) {
-            items(people.size) { index ->
-                val (name, surname) = people[index]
-                PersonCard(name, surname)
+        Text("Users", style = MaterialTheme.typography.h5, modifier = Modifier.padding(bottom = 12.dp))
+
+        if (usersState.value.isEmpty()) {
+            Text("No users found or loading...")
+        } else {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(8.dp)
+            ) {
+                items(usersState.value.size) { index ->
+                    val user = usersState.value[index]
+                    UserCard(
+                        name = user.name ?: "No Name",
+                        surname = user.surname ?: "",
+                        email = user.email,
+                        dateOfBirth = user.dateOfBirth
+                    )
+                }
             }
         }
     }
 }
+

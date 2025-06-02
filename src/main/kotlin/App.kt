@@ -17,6 +17,18 @@ data class UploadResponse(
     val message: String, val filename: String? = null, val metadata: String? = null, val ime: String? = null
 )
 
+@Serializable
+data class User(
+    val username: String? = null,
+    val name: String? = null,
+    val surname: String? = null,
+    val email: String? = null,
+    val dateOfBirth: String? = null,
+    val avatarUrl: String? = null,
+    val isAdmin: Boolean? = false
+)
+
+
 @Composable
 fun App() {
     var currentPage by remember { mutableStateOf(1) }
