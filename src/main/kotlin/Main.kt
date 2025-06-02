@@ -36,8 +36,8 @@ fun main() {
     //pdfTest() //dela
     //mapsTest() //dela
     //exchangeRateTest() //dela
-//    val server = PdfFileTransfer()
-//    server.startServer()
+    val server = PdfFileTransfer()
+    server.startServer()
 
 
 }

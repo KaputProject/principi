@@ -1,5 +1,6 @@
 package ui.pages
 
+
 import User
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.*
@@ -9,11 +10,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+
+
 import ui.api.users
 import ui.components.UserCard
-
 @Composable
-fun Users() {
+fun Users(onNavigate: (User) -> Unit) {
     val usersState = produceState<List<User>>(initialValue = emptyList()) {
         value = users()
     }
@@ -35,11 +37,18 @@ fun Users() {
                         name = user.name ?: "No Name",
                         surname = user.surname ?: "",
                         email = user.email,
-                        dateOfBirth = user.dateOfBirth
+                        dateOfBirth = user.dateOfBirth,
+                        onClick = {
+                            onNavigate(user)
+                        }
                     )
                 }
             }
         }
     }
 }
+
+
+
+
 

@@ -1,16 +1,16 @@
 package ui.api
 
+import UpdateUserRequest
 import User
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import ui.pages.client
 import io.github.cdimascio.dotenv.dotenv
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.contentOrNull
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
 import ui.AuthState
+import kotlinx.serialization.json.*
+
+
 
 val dotenv = dotenv()
 val url = dotenv["API_URL"] ?: "http://localhost:5000"
@@ -78,4 +78,44 @@ suspend fun users(): List<User> {
         emptyList()
     }
 }
+
+suspend fun updateUser(
+    userId: String,
+    username: String,
+    password: String,
+    name: String,
+    surname: String,
+    email: String,
+    dateOfBirth: String,
+    isAdmin: Boolean
+): Result<String> {
+    return try {
+        val requestBody = UpdateUserRequest(
+            userId = userId,
+            username = username,
+            password = password.takeIf { it.isNotEmpty() },
+            name = name,
+            surname = surname,
+            email = email,
+            dateOfBirth = dateOfBirth,
+            isAdmin = isAdmin
+        )
+
+        val response = client.put("${url}/users/$userId") {
+            header("Authorization", "Bearer ${AuthState.token}")
+            contentType(ContentType.Application.Json)
+            setBody(requestBody)
+        }
+
+        if (response.status.isSuccess()) {
+            Result.success("User updated successfully")
+        } else {
+            val errorBody = response.bodyAsText()
+            Result.failure(Exception("Server error: $errorBody"))
+        }
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+}
+
 

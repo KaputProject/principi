@@ -1,37 +1,19 @@
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import ui.Header
-import ui.components.SidebarButton
 import ui.pages.*
-import androidx.compose.ui.Alignment
-import kotlinx.serialization.Serializable
 import ui.Sidebar
-
-@Serializable
-data class UploadResponse(
-    val message: String, val filename: String? = null, val metadata: String? = null, val ime: String? = null
-)
-
-@Serializable
-data class User(
-    val username: String? = null,
-    val name: String? = null,
-    val surname: String? = null,
-    val email: String? = null,
-    val dateOfBirth: String? = null,
-    val avatarUrl: String? = null,
-    val isAdmin: Boolean? = false
-)
-
 
 @Composable
 fun App() {
     var currentPage by remember { mutableStateOf(1) }
+    var userToEdit by remember { mutableStateOf<User?>(null) }
 
     MaterialTheme {
         Column(Modifier.fillMaxSize().background(Color(0xFFF5F5F5))) {
@@ -45,15 +27,23 @@ fun App() {
                 Box(Modifier.fillMaxSize().background(Color.White).padding(8.dp)) {
                     when (currentPage) {
                         1 -> UserCreate()
-                        2 -> Users()
+                        2 -> Users(onNavigate = { selectedUser ->
+                            userToEdit = selectedUser
+                            currentPage = 7  // page 7 je UserEditPage
+                        })
                         3 -> Scraper()
                         4 -> Generator()
                         5 -> Accounts()
                         6 -> AccountCreate()
+                        7 -> userToEdit?.let { user ->
+                            UserEditPage(initialUser = user)
+                        } ?: Text("No user selected")
+                        else -> Text("Page not found")
                     }
                 }
             }
         }
     }
 }
+
 
