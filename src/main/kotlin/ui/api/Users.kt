@@ -1,20 +1,18 @@
 package ui.api
 
-import UpdateUserRequest
-import User
+import ui.dataClasses.user.UpdateUserRequest
+import ui.dataClasses.user.User
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import ui.pages.client
+import ui.pages.userPages.client
 import io.github.cdimascio.dotenv.dotenv
 import ui.AuthState
 import kotlinx.serialization.json.*
 
-
-
-val dotenv = dotenv()
-val url = dotenv["API_URL"] ?: "http://localhost:5000"
-val json = Json { ignoreUnknownKeys = true }
+private val dotenv = dotenv()
+private val url = dotenv["API_URL"] ?: "http://localhost:5000"
+private val json = Json { ignoreUnknownKeys = true }
 
 suspend fun login(username: String, password: String): String? {
     return try {
@@ -43,7 +41,7 @@ suspend fun deleteUser(userId: String): Result<String> {
         }
 
         if (response.status.isSuccess()) {
-            Result.success("User deleted successfully")
+            Result.success("ui.dataClasses.user.User deleted successfully")
         } else {
             val errorBody = response.bodyAsText()
             Result.failure(Exception("Server error: $errorBody"))
@@ -88,7 +86,7 @@ suspend fun users(): List<User> {
         }
         if (response.status.isSuccess()) {
             val responseBody = response.bodyAsText()
-            json.decodeFromString(responseBody)
+            json.decodeFromString<List<User>>(responseBody)
         } else {
             emptyList()
         }
@@ -126,7 +124,7 @@ suspend fun updateUser(
         }
 
         if (response.status.isSuccess()) {
-            Result.success("User updated successfully")
+            Result.success("ui.dataClasses.user.User updated successfully")
         } else {
             val errorBody = response.bodyAsText()
             Result.failure(Exception("Server error: $errorBody"))

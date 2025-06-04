@@ -42,17 +42,6 @@ fun Sidebar(currentPage: Int, onNavigate: (Int) -> Unit) {
                 }
             }
 
-            Spacer(Modifier.height(8.dp))
-
-            SidebarButton("Accounts ${if (expandedSection == "accounts") "▲" else "▼"}") {
-                expandedSection = if (expandedSection == "accounts") null else "accounts"
-            }
-            if (expandedSection == "accounts") {
-                Column(Modifier.padding(start = 16.dp)) {
-                    SidebarButton("All Accounts") { onNavigate(5) }
-                    SidebarButton("Create Account") { onNavigate(6) }
-                }
-            }
 
             Spacer(Modifier.height(8.dp))
 
