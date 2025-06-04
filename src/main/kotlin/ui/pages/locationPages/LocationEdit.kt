@@ -104,7 +104,10 @@ fun LocationEdit(
                     TextButton(onClick = {
                         showDeleteDialog = false
                         coroutineScope.launch {
-                            val result = deleteLocation(initialLocation._id)
+                            val result = deleteLocation(
+                                initialLocation._id,
+                                userId = user.id.toString()
+                            )
                             if (result?.isSuccess == true) {
                                 message = "Lokacija uspešno izbrisana."
                                 onLocationDeleted()

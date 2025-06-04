@@ -12,6 +12,7 @@ import kotlinx.serialization.json.jsonObject
 import ui.AuthState
 import ui.dataClasses.account.Account
 import ui.dataClasses.account.AccountsResponse
+import ui.dataClasses.locations.CreateLocationRequest
 import ui.dataClasses.locations.Location
 import ui.dataClasses.locations.LocationResponse
 import ui.dataClasses.locations.UpdateLocationRequest
@@ -86,9 +87,67 @@ suspend fun updateLocation(
         Result.failure(e)
     }
 }
+suspend fun createLocation(
+    userId: String,
+    name: String,
+    identifier: String,
+    description: String,
+    address: String,
+    lat: Double?,
+    lng: Double?
+): Result<String> {
+    return try {
+        val body = CreateLocationRequest(
+            userId = userId,
+            name = name,
+            identifier = identifier,
+            description = description,
+            address = address,
+            lat = lat,
+            lng = lng
+        )
+
+        println(">>> Sending location creation request with body: $body")
+
+        val response: HttpResponse = client.post("$url/locations") {
+            AuthState.token?.let { token ->
+                headers {
+                    append("Authorization", "Bearer $token")
+                }
+            }
+            contentType(ContentType.Application.Json)
+            setBody(body)
+        }
+
+        if (response.status.isSuccess()) {
+            Result.success("Location successfully created.")
+        } else {
+            Result.failure(Exception("Server error: ${response.bodyAsText()}"))
+        }
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+}
 
 
-suspend fun deleteLocation(locationId: String): Result<Unit> {
-    // Klic do API za brisanje lokacije
-    TODO("Implementiraj klic na backend")
+suspend fun deleteLocation(locationId: String, userId: String): Result<String> {
+    return try {
+        val response = client.delete("$url/locations/$locationId") {
+            AuthState.token?.let { token ->
+                headers {
+                    append("Authorization", "Bearer $token")
+                }
+            }
+            contentType(ContentType.Application.Json)
+            setBody(mapOf("userId" to userId))
+        }
+
+        if (response.status.isSuccess()) {
+            Result.success("Location successfully deleted.")
+        } else {
+            Result.failure(Exception("Server error: ${response.bodyAsText()}"))
+        }
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
 }

@@ -16,6 +16,7 @@ import ui.pages.accountPages.AccountCreate
 import ui.pages.accountPages.Accounts
 import ui.pages.accountPages.ShowAccount
 import ui.pages.accountPages.AccountEdit
+import ui.pages.locationPages.LocationCreate
 import ui.pages.locationPages.LocationEdit
 import ui.pages.locationPages.Locations
 import ui.pages.locationPages.ShowLocation
@@ -137,8 +138,10 @@ fun App() {
                                     currentPage = 13
                                 },
                                 onCreateClick = { userForCreate ->
-                                    // TODO: define create behavior
+                                    selectedUser = userForCreate
+                                    currentPage = 15
                                 }
+
                             )
                         } ?: Text("Napaka: uporabnik ni izbran.")
                         13 -> selectedLocation?.let { location ->
@@ -171,6 +174,16 @@ fun App() {
                                 )
                             } ?: Text("Napaka: uporabnik ni izbran.")
                         } ?: Text("Napaka: lokacija za urejanje ni izbran.")
+                        15 -> selectedUser?.let { user ->
+                            LocationCreate(
+                                user = user,
+                                onBackClick = { currentPage = 12 },
+                                onLocationCreated = { newLocation ->
+                                    selectedLocation = newLocation
+                                    currentPage = 13
+                                }
+                            )
+                        } ?: Text("Napaka: uporabnik ni izbran.")
 
                     }
                 }
