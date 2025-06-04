@@ -1,3 +1,5 @@
+package ui.dataClasses.user
+
 @kotlinx.serialization.Serializable
 data class UpdateUserRequest(
     val userId: String,

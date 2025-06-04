@@ -1,3 +1,5 @@
+package ui.dataClasses.user
+
 import kotlinx.serialization.Serializable
 
 @Serializable

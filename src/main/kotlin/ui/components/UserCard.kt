@@ -40,7 +40,7 @@ fun UserCard(
         ) {
             Icon(
                 Icons.Default.Person,
-                contentDescription = "User Icon",
+                contentDescription = "ui.dataClasses.user.User Icon",
                 modifier = Modifier.size(36.dp),
                 tint = Color(0xFF00796B)
             )

@@ -1,6 +1,6 @@
-package ui.pages
+package ui.pages.userPages
 
-import User
+import ui.dataClasses.user.User
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -16,7 +16,10 @@ import ui.api.deleteUser
 import ui.api.updateUser
 
 @Composable
-fun UserEditPage(initialUser: User = User()) {
+fun UserEditPage(
+    initialUser: User = User(),
+    onBackClick: () -> Unit
+) {
     val coroutineScope = rememberCoroutineScope()
     val userId = initialUser.id ?: ""
     val initialUserJson = remember(initialUser) { Json.encodeToString(initialUser) }
@@ -37,12 +40,12 @@ fun UserEditPage(initialUser: User = User()) {
             .padding(16.dp),
         verticalArrangement = Arrangement.Top
     ) {
-        Text("Edit User", style = MaterialTheme.typography.h5)
-        Text("User ID: $userId", style = MaterialTheme.typography.body2)
+        Text("Edit ui.dataClasses.user.User", style = MaterialTheme.typography.h5)
+        Text("ui.dataClasses.user.User ID: $userId", style = MaterialTheme.typography.body2)
 
         Spacer(Modifier.height(12.dp))
 
-        Text("Original User JSON:", style = MaterialTheme.typography.subtitle2)
+        Text("Original ui.dataClasses.user.User JSON:", style = MaterialTheme.typography.subtitle2)
         Text(initialUserJson, style = MaterialTheme.typography.body2)
 
         Spacer(Modifier.height(16.dp))
@@ -131,12 +134,11 @@ fun UserEditPage(initialUser: User = User()) {
                             dateOfBirth = dateOfBirth,
                             isAdmin = isAdmin,
                             userId = userId,
-
                             )
                     }
                     if (result != null) {
                         message = result.fold(
-                            onSuccess = { "User updated successfully" },
+                            onSuccess = { "ui.dataClasses.user.User updated successfully" },
                             onFailure = { "Update failed: ${it.message}" }
                         )
                     }
@@ -154,7 +156,7 @@ fun UserEditPage(initialUser: User = User()) {
                     message = null
                     val result = deleteUser(userId)
                     message = result.fold(
-                        onSuccess = { "User deleted successfully" },
+                        onSuccess = { "ui.dataClasses.user.User deleted successfully" },
                         onFailure = { "Delete failed: ${it.message}" }
                     )
                 }
@@ -163,6 +165,12 @@ fun UserEditPage(initialUser: User = User()) {
             colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.error)
         ) {
             Text("Delete", color = MaterialTheme.colors.onError)
+        }
+        Button(
+            onClick = onBackClick,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Nazaj")
         }
 
     }

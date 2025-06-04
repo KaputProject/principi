@@ -9,11 +9,25 @@ import androidx.compose.ui.unit.dp
 import ui.Header
 import ui.pages.*
 import ui.Sidebar
+import ui.dataClasses.account.Account
+import ui.dataClasses.user.User
+import ui.pages.accountPages.AccountCreate
+import ui.pages.accountPages.Accounts
+import ui.pages.accountPages.ShowAccount
+import ui.pages.accountPages.AccountEdit
+import ui.pages.userPages.UserCreate
+import ui.pages.userPages.UserEditPage
+import ui.pages.userPages.UserMenuPage
+import ui.pages.userPages.Users
 
 @Composable
 fun App() {
     var currentPage by remember { mutableStateOf(1) }
     var userToEdit by remember { mutableStateOf<User?>(null) }
+    var selectedUser by remember { mutableStateOf<User?>(null) }
+    var selectedAccount by remember { mutableStateOf<Account?>(null) }
+    var accountToEdit by remember { mutableStateOf<Account?>(null) }
+    var currentUser by remember { mutableStateOf<User?>(null) }
 
     MaterialTheme {
         Column(Modifier.fillMaxSize().background(Color(0xFFF5F5F5))) {
@@ -27,23 +41,91 @@ fun App() {
                 Box(Modifier.fillMaxSize().background(Color.White).padding(8.dp)) {
                     when (currentPage) {
                         1 -> UserCreate()
-                        2 -> Users(onNavigate = { selectedUser ->
-                            userToEdit = selectedUser
-                            currentPage = 7  // page 7 je UserEditPage
+                        2 -> Users(onNavigate = { clickedUser ->
+                            selectedUser = clickedUser
+                            currentPage = 8
                         })
                         3 -> Scraper()
                         4 -> Generator()
-                        5 -> Accounts()
-                        6 -> AccountCreate()
-                        7 -> userToEdit?.let { user ->
-                            UserEditPage(initialUser = user)
-                        } ?: Text("No user selected")
-                        else -> Text("Page not found")
+                        6 -> selectedUser?.let {
+                            AccountCreate(
+                                user = it,
+                                onBackClick = { currentPage = 9 }
+                            )
+                        } ?: Text("Napaka: uporabnik ni izbran.")
+
+
+
+                        7 -> userToEdit?.let { UserEditPage(
+                            initialUser = it,
+                            onBackClick = { currentPage = 8 }
+                        ) } ?: Text("No user selected")
+                        8 -> {
+                            selectedUser?.let {
+                                UserMenuPage(
+                                    user = it,
+                                    onEditClick = { user ->
+                                        userToEdit = user
+                                        currentPage = 7
+                                    },
+                                    onAccountClick = {
+                                        currentPage = 9
+                                    },
+                                    onBackClick = { currentPage = 2 }
+                                )
+                            } ?: Text("Napaka: uporabnik ni izbran.")
+                        }
+                        9 -> selectedUser?.let { user ->
+                            Accounts(
+                                initialUser = user,
+                                onBackClick = { currentPage = 8 },
+                                onNavigate = { account ->
+                                    selectedAccount = account
+                                    currentPage = 10
+                                },
+                                onCreateClick = { userForCreate ->
+                                    selectedUser = userForCreate
+                                    currentPage = 6
+                                }
+                            )
+                        } ?: Text("Napaka: uporabnik ni izbran.")
+
+
+                        10 -> selectedAccount?.let {
+                            ShowAccount(
+                                account = it,
+                                onBackClick = { currentPage = 9 },
+                                onEditClick = { account ->
+                                    accountToEdit = account
+                                    currentPage = 11
+                                },
+                            )
+                        } ?: Text("Napaka: račun ni izbran.")
+                        11 -> accountToEdit?.let { account ->
+                            selectedUser?.let { user ->
+                                AccountEdit(
+                                    user = user,
+                                    initialAccount = account,
+                                    onBackClick = { currentPage = 10 },
+                                    onAccountUpdated = { updatedAccount ->
+                                        selectedAccount = updatedAccount
+                                        accountToEdit = updatedAccount
+                                    },
+                                    onAccountDeleted = {
+                                        selectedAccount = null
+                                        accountToEdit = null
+                                        currentPage = 9 // <- po brisanju nazaj na seznam računov
+                                    }
+                                )
+
+                            } ?: Text("Napaka: uporabnik ni izbran.")
+                        } ?: Text("Napaka: račun za urejanje ni izbran.")
                     }
                 }
             }
         }
     }
 }
+
 
 

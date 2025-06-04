@@ -1,4 +1,4 @@
-package ui.pages
+package ui.pages.userPages
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -112,7 +112,6 @@ fun UserCreate() {
                             val resultMessage = withContext(Dispatchers.IO) {
                                 createUser(username, password, name, surname, email, dateOfBirth)
                             }
-
                             message = resultMessage
                         }
                     },
