@@ -5,10 +5,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ui.dataClasses.account.Account
+
 
 @Composable
 fun ShowAccount(
@@ -16,6 +16,7 @@ fun ShowAccount(
     onBackClick: () -> Unit,
     onEditClick: (Account) -> Unit,
 ) {
+
     Column(modifier = Modifier.padding(16.dp)) {
         Text("Podrobnosti računa", style = MaterialTheme.typography.h5)
         Spacer(modifier = Modifier.height(16.dp))
@@ -34,15 +35,13 @@ fun ShowAccount(
             Text("Uredi")
         }
 
-
         Button(
             onClick = onBackClick,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
         ) {
             Text("Nazaj")
         }
     }
-
 }
 
 // Razširitev funkcije za bolj čitljivo uporabo lambda z argumentom

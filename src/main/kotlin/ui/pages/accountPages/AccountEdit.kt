@@ -1,5 +1,6 @@
 package ui.pages.accountPages
 
+import DropdownMenuCurrency
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -15,13 +16,16 @@ import ui.enums.Currency
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import ui.api.deleteAccount
 
 @Composable
 fun AccountEdit(
     user: User,
     initialAccount: Account,
     onBackClick: () -> Unit,
-    onAccountUpdated: (Account) -> Unit
+    onAccountUpdated: (Account) -> Unit,
+    onAccountDeleted: () -> Unit
+
 ) {
     var iban by remember { mutableStateOf(initialAccount.iban) }
     var currency by remember { mutableStateOf(initialAccount.currency) }
@@ -29,6 +33,7 @@ fun AccountEdit(
 
     var message by remember { mutableStateOf<String?>(null) }
     val coroutineScope = rememberCoroutineScope()
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.padding(16.dp)) {
         Text("Uredi račun", style = MaterialTheme.typography.h5)
@@ -91,7 +96,53 @@ fun AccountEdit(
         ) {
             Text("Shrani")
         }
+        Button(
+            onClick = { showDeleteDialog = true },
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.error)
+        ) {
+            Text("Izbriši račun", color = MaterialTheme.colors.onError)
+        }
+        if (showDeleteDialog) {
+            AlertDialog(
+                onDismissRequest = { showDeleteDialog = false },
+                title = { Text("Potrditev brisanja") },
+                text = { Text("Ste prepričani, da želite izbrisati ta račun?") },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            showDeleteDialog = false
+                            coroutineScope.launch {
+                                val result = user.id?.let {
+                                    deleteAccount(
+                                        accountId = initialAccount._id,
+                                        userId = it,
+                                    )
+                                }
 
+                                message = result?.fold(
+                                    onSuccess = { "Račun uspešno izbrisan." },
+                                    onFailure = { "Napaka pri brisanju: ${it.message}" }
+                                )
+
+                                // Po brisanju lahko samodejno vrneš nazaj
+                                if (result?.isSuccess == true) {
+                                    onAccountDeleted()
+                                }
+
+                            }
+                        }
+                    ) {
+                        Text("Da, izbriši")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showDeleteDialog = false }) {
+                        Text("Prekliči")
+                    }
+                }
+            )
+        }
         Button(
             onClick = onBackClick,
             modifier = Modifier.fillMaxWidth()
@@ -106,37 +157,4 @@ fun AccountEdit(
     }
 }
 
-@Composable
-fun DropdownMenuCurrency(
-    selected: String,
-    onSelect: (String) -> Unit
-) {
-    val currencies = Currency.entries.map { it.name }
-    var expanded by remember { mutableStateOf(false) }
 
-    Box {
-        OutlinedTextField(
-            value = selected,
-            onValueChange = {},
-            label = { Text("Valuta") },
-            readOnly = true,
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { expanded = true }
-        )
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
-            currencies.forEach { currency ->
-                DropdownMenuItem(onClick = {
-                    onSelect(currency)
-                    expanded = false
-                }) {
-                    Text(currency)
-                }
-            }
-        }
-    }
-}

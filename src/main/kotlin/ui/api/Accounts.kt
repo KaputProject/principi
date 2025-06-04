@@ -78,12 +78,16 @@ suspend fun createAccount(
     }
 }
 
-
-suspend fun deleteAccount(accountId: String): Result<String> {
+suspend fun deleteAccount(accountId: String, userId: String): Result<String> {
     return try {
         val response = client.delete("$url/accounts/$accountId") {
-            header("Authorization", "Bearer ${AuthState.token}")
+            AuthState.token?.let { token ->
+                headers {
+                    append("Authorization", "Bearer $token")
+                }
+            }
             contentType(ContentType.Application.Json)
+            setBody(mapOf("userId" to userId)) // <-- telo zahteve
         }
 
         if (response.status.isSuccess()) {

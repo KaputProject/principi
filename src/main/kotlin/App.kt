@@ -99,7 +99,6 @@ fun App() {
                                     accountToEdit = account
                                     currentPage = 11
                                 },
-
                             )
                         } ?: Text("Napaka: račun ni izbran.")
                         11 -> accountToEdit?.let { account ->
@@ -111,8 +110,14 @@ fun App() {
                                     onAccountUpdated = { updatedAccount ->
                                         selectedAccount = updatedAccount
                                         accountToEdit = updatedAccount
+                                    },
+                                    onAccountDeleted = {
+                                        selectedAccount = null
+                                        accountToEdit = null
+                                        currentPage = 9 // <- po brisanju nazaj na seznam računov
                                     }
                                 )
+
                             } ?: Text("Napaka: uporabnik ni izbran.")
                         } ?: Text("Napaka: račun za urejanje ni izbran.")
                     }
