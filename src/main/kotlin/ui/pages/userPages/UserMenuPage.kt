@@ -12,6 +12,7 @@ fun UserMenuPage(
     user: User,
     onEditClick: (User) -> Unit,
     onAccountClick: (User) -> Unit,
+    onLocationClick: (User) -> Unit,
     onBackClick: () -> Unit
 ) {
     println("UserMenuPage opened with user: ${user.name}, ${user.email}")
@@ -27,6 +28,9 @@ fun UserMenuPage(
         }
         Button(onClick = { onAccountClick(user) }) {
             Text("See Accounts")
+        }
+        Button(onClick = { onLocationClick(user) }) {
+            Text("See Locations")
         }
         Spacer(modifier = Modifier.height(8.dp))
         Button(onClick = onBackClick) {

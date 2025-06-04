@@ -2,8 +2,6 @@ package ui.dataClasses.user
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import ui.dataClasses.account.Account
-import ui.dataClasses.Location
 
 //@Serializable
 //data class ui.dataClasses.user.User(
