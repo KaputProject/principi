@@ -1,4 +1,4 @@
-package ui.dataClasses
+package ui.dataClasses.statemant
 
 import kotlinx.serialization.Serializable
 

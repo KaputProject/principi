@@ -1,4 +1,4 @@
-package ui.dataClasses
+package ui.dataClasses.transaction
 
 
 import kotlinx.serialization.Serializable

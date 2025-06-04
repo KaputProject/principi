@@ -26,5 +26,5 @@ data class User(
     val dateOfBirth: String? = null,
     val accounts: List<String> = emptyList(),  // <-- sprememba tukaj
     val isAdmin: Boolean = false,
-    val locations: List<Location> = emptyList()
+    val locations: List<String> = emptyList()
 )
