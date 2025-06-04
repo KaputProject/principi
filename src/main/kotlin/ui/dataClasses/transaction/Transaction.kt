@@ -1,18 +1,23 @@
 package ui.dataClasses.transaction
 
-
+import ui.dataClasses.locations.Location
+import ui.dataClasses.account.AccountInfo
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class Transaction(
-    val id: String? = null,
-    val user: String? = null,
-    val account: String? = null,
-    val location: String? = null,
-    val datetime: String? = null,
-    val description: String? = null,
-    val change: Double = 0.0,
-    val outgoing: Boolean = true,
-    val reference: Long? = null
+    val _id: String,
+    val user: String,
+    val account: AccountInfo,
+    val location: Location?,
+    val datetime: String,
+    val description: String,
+    val change: Double,
+    val outgoing: Boolean,
+    val reference: String? = null
 )
+
+
+
+
 
