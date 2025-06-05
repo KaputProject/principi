@@ -8,11 +8,18 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
 import ui.api.getTransactions
 import ui.components.TransactionCard
 import ui.dataClasses.transaction.Transaction
 import ui.dataClasses.user.User
+import ui.api.getStatements
+import ui.components.StatementCard
+import ui.dataClasses.statemant.Statement
+import androidx.compose.foundation.VerticalScrollbar
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.rememberScrollbarAdapter
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.ui.Alignment
 
 @Composable
 fun UserMenuPage(
@@ -26,13 +33,15 @@ fun UserMenuPage(
 
     val coroutineScope = rememberCoroutineScope()
     var transactions by remember { mutableStateOf<List<Transaction>>(emptyList()) }
+    var statements by remember { mutableStateOf<List<Statement>>(emptyList()) }
 
-    // Naloži transakcije za uporabnika
+    // Naloži transakcije in izpiske za uporabnika
     LaunchedEffect(user.id) {
         try {
             transactions = getTransactions(userId = user.id ?: "")
+            statements = getStatements(userId = user.id ?: "")
         } catch (e: Exception) {
-            println("Napaka pri pridobivanju transakcij: ${e.message}")
+            println("Napaka pri pridobivanju podatkov: ${e.message}")
         }
     }
 
@@ -62,8 +71,12 @@ fun UserMenuPage(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Spodnji del: levi in desni del
+        // Levi in desni stolpec
         Row(modifier = Modifier.fillMaxSize()) {
+
+            // Levi: Statements
+            val statementListState = rememberLazyListState()
+
             Box(
                 modifier = Modifier
                     .weight(1f)
@@ -71,8 +84,33 @@ fun UserMenuPage(
                     .padding(end = 8.dp)
                     .background(MaterialTheme.colors.surface)
             ) {
-                Text("Levi del", modifier = Modifier.padding(8.dp))
+                if (statements.isEmpty()) {
+                    Text("Ni izpiskov.", modifier = Modifier.padding(8.dp))
+                } else {
+                    Box(Modifier.fillMaxSize()) {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize().padding(end = 12.dp),
+                            state = statementListState
+                        ) {
+                            items(statements) { statement ->
+                                StatementCard(
+                                    statement = statement,
+                                    onClick = { /* Po potrebi */ }
+                                )
+                            }
+                        }
+
+                        VerticalScrollbar(
+                            adapter = rememberScrollbarAdapter(statementListState),
+                            modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight()
+                        )
+                    }
+                }
             }
+
+
+            // Desni: Transactions
+            val transactionListState = rememberLazyListState()
 
             Box(
                 modifier = Modifier
@@ -84,13 +122,23 @@ fun UserMenuPage(
                 if (transactions.isEmpty()) {
                     Text("Ni transakcij.", modifier = Modifier.padding(8.dp))
                 } else {
-                    LazyColumn(modifier = Modifier.padding(8.dp)) {
-                        items(transactions) { transaction ->
-                            TransactionCard(
-                                transaction = transaction,
-                                onClick = { /* Dodaj po potrebi */ }
-                            )
+                    Box(Modifier.fillMaxSize()) {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize().padding(end = 12.dp),
+                            state = transactionListState
+                        ) {
+                            items(transactions) { transaction ->
+                                TransactionCard(
+                                    transaction = transaction,
+                                    onClick = { /* Po potrebi */ }
+                                )
+                            }
                         }
+
+                        VerticalScrollbar(
+                            adapter = rememberScrollbarAdapter(transactionListState),
+                            modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight()
+                        )
                     }
                 }
             }
