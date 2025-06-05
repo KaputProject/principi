@@ -1,14 +1,12 @@
 package ui.api
 
-import ui.dataClasses.account.CreateAccountRequest
+import ui.dataClasses.account.AccountCreateRequest
 import UpdateAccountRequest
 import io.github.cdimascio.dotenv.dotenv
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.decodeFromJsonElement
-import kotlinx.serialization.json.jsonObject
 import ui.AuthState
 import ui.dataClasses.account.Account
 import ui.dataClasses.account.AccountsResponse
@@ -49,7 +47,7 @@ suspend fun createAccount(
     balance: Double
 ): Result<String> {
     return try {
-        val body = CreateAccountRequest(
+        val body = AccountCreateRequest(
             userId = userId,
             iban = iban,
             currency = currency,

@@ -1,6 +1,6 @@
 package ui.api
 
-import ui.dataClasses.user.UpdateUserRequest
+import ui.dataClasses.user.UserUpdateRequest
 import ui.dataClasses.user.User
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -106,7 +106,7 @@ suspend fun updateUser(
     isAdmin: Boolean
 ): Result<String> {
     return try {
-        val requestBody = UpdateUserRequest(
+        val requestBody = UserUpdateRequest(
             userId = userId,
             username = username,
             password = password.takeIf { it.isNotEmpty() },

@@ -32,10 +32,10 @@ fun UserCreate() {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var dateOfBirth by remember { mutableStateOf("2025.05.27") }
-    var surname by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
     var message by remember { mutableStateOf("") }
+    var surname by remember { mutableStateOf("") }
 
     val coroutineScope = rememberCoroutineScope()
 

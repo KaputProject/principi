@@ -1,21 +1,15 @@
 package ui.api
 
-import ui.dataClasses.account.CreateAccountRequest
-import UpdateAccountRequest
 import io.github.cdimascio.dotenv.dotenv
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.decodeFromJsonElement
-import kotlinx.serialization.json.jsonObject
 import ui.AuthState
-import ui.dataClasses.account.Account
-import ui.dataClasses.account.AccountsResponse
-import ui.dataClasses.locations.CreateLocationRequest
+import ui.dataClasses.locations.LocationCreateRequest
 import ui.dataClasses.locations.Location
 import ui.dataClasses.locations.LocationResponse
-import ui.dataClasses.locations.UpdateLocationRequest
+import ui.dataClasses.locations.LocationUpdateRequest
 import ui.pages.userPages.client
 
 private val dotenv = dotenv()
@@ -67,7 +61,7 @@ suspend fun updateLocation(
             }
             contentType(ContentType.Application.Json)
             setBody(
-                UpdateLocationRequest(
+                LocationUpdateRequest(
                     userId = userId,
                     name = name,
                     identifier = identifier,
@@ -97,7 +91,7 @@ suspend fun createLocation(
     lng: Double?
 ): Result<String> {
     return try {
-        val body = CreateLocationRequest(
+        val body = LocationCreateRequest(
             userId = userId,
             name = name,
             identifier = identifier,

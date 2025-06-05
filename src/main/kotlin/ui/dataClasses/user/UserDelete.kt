@@ -1,6 +1,6 @@
 package ui.dataClasses.user
 
 @kotlinx.serialization.Serializable
-data class DeleteUser(
+data class UserDelete(
     val userId: String,
 )
