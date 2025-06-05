@@ -22,10 +22,7 @@ fun StatementCard(
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text("Izpisek za mesec: ${statement.month}/${statement.year}")
-            Text("IBAN: ${statement.account ?: "neznan"}")
-            Text("Obdobje: ${statement.startDate?.take(10)} - ${statement.endDate?.take(10)}")
-            Text("Začetno stanje: ${statement.startBalance}")
-            Text("Končno stanje: ${statement.endBalance}")
+            Text("IBAN: ${statement.account?.iban ?: "neznan"}")
         }
     }
 }

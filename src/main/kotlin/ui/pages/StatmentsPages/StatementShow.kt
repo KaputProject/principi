@@ -10,7 +10,8 @@ import ui.dataClasses.statemant.Statement
 @Composable
 fun StatementShow(
     statement: Statement,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onEditClick: (Statement) -> Unit  // Dodan callback za urejanje
 ) {
     Column(modifier = Modifier
         .fillMaxSize()
@@ -43,8 +44,16 @@ fun StatementShow(
         }
 
         Spacer(modifier = Modifier.height(24.dp))
+
         Button(onClick = onBackClick) {
             Text("Nazaj")
         }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Button(onClick = { onEditClick(statement) }) {
+            Text("Uredi izpisek")
+        }
     }
 }
+

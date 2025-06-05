@@ -6,8 +6,6 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.serialization.json.Json
 import ui.AuthState
-import ui.dataClasses.account.Account
-import ui.dataClasses.account.AccountsResponse
 import ui.dataClasses.transaction.Transaction
 import ui.dataClasses.transaction.TransactionResponse
 import ui.dataClasses.transaction.TransactionUpdateRequest

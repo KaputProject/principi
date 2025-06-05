@@ -24,8 +24,12 @@ fun Statements(
 ) {
     val listState = rememberLazyListState()
 
-    Box(modifier = modifier.padding(end = 8.dp).background(MaterialTheme.colors.surface)) {
-        if (statements.isEmpty()) {
+    Box(
+        modifier = modifier
+            .background(MaterialTheme.colors.surface)
+            .padding(end = 8.dp)
+    ) {
+    if (statements.isEmpty()) {
             Text("Ni izpiskov.", modifier = Modifier.padding(8.dp))
         } else {
             Box(Modifier.fillMaxSize()) {

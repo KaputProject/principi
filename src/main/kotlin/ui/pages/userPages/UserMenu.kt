@@ -11,6 +11,7 @@ import ui.api.getStatements
 import ui.dataClasses.transaction.Transaction
 import ui.dataClasses.user.User
 import ui.dataClasses.statemant.Statement
+import ui.pages.statementPages.StatementEdit
 import ui.pages.statementPages.StatementShow
 import ui.pages.transactionPages.TransactionEdit
 import ui.pages.transactionPages.TransactionShow
@@ -26,6 +27,7 @@ fun UserMenu(
     var transactions by remember { mutableStateOf<List<Transaction>>(emptyList()) }
     var statements by remember { mutableStateOf<List<Statement>>(emptyList()) }
     var selectedStatement by remember { mutableStateOf<Statement?>(null) }
+    var editingStatement by remember { mutableStateOf<Statement?>(null) }  // dodano za urejanje izpiska
     var selectedTransaction by remember { mutableStateOf<Transaction?>(null) }
     var editingTransaction by remember { mutableStateOf<Transaction?>(null) }
 
@@ -57,16 +59,31 @@ fun UserMenu(
         return
     }
 
-    // 2. Prikaz izbranega izpiska
-    selectedStatement?.let { statement ->
-        StatementShow(
-            statement = statement,
-            onBackClick = { selectedStatement = null }
+    // 2. Prikaz urejevalnika izpiska
+    editingStatement?.let { statement ->
+        StatementEdit(
+            initialStatement = statement,
+            onBackClick = { editingStatement = null },
+            onStatementUpdated = { updated ->
+                statements = statements.map { if (it.id == updated.id) updated else it }
+                editingStatement = null
+                selectedStatement = null
+            }
         )
         return
     }
 
-    // 3. Prikaz izbrane transakcije
+    // 3. Prikaz izbranega izpiska
+    selectedStatement?.let { statement ->
+        StatementShow(
+            statement = statement,
+            onBackClick = { selectedStatement = null },
+            onEditClick = { editingStatement = it }  // Dodano za urejanje izpiska
+        )
+        return
+    }
+
+    // 4. Prikaz izbrane transakcije
     selectedTransaction?.let { transaction ->
         TransactionShow(
             transaction = transaction,
@@ -76,7 +93,7 @@ fun UserMenu(
         return
     }
 
-    // 4. Glavni meni uporabnika
+    // 5. Glavni meni uporabnika
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Text(">>> User Menu Page <<<", style = MaterialTheme.typography.h5)
         Spacer(modifier = Modifier.height(16.dp))
@@ -115,8 +132,8 @@ fun UserMenu(
                     selectedTransaction = it
                 },
                 modifier = Modifier.weight(1f).fillMaxHeight(),
-
             )
         }
     }
 }
+
