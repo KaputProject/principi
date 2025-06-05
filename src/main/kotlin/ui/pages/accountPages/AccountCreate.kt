@@ -74,8 +74,8 @@ fun AccountCreate(user: User? = null, onBackClick: (() -> Unit)? = null) {
             Button(
                 onClick = it,
                 modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = colors.secondary
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = colors.secondary,
                 ),
             ) {
                 Text("Nazaj")

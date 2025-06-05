@@ -14,4 +14,5 @@ data class TransactionCreate(
     val change: Double,
     val outgoing: Boolean,
     val reference: String? = null
+
 )

@@ -190,7 +190,6 @@ fun TransactionCreate(  // Naj bo ime z veliko začetnico skladno z običaji
             modifier = Modifier.weight(1f),
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = colors.secondary,
-                contentColor = colors.onSecondary
             ),
         ) {
             Text("Nazaj")

@@ -48,10 +48,11 @@ suspend fun getTransactions(userId: String): List<Transaction> {
         emptyList()
     }
 }
+
 suspend fun updateTransaction(
     userId: String,
-    transactionId : String,
-    description : String,
+    transactionId: String,
+    description: String,
     change: Double,
     datetime: String,
     reference: String,
@@ -67,7 +68,7 @@ suspend fun updateTransaction(
             setBody(
                 TransactionUpdateRequest(
                     userId = userId,
-                    description =  description,
+                    description = description,
                     change = change,
                     datetime = datetime,
                     reference = reference
@@ -84,6 +85,33 @@ suspend fun updateTransaction(
         Result.failure(e)
     }
 }
+
+suspend fun showTransaction(
+    userId: String,
+    transactionId: String,
+): Result<TransactionUser> {
+    return try {
+        val response = client.get("$url/transactions/$transactionId") {
+            AuthState.token?.let { token ->
+                headers {
+                    append("Authorization", "Bearer $token")
+                }
+            }
+            contentType(ContentType.Application.Json)
+            setBody(mapOf("userId" to userId)) // <-- telo zahteve
+        }
+
+        if (response.status.isSuccess()) {
+            val transactionResponse = response.body<TransactionsResponseUser>()
+            Result.success(transactionResponse.transaction)
+        } else {
+            Result.failure(Exception("Server error: ${response.bodyAsText()}"))
+        }
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+}
+
 suspend fun createTransaction(request: TransactionCreate): TransactionResponse {
     val response = client.post("$url/transactions") {
         AuthState.token?.let { token ->

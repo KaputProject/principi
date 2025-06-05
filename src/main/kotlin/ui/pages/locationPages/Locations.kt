@@ -1,11 +1,13 @@
-package ui.pages.locationPages
-
+import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
@@ -32,22 +34,44 @@ fun Locations(
         }
     }
 
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text("Lokacije za ${initialUser.name ?: ""} ${initialUser.surname ?: ""}", style = MaterialTheme.typography.h5)
+    // Scroll state za LazyColumn
+    val listState = rememberLazyListState()
+
+    Column(
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxSize()
+    ) {
+        Text(
+            "Lokacije za ${initialUser.name ?: ""} ${initialUser.surname ?: ""}",
+            style = MaterialTheme.typography.h5
+        )
         Spacer(modifier = Modifier.height(16.dp))
 
         if (locations.isEmpty()) {
             Text("Ni lokacij za tega uporabnika.")
         } else {
-            LazyColumn {
-                items(locations) { location ->
-                    LocationCard(
-                        location = location,
-                        onClick = {
-                            onNavigate(location)
-                        }
-                    )
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+            ) {
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    items(locations) { location ->
+                        LocationCard(
+                            location = location,
+                            onClick = { onNavigate(location) }
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
                 }
+                VerticalScrollbar(
+                    adapter = rememberScrollbarAdapter(listState),
+                    modifier = Modifier.align(Alignment.CenterEnd)
+                )
             }
         }
 
@@ -65,8 +89,8 @@ fun Locations(
         Button(
             onClick = onBackClick,
             modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = colors.secondary
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = colors.secondary,
             ),
         ) {
             Text("Nazaj")

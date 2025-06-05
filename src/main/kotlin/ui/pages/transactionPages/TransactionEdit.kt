@@ -108,7 +108,7 @@ fun TransactionEdit(
                         change = change.toDoubleOrNull() ?: 0.0,
                         datetime = datetime,
                         reference = reference,
-                        userId = initialTransaction.user,
+                        userId = initialTransaction.user.toString(),
                     )
 
                     result.onSuccess {
@@ -188,7 +188,6 @@ fun TransactionEdit(
             modifier = Modifier.weight(1f),
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = colors.secondary,
-                contentColor = colors.onSecondary
             ),
         ) {
             Text("Nazaj")

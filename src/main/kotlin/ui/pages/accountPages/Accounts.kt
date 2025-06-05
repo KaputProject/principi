@@ -1,8 +1,9 @@
-package ui.pages.accountPages
-
+import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.runtime.*
@@ -40,6 +41,9 @@ fun Accounts(
             }
         }
     }
+
+    // Scroll state za LazyColumn
+    val listState = rememberLazyListState()
 
     Column(
         modifier = Modifier
@@ -79,16 +83,23 @@ fun Accounts(
             }
 
             else -> {
-                LazyColumn(
-                    modifier = Modifier.weight(1f)
-                ) {
-                    items(accounts) { account ->
-                        AccountCard(
-                            account = account,
-                            onClick = { onNavigate(account) }
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
+                Box(modifier = Modifier.weight(1f)) {
+                    LazyColumn(
+                        state = listState,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        items(accounts) { account ->
+                            AccountCard(
+                                account = account,
+                                onClick = { onNavigate(account) }
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                        }
                     }
+                    VerticalScrollbar(
+                        adapter = rememberScrollbarAdapter(listState),
+                        modifier = Modifier.align(Alignment.CenterEnd)
+                    )
                 }
             }
         }
@@ -107,8 +118,8 @@ fun Accounts(
         OutlinedButton(
             onClick = onBackClick,
             modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = colors.secondary
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = colors.secondary,
             ),
         ) {
             Text("Nazaj")

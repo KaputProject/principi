@@ -61,7 +61,7 @@ fun TransactionShow(
                 onClick = onBackClick,
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
-                    contentColor = colors.secondary
+                    backgroundColor = colors.secondary,
                 ),
             ) {
                 Text("Nazaj")

@@ -123,30 +123,25 @@ fun UserMenu(
             modifier = Modifier.fillMaxWidth(),
             backgroundColor = MaterialTheme.colors.surface
         ) {
-            Column(modifier = Modifier.padding(20.dp)) {
-                Text(
-                    text = "Ime",
-                    style = MaterialTheme.typography.h6,
-                    color = MaterialTheme.colors.primary
-                )
-                Text(
-                    text = user.name ?: "Ni podatka",
-                    style = MaterialTheme.typography.body1.copy(fontSize = MaterialTheme.typography.body1.fontSize.times(1.2f)),
-                    color = MaterialTheme.colors.onSurface
-                )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Text(
-                    text = "Email",
-                    style = MaterialTheme.typography.h6,
-                    color = MaterialTheme.colors.primary
-                )
-                Text(
-                    text = user.email ?: "Ni podatka",
-                    style = MaterialTheme.typography.body1.copy(fontSize = MaterialTheme.typography.body1.fontSize.times(1.2f)),
-                    color = MaterialTheme.colors.onSurface
-                )
+            Row(
+                modifier = Modifier
+                    .padding(20.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    InfoRow("Ime", user.name)
+                    InfoRow("Priimek", user.surname)
+                    InfoRow("Uporabniško ime", user.username)
+                    InfoRow("Email", user.email)
+                    InfoRow("Datum rojstva", user.dateOfBirth)
+                }
+                Column(modifier = Modifier.weight(1f)) {
+                    InfoRow("Identifikator", user.identifier)
+                    InfoRow("Administrator", if (user.isAdmin) "Da" else "Ne")
+                    InfoRow("Število računov", user.accounts.size.toString())
+                    InfoRow("Število lokacij", user.locations.size.toString())
+                }
             }
         }
 
@@ -180,7 +175,6 @@ fun UserMenu(
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = colors.secondary,
-                    contentColor = colors.onSecondary
                 ),
             ) {
                 Text("Nazaj")
@@ -205,5 +199,18 @@ fun UserMenu(
     }
 }
 
-
+@Composable
+fun InfoRow(label: String, value: String?) {
+    Text(
+        text = label,
+        style = MaterialTheme.typography.h6,
+        color = MaterialTheme.colors.primary
+    )
+    Text(
+        text = value ?: "Ni podatka",
+        style = MaterialTheme.typography.body1.copy(fontSize = MaterialTheme.typography.body1.fontSize.times(1.2f)),
+        color = MaterialTheme.colors.onSurface
+    )
+    Spacer(modifier = Modifier.height(12.dp))
+}
 
