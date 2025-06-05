@@ -10,6 +10,7 @@ import ui.dataClasses.account.Account
 import ui.dataClasses.account.AccountsResponse
 import ui.dataClasses.transaction.Transaction
 import ui.dataClasses.transaction.TransactionResponse
+import ui.dataClasses.transaction.TransactionUpdateRequest
 import ui.pages.userPages.client
 
 private val dotenv = dotenv()
@@ -45,5 +46,63 @@ suspend fun getTransactions(userId: String): List<Transaction> {
     } catch (e: Exception) {
         println("Exception while fetching transactions: ${e.message}")
         emptyList()
+    }
+}
+suspend fun updateTransaction(
+    userId: String,
+    transactionId : String,
+    description : String,
+    change: Double,
+    datetime: String,
+    reference: String,
+): Result<String> {
+    return try {
+        val response = client.put("$url/transactions/$transactionId") {
+            AuthState.token?.let { token ->
+                headers {
+                    append("Authorization", "Bearer $token")
+                }
+            }
+            contentType(ContentType.Application.Json)
+            setBody(
+                TransactionUpdateRequest(
+                    userId = userId,
+                    description =  description,
+                    change = change,
+                    datetime = datetime,
+                    reference = reference
+                )
+            )
+        }
+
+        if (response.status.isSuccess()) {
+            Result.success("Account updated successfully.")
+        } else {
+            Result.failure(Exception("Server error: ${response.bodyAsText()}"))
+        }
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+}
+
+suspend fun deleteTransaction(userId: String, transactionId: String): Result<String> {
+    return try {
+        val response = client.delete("$url/transactions/$transactionId") {
+            AuthState.token?.let { token ->
+                headers {
+                    append("Authorization", "Bearer $token")
+                }
+            }
+            contentType(ContentType.Application.Json)
+            setBody(mapOf("userId" to userId)) // <-- telo zahteve
+        }
+
+        if (response.status.isSuccess()) {
+            Result.success("Transaction successfully deleted.")
+        } else {
+            Result.failure(Exception("Server error: ${response.bodyAsText()}"))
+        }
+    } catch (e: Exception) {
+        Result.failure(e)
     }
 }

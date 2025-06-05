@@ -28,12 +28,12 @@ suspend fun getStatements(userId: String): List<Statement> {
         if (response.status.isSuccess()) {
             val responseBody = response.bodyAsText()
 
-            println("API response: $responseBody")
+//            println("API response: $responseBody")
 
             val statementsResponse = json.decodeFromString<StatementResponse>(responseBody)
-
-            // Debug izpis vseh izpiskov kot seznam
-            println("Statements fetched: ${statementsResponse.statements}")
+//
+//            // Debug izpis vseh izpiskov kot seznam
+//            println("Statements fetched: ${statementsResponse.statements}")
 
             statementsResponse.statements
         } else {

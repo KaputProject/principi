@@ -10,12 +10,14 @@ import ui.dataClasses.transaction.Transaction
 @Composable
 fun TransactionShow(
     transaction: Transaction,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onEditClick: (Transaction) -> Unit // Dodano
 ) {
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp)) {
-
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
         Text("Transaction Details", style = MaterialTheme.typography.h5)
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -25,7 +27,7 @@ fun TransactionShow(
         Text("User ID: ${transaction.user}")
         Spacer(modifier = Modifier.height(8.dp))
 
-        Text("Account: ${transaction.account.iban} - ${transaction.account.iban}")
+        Text("Account: ${transaction.account.iban}")
         Spacer(modifier = Modifier.height(8.dp))
 
         Text("Location: ${transaction.location?.name ?: "N/A"}")
@@ -43,8 +45,18 @@ fun TransactionShow(
         Text("Reference: ${transaction.reference ?: "N/A"}")
         Spacer(modifier = Modifier.height(24.dp))
 
-        Button(onClick = onBackClick, modifier = Modifier.fillMaxWidth()) {
-            Text("Back")
+        Button(
+            onClick = { onEditClick(transaction) },
+            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+        ) {
+            Text("Uredi")
+        }
+
+        Button(
+            onClick = onBackClick,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Nazaj")
         }
     }
 }

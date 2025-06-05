@@ -19,8 +19,8 @@ fun StatementShow(
         Text(">>> Izpisek št. ${statement.id ?: "-"} <<<", style = MaterialTheme.typography.h5)
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text("Uporabnik ID: ${statement.user ?: "neznano"}")
-        Text("Račun ID: ${statement.account ?: "neznano"}")
+        Text("Uporabnik: ${statement.user?.name ?: "neznano"}")
+        Text("Račun ID: ${statement.account?.iban ?: "neznano"}")
         Spacer(modifier = Modifier.height(8.dp))
 
         Text("Obdobje: ${statement.startDate?.take(10)} do ${statement.endDate?.take(10)}")
@@ -37,8 +37,8 @@ fun StatementShow(
         if (statement.transactions.isEmpty()) {
             Text("- Ni transakcij.")
         } else {
-            statement.transactions.forEach { id ->
-                Text("- $id")
+            statement.transactions.forEach { name ->
+                Text("- $name")
             }
         }
 

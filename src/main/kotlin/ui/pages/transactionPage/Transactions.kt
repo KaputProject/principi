@@ -16,11 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ui.components.cards.TransactionCard
 import ui.dataClasses.transaction.Transaction
+import ui.dataClasses.user.User
 
 @Composable
 fun Transactions(
     transactions: List<Transaction>,
-    onTransactionSelected: (Transaction) -> Unit,
+    onTransactionSelected: (Transaction ) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
