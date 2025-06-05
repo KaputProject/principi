@@ -1,26 +1,32 @@
 package ui.pages.userPages
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.*
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.shape.RoundedCornerShape
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.*
-import androidx.compose.material.OutlinedTextField
 import ui.api.createUser
 
 val client = HttpClient(CIO) {
-    install(ContentNegotiation) { json() }
+    install(ContentNegotiation) {
+        json(
+            kotlinx.serialization.json.Json {
+                ignoreUnknownKeys = true
+            }
+        )
+    }
     install(Logging) {
         logger = Logger.DEFAULT
         level = LogLevel.ALL
@@ -31,25 +37,32 @@ val client = HttpClient(CIO) {
 fun UserCreate() {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
-    var dateOfBirth by remember { mutableStateOf("2025.05.27") }
-    var surname by remember { mutableStateOf("") }
+    var dateOfBirth by remember { mutableStateOf("2025-05-27") }
     var password by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
+    var surname by remember { mutableStateOf("") }
     var message by remember { mutableStateOf("") }
 
     val coroutineScope = rememberCoroutineScope()
 
     Box(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
         Card(
             shape = RoundedCornerShape(16.dp),
             elevation = 8.dp,
-            modifier = Modifier.fillMaxWidth().padding(16.dp).width(400.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .widthIn(max = 400.dp)
         ) {
             Column(
-                modifier = Modifier.padding(24.dp).fillMaxWidth(),
+                modifier = Modifier
+                    .padding(24.dp)
+                    .fillMaxWidth(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -59,7 +72,15 @@ fun UserCreate() {
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text("Name") },
+                    label = { Text("Ime") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(Modifier.height(8.dp))
+
+                OutlinedTextField(
+                    value = surname,
+                    onValueChange = { surname = it },
+                    label = { Text("Priimek") },
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(Modifier.height(8.dp))
@@ -76,24 +97,7 @@ fun UserCreate() {
                 OutlinedTextField(
                     value = dateOfBirth,
                     onValueChange = { dateOfBirth = it },
-                    label = { Text("Date of Birth (yyyy-MM-dd)") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(Modifier.height(8.dp))
-
-                OutlinedTextField(
-                    value = surname,
-                    onValueChange = { surname = it },
-                    label = { Text("Surname") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(Modifier.height(8.dp))
-
-                OutlinedTextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = { Text("Password") },
-                    visualTransformation = PasswordVisualTransformation(),
+                    label = { Text("Datum rojstva (yyyy-MM-dd)") },
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(Modifier.height(8.dp))
@@ -101,10 +105,19 @@ fun UserCreate() {
                 OutlinedTextField(
                     value = username,
                     onValueChange = { username = it },
-                    label = { Text("Username") },
+                    label = { Text("Uporabniško ime") },
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(Modifier.height(8.dp))
+
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = { Text("Geslo") },
+                    visualTransformation = PasswordVisualTransformation(),
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(Modifier.height(16.dp))
 
                 Button(
                     onClick = {
@@ -115,19 +128,28 @@ fun UserCreate() {
                             message = resultMessage
                         }
                     },
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFB2DFDB)),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = MaterialTheme.colors.primary,
+                        contentColor = MaterialTheme.colors.onPrimary
+                    ),
                     shape = RoundedCornerShape(16.dp),
                     elevation = ButtonDefaults.elevation(6.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Shrani uporabnika", color = Color(0xFF004D40))
+                    Text("Shrani uporabnika")
                 }
+
 
                 if (message.isNotEmpty()) {
                     Spacer(Modifier.height(16.dp))
-                    Text(message, color = if (message.startsWith("Napaka")) Color.Red else Color.Green)
+                    Text(
+                        message,
+                        color = if (message.startsWith("Napaka", ignoreCase = true)) Color.Red else Color.Green
+                    )
                 }
             }
         }
     }
+
 }
+

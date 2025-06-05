@@ -1,9 +1,8 @@
 package ui.pages.accountPages
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -37,7 +36,10 @@ fun ShowAccount(
 
         Button(
             onClick = onBackClick,
-            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+            colors = ButtonDefaults.outlinedButtonColors(
+                contentColor = colors.secondary
+            ),
         ) {
             Text("Nazaj")
         }

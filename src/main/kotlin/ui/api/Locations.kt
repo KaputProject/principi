@@ -1,24 +1,24 @@
 package ui.api
 
-import ui.dataClasses.account.AccountCreateRequest
-import UpdateAccountRequest
 import io.github.cdimascio.dotenv.dotenv
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.serialization.json.Json
 import ui.AuthState
-import ui.dataClasses.account.Account
-import ui.dataClasses.account.AccountsResponse
+import ui.dataClasses.locations.LocationCreateRequest
+import ui.dataClasses.locations.Location
+import ui.dataClasses.locations.LocationResponse
+import ui.dataClasses.locations.LocationUpdateRequest
 import ui.pages.userPages.client
 
 private val dotenv = dotenv()
 private val url = dotenv["API_URL"] ?: "http://localhost:5000"
 private val json = Json { ignoreUnknownKeys = true }
 
-suspend fun getAccounts(userId: String): List<Account> {
+suspend fun getLocations(userId: String): List<Location> {
     return try {
-        val response: HttpResponse = client.get("$url/accounts") {
+        val response: HttpResponse = client.get("$url/locations") {
             AuthState.token?.let { token ->
                 headers {
                     append("Authorization", "Bearer $token")
@@ -29,8 +29,8 @@ suspend fun getAccounts(userId: String): List<Account> {
         }
         if (response.status.isSuccess()) {
             val responseBody = response.bodyAsText()
-            val accountsResponse = json.decodeFromString<AccountsResponse>(responseBody)
-            accountsResponse.accounts
+            val locationResponse = json.decodeFromString<LocationResponse>(responseBody)
+            locationResponse.locations
         } else {
             emptyList()
         }
@@ -40,23 +40,70 @@ suspend fun getAccounts(userId: String): List<Account> {
 }
 
 
-suspend fun createAccount(
+
+
+suspend fun updateLocation(
     userId: String,
-    iban: String,
-    currency: String,
-    balance: Double
+    locationId: String,
+    name: String,
+    identifier: String,
+    description: String,
+    address: String,
+    lat: Double?,
+    lng: Double?
 ): Result<String> {
     return try {
-        val body = AccountCreateRequest(
+        val response = client.put("$url/locations/$locationId") {
+            AuthState.token?.let { token ->
+                headers {
+                    append("Authorization", "Bearer $token")
+                }
+            }
+            contentType(ContentType.Application.Json)
+            setBody(
+                LocationUpdateRequest(
+                    userId = userId,
+                    name = name,
+                    identifier = identifier,
+                    description = description,
+                    address = address,
+                    lat = lat,
+                    lng = lng
+                )
+            )
+        }
+        if (response.status.isSuccess()) {
+            Result.success("Location updated successfully.")
+        } else {
+            Result.failure(Exception("Server error: ${response.bodyAsText()}"))
+        }
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+}
+suspend fun createLocation(
+    userId: String,
+    name: String,
+    identifier: String,
+    description: String,
+    address: String,
+    lat: Double?,
+    lng: Double?
+): Result<String> {
+    return try {
+        val body = LocationCreateRequest(
             userId = userId,
-            iban = iban,
-            currency = currency,
-            balance = balance
+            name = name,
+            identifier = identifier,
+            description = description,
+            address = address,
+            lat = lat,
+            lng = lng
         )
 
-        println(">>> Sending account creation request with body: $body")
+        println(">>> Sending location creation request with body: $body")
 
-        val response: HttpResponse = client.post("$url/accounts") {
+        val response: HttpResponse = client.post("$url/locations") {
             AuthState.token?.let { token ->
                 headers {
                     append("Authorization", "Bearer $token")
@@ -67,7 +114,7 @@ suspend fun createAccount(
         }
 
         if (response.status.isSuccess()) {
-            Result.success("Account successfully created.")
+            Result.success("Location successfully created.")
         } else {
             Result.failure(Exception("Server error: ${response.bodyAsText()}"))
         }
@@ -76,55 +123,21 @@ suspend fun createAccount(
     }
 }
 
-suspend fun deleteAccount(accountId: String, userId: String): Result<String> {
+
+suspend fun deleteLocation(locationId: String, userId: String): Result<String> {
     return try {
-        val response = client.delete("$url/accounts/$accountId") {
+        val response = client.delete("$url/locations/$locationId") {
             AuthState.token?.let { token ->
                 headers {
                     append("Authorization", "Bearer $token")
                 }
             }
             contentType(ContentType.Application.Json)
-            setBody(mapOf("userId" to userId)) // <-- telo zahteve
+            setBody(mapOf("userId" to userId))
         }
 
         if (response.status.isSuccess()) {
-            Result.success("Account successfully deleted.")
-        } else {
-            Result.failure(Exception("Server error: ${response.bodyAsText()}"))
-        }
-    } catch (e: Exception) {
-        Result.failure(e)
-    }
-}
-
-suspend fun updateAccount(
-    userId: String,
-    accountId: String,
-    iban: String,
-    currency: String,
-    balance: Double
-): Result<String> {
-    return try {
-        val response = client.put("$url/accounts/$accountId") {
-            AuthState.token?.let { token ->
-                headers {
-                    append("Authorization", "Bearer $token")
-                }
-            }
-            contentType(ContentType.Application.Json)
-            setBody(
-                UpdateAccountRequest(
-                    userId = userId,
-                    iban = iban,
-                    currency = currency,
-                    balance = balance
-                )
-            )
-        }
-
-        if (response.status.isSuccess()) {
-            Result.success("Account updated successfully.")
+            Result.success("Location successfully deleted.")
         } else {
             Result.failure(Exception("Server error: ${response.bodyAsText()}"))
         }

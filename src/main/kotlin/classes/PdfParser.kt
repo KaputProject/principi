@@ -183,6 +183,15 @@ class PdfParser {
             i++
         }
 
+        if (!existing) {
+            description = parts.subList(2, parts.size).joinToString(" ")
+
+            if (parameters.partners.contains(description)) {
+                existing = true
+                partner = description
+            }
+        }
+
         // If no known partner is found, assign the first two parts as the partner and the rest as the description
         if (!existing) {
             partner = parts.subList(0, 2).joinToString(" ")

@@ -15,6 +15,7 @@ import ui.enums.Currency
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.runtime.*
 import ui.api.deleteAccount
 
@@ -145,7 +146,10 @@ fun AccountEdit(
         }
         Button(
             onClick = onBackClick,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.outlinedButtonColors(
+                contentColor = colors.secondary
+            ),
         ) {
             Text("Nazaj")
         }

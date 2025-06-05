@@ -1,10 +1,7 @@
 package ui.dataClasses.account
 
-import classes.BigDecimalSerializer
 import kotlinx.serialization.Serializable
-import ui.dataClasses.Statement
-import ui.enums.Currency
-import java.math.BigDecimal
+import ui.dataClasses.statemant.Statement
 
 @Serializable
 data class Account(
@@ -13,6 +10,6 @@ data class Account(
     val iban: String,
     val currency: String,
     val balance: Double,
-    val statements: List<Statement>,
+    val statements: List<String>,
     val __v: Int
 )

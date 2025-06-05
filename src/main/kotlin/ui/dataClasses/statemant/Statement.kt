@@ -1,12 +1,14 @@
-package ui.dataClasses
+package ui.dataClasses.statemant
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import ui.dataClasses.user.User
+import ui.dataClasses.account.Account
 
 @Serializable
 data class Statement(
-    val id: String? = null,
-    val user: String? = null,
-    val account: String? = null,
+    @SerialName("_id") val id: String? = null, val user: User? = null,
+    val account: Account? = null,
     val transactions: List<String> = emptyList(),
     val startDate: String? = null,
     val endDate: String? = null,
