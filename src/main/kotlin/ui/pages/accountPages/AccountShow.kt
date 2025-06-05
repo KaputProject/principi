@@ -37,8 +37,8 @@ fun ShowAccount(
         Button(
             onClick = onBackClick,
             modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-            colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = colors.secondary
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = colors.secondary,
             ),
         ) {
             Text("Nazaj")

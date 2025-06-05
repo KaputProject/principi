@@ -152,8 +152,8 @@ fun StatementEdit(
 
         Button(
             onClick = onBackClick, modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = colors.secondary
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = colors.secondary,
             ),
         ) {
             Text("Nazaj")

@@ -5,12 +5,13 @@ import kotlinx.serialization.Serializable
 import ui.dataClasses.account.AccountInfo
 import ui.dataClasses.locations.Location
 import ui.components.FlexibleLongAsStringSerializer
+import ui.dataClasses.user.User
 
 @Serializable
-data class Transaction(
+data class TransactionUser(
     @SerialName("_id")
     val id: String,
-    val user: String,
+    val user: User,
     val account: AccountInfo,
     val location: Location? = null,
     val datetime: String,

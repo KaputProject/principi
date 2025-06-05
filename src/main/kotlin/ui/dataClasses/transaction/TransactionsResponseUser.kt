@@ -3,9 +3,9 @@ package ui.dataClasses.transaction
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class TransactionsResponse(
+data class TransactionsResponseUser(
     val message: String,
-    val transactions: List<Transaction>
+    val transaction: TransactionUser
 )
 
 
