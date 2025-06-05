@@ -2,6 +2,7 @@ package ui.pages.statementPages
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -11,9 +12,7 @@ import ui.api.updateStatement
 
 @Composable
 fun StatementEdit(
-    initialStatement: Statement,
-    onBackClick: () -> Unit,
-    onStatementUpdated: (Statement) -> Unit
+    initialStatement: Statement, onBackClick: () -> Unit, onStatementUpdated: (Statement) -> Unit
 ) {
     var startDate by remember { mutableStateOf(initialStatement.startDate ?: "") }
     var endDate by remember { mutableStateOf(initialStatement.endDate ?: "") }
@@ -144,15 +143,19 @@ fun StatementEdit(
                         message = "Napaka: ${it.message}"
                     }
                 }
-            },
-            modifier = Modifier.fillMaxWidth()
+            }, modifier = Modifier.fillMaxWidth()
         ) {
             Text("Shrani spremembe")
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        Button(onClick = onBackClick, modifier = Modifier.fillMaxWidth()) {
+        Button(
+            onClick = onBackClick, modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.outlinedButtonColors(
+                contentColor = colors.secondary
+            ),
+        ) {
             Text("Nazaj")
         }
 

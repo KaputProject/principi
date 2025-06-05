@@ -2,6 +2,7 @@ package ui.pages.transactionPages
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -27,38 +28,74 @@ fun TransactionEdit(
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.padding(16.dp)) {
-        Text("Uredi transakcijo", style = MaterialTheme.typography.h5)
+        Text(
+            "Uredi transakcijo",
+            style = MaterialTheme.typography.h5,
+            color = MaterialTheme.colors.onSurface
+        )
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
             value = description,
             onValueChange = { description = it },
-            label = { Text("Opis") },
-            modifier = Modifier.fillMaxWidth()
+            label = { Text("Opis", color = MaterialTheme.colors.onSurface) },
+            modifier = Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                textColor = MaterialTheme.colors.onSurface,
+                focusedBorderColor = MaterialTheme.colors.primary,
+                unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
+                cursorColor = MaterialTheme.colors.primary,
+                focusedLabelColor = MaterialTheme.colors.primary,
+                unfocusedLabelColor = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
+            )
         )
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
             value = change,
             onValueChange = { change = it },
-            label = { Text("Znesek") },
-            modifier = Modifier.fillMaxWidth()
+            label = { Text("Znesek", color = MaterialTheme.colors.onSurface) },
+            modifier = Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                textColor = MaterialTheme.colors.onSurface,
+                focusedBorderColor = MaterialTheme.colors.primary,
+                unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
+                cursorColor = MaterialTheme.colors.primary,
+                focusedLabelColor = MaterialTheme.colors.primary,
+                unfocusedLabelColor = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
+            )
         )
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
             value = datetime,
             onValueChange = { datetime = it },
-            label = { Text("Datum in čas") },
-            modifier = Modifier.fillMaxWidth()
+            label = { Text("Datum in čas", color = MaterialTheme.colors.onSurface) },
+            modifier = Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                textColor = MaterialTheme.colors.onSurface,
+                focusedBorderColor = MaterialTheme.colors.primary,
+                unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
+                cursorColor = MaterialTheme.colors.primary,
+                focusedLabelColor = MaterialTheme.colors.primary,
+                unfocusedLabelColor = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
+            )
         )
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
             value = reference,
             onValueChange = { reference = it },
-            label = { Text("Referenca") },
-            modifier = Modifier.fillMaxWidth()
+            label = { Text("Referenca", color = MaterialTheme.colors.onSurface) },
+            modifier = Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                textColor = MaterialTheme.colors.onSurface,
+                focusedBorderColor = MaterialTheme.colors.primary,
+                unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
+                cursorColor = MaterialTheme.colors.primary,
+                focusedLabelColor = MaterialTheme.colors.primary,
+                unfocusedLabelColor = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
+            )
         )
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -83,6 +120,7 @@ fun TransactionEdit(
                                 reference = if (reference.isBlank()) null else reference
                             )
                         )
+                        message = "Transakcija uspešno posodobljena."
                     }
 
                     result.onFailure {
@@ -92,9 +130,10 @@ fun TransactionEdit(
                     onBackClick()
                 }
             },
-            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
         ) {
-            Text("Shrani")
+            Text("Shrani", color = MaterialTheme.colors.onPrimary)
         }
 
         Button(
@@ -108,8 +147,8 @@ fun TransactionEdit(
         if (showDeleteDialog) {
             AlertDialog(
                 onDismissRequest = { showDeleteDialog = false },
-                title = { Text("Potrditev brisanja") },
-                text = { Text("Ste prepričani, da želite izbrisati to transakcijo?") },
+                title = { Text("Potrditev brisanja", color = MaterialTheme.colors.onSurface) },
+                text = { Text("Ste prepričani, da želite izbrisati to transakcijo?", color = MaterialTheme.colors.onSurface) },
                 confirmButton = {
                     TextButton(
                         onClick = {
@@ -131,19 +170,26 @@ fun TransactionEdit(
                             }
                         }
                     ) {
-                        Text("Da, izbriši")
+                        Text("Da, izbriši", color = MaterialTheme.colors.primary)
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { showDeleteDialog = false }) {
-                        Text("Prekliči")
+                        Text("Prekliči", color = MaterialTheme.colors.primary)
                     }
-                }
+                },
+                backgroundColor = MaterialTheme.colors.surface,
+                contentColor = MaterialTheme.colors.onSurface
             )
         }
 
-        Button(
-            onClick = onBackClick, modifier = Modifier.fillMaxWidth()
+        OutlinedButton(
+            onClick = onBackClick,
+            modifier = Modifier.weight(1f),
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = colors.secondary,
+                contentColor = colors.onSecondary
+            ),
         ) {
             Text("Nazaj")
         }
@@ -151,7 +197,9 @@ fun TransactionEdit(
         message?.let {
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                it, color = if (it.startsWith("Napaka")) MaterialTheme.colors.error else MaterialTheme.colors.primary
+                it,
+                color = if (it.startsWith("Napaka")) MaterialTheme.colors.error else MaterialTheme.colors.primary,
+                style = MaterialTheme.typography.body1
             )
         }
     }

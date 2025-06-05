@@ -1,8 +1,11 @@
 package ui.pages.userPages
 
-import ui.dataClasses.user.User
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme.colors
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -12,6 +15,7 @@ import kotlinx.coroutines.launch
 import ui.AuthState
 import ui.api.deleteUser
 import ui.api.updateUser
+import ui.dataClasses.user.User
 
 @Composable
 fun UserEdit(
@@ -30,6 +34,8 @@ fun UserEdit(
     var password by remember { mutableStateOf("") }
     var repeatPassword by remember { mutableStateOf("") }
     var message by remember { mutableStateOf<String?>(null) }
+
+    val passwordsMatch = password.isEmpty() || password == repeatPassword
 
     Column(
         Modifier
@@ -114,66 +120,73 @@ fun UserEdit(
             )
         }
 
-        Button(
-            onClick = {
-                coroutineScope.launch {
-                    message = null
-                    if (password.isNotEmpty() && password != repeatPassword) {
-                        message = "Gesli se ne ujemata!"
-                        return@launch
-                    }
-                    val token = AuthState.token
-                    val result = token?.let {
-                        updateUser(
-                            username = username,
-                            password = password,
-                            name = name,
-                            surname = surname,
-                            email = email,
-                            dateOfBirth = dateOfBirth,
-                            isAdmin = isAdmin,
-                            userId = userId,
-                        )
-                    }
-                    if (result != null) {
-                        message = result.fold(
-                            onSuccess = { "Uporabnik uspešno posodobljen." },
-                            onFailure = { "Posodobitev ni uspela: ${it.message}" }
-                        )
-                    }
-                }
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Shrani")
-        }
-
-        Spacer(Modifier.height(12.dp))
-
-        Button(
-            onClick = {
-                coroutineScope.launch {
-                    message = null
-                    val result = deleteUser(userId)
-                    message = result.fold(
-                        onSuccess = { "Uporabnik uspešno izbrisan." },
-                        onFailure = { "Brisanje ni uspelo: ${it.message}" }
-                    )
-                }
-            },
+        // Gumbi v eni vrstici z razmikom med njimi
+        Row(
             modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.error)
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text("Izbriši", color = MaterialTheme.colors.onError)
-        }
+            Button(
+                onClick = {
+                    coroutineScope.launch {
+                        message = null
+                        if (!passwordsMatch) {
+                            message = "Gesli se ne ujemata!"
+                            return@launch
+                        }
+                        val token = AuthState.token
+                        val result = token?.let {
+                            updateUser(
+                                username = username,
+                                password = password,
+                                name = name,
+                                surname = surname,
+                                email = email,
+                                dateOfBirth = dateOfBirth,
+                                isAdmin = isAdmin,
+                                userId = userId,
+                            )
+                        }
+                        if (result != null) {
+                            message = result.fold(
+                                onSuccess = { "Uporabnik uspešno posodobljen." },
+                                onFailure = { "Posodobitev ni uspela: ${it.message}" }
+                            )
+                        }
+                    }
+                },
+                modifier = Modifier.weight(1f),
+                enabled = passwordsMatch
+            ) {
+                Text("Shrani")
+            }
 
-        Spacer(Modifier.height(12.dp))
+            Button(
+                onClick = {
+                    coroutineScope.launch {
+                        message = null
+                        val result = deleteUser(userId)
+                        message = result.fold(
+                            onSuccess = { "Uporabnik uspešno izbrisan." },
+                            onFailure = { "Brisanje ni uspelo: ${it.message}" }
+                        )
+                    }
+                },
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.error)
+            ) {
+                Text("Izbriši", color = MaterialTheme.colors.onError)
+            }
 
-        Button(
-            onClick = onBackClick,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Nazaj")
+            OutlinedButton(
+                onClick = onBackClick,
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = colors.secondary,
+                    contentColor = colors.onSecondary
+                ),
+            ) {
+                Text("Nazaj")
+            }
         }
     }
 }

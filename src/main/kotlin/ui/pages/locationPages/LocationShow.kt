@@ -2,6 +2,7 @@ package ui.pages.locationPages
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -26,15 +27,17 @@ fun ShowLocation(
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            onClick = onEditClick.bind(location),
-            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+            onClick = onEditClick.bind(location), modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
         ) {
             Text("Uredi")
         }
 
         Button(
             onClick = onBackClick,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                contentColor = colors.secondary
+            ),
         ) {
             Text("Nazaj")
         }

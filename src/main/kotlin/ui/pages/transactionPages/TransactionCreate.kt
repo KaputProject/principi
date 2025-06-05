@@ -2,6 +2,7 @@ package ui.pages.transactionPages
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,7 +17,7 @@ import ui.dataClasses.statemant.Statement
 import ui.dataClasses.user.User
 
 @Composable
-fun transactionCreate(
+fun TransactionCreate(  // Naj bo ime z veliko začetnico skladno z običaji
     user: User,
     statement: Statement,
     onBackClick: () -> Unit,
@@ -42,7 +43,13 @@ fun transactionCreate(
             value = accountIban,
             onValueChange = { accountIban = it },
             label = { Text("IBAN računa") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = MaterialTheme.colors.primary,
+                unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
+                textColor = MaterialTheme.colors.onSurface,
+                cursorColor = MaterialTheme.colors.primary
+            )
         )
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -50,7 +57,13 @@ fun transactionCreate(
             value = locationId,
             onValueChange = { locationId = it },
             label = { Text("ID lokacije (neobvezno)") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = MaterialTheme.colors.primary,
+                unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
+                textColor = MaterialTheme.colors.onSurface,
+                cursorColor = MaterialTheme.colors.primary
+            )
         )
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -58,7 +71,13 @@ fun transactionCreate(
             value = datetime,
             onValueChange = { datetime = it },
             label = { Text("Datum in čas (ISO 8601)") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = MaterialTheme.colors.primary,
+                unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
+                textColor = MaterialTheme.colors.onSurface,
+                cursorColor = MaterialTheme.colors.primary
+            )
         )
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -66,7 +85,13 @@ fun transactionCreate(
             value = description,
             onValueChange = { description = it },
             label = { Text("Opis") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = MaterialTheme.colors.primary,
+                unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
+                textColor = MaterialTheme.colors.onSurface,
+                cursorColor = MaterialTheme.colors.primary
+            )
         )
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -74,17 +99,28 @@ fun transactionCreate(
             value = change,
             onValueChange = { change = it },
             label = { Text("Znesek spremembe") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = MaterialTheme.colors.primary,
+                unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
+                textColor = MaterialTheme.colors.onSurface,
+                cursorColor = MaterialTheme.colors.primary
+            )
         )
         Spacer(modifier = Modifier.height(8.dp))
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Checkbox(
                 checked = outgoing,
-                onCheckedChange = { outgoing = it }
+                onCheckedChange = { outgoing = it },
+                colors = CheckboxDefaults.colors(
+                    checkedColor = MaterialTheme.colors.primary,
+                    uncheckedColor = MaterialTheme.colors.onSurface.copy(alpha = 0.6f),
+                    checkmarkColor = MaterialTheme.colors.onPrimary
+                )
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text("Odhodna transakcija")
+            Text("Odhodna transakcija", color = MaterialTheme.colors.onSurface)
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -93,7 +129,13 @@ fun transactionCreate(
             value = reference,
             onValueChange = { reference = it },
             label = { Text("Referenca (neobvezno)") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = MaterialTheme.colors.primary,
+                unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
+                textColor = MaterialTheme.colors.onSurface,
+                cursorColor = MaterialTheme.colors.primary
+            )
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -102,13 +144,10 @@ fun transactionCreate(
             onClick = {
                 coroutineScope.launch {
                     try {
-                        // Pripravi minimalni AccountInfo
                         val account = AccountInfo(
                             iban = accountIban,
                             _id = statement.account?._id ?: "",
                         )
-
-                        // Pripravi minimalni Location, če je podan ID
                         val location: Location? = if (locationId.isNotBlank()) {
                             Location(
                                 _id = locationId,
@@ -132,10 +171,6 @@ fun transactionCreate(
                             reference = if (reference.isBlank()) null else reference
                         )
 
-                        // *** Tukaj dodajemo izpis, kaj se pošlje ***
-                        println("Pošiljam na createTransaction: $transactionCreate")
-
-                        // Pokliči API za kreiranje transakcije
                         val response = createTransaction(transactionCreate)
                         onTransactionCreated(response.transaction)
                     } catch (e: Exception) {
@@ -148,10 +183,16 @@ fun transactionCreate(
             Text("Ustvari")
         }
 
-
         Spacer(modifier = Modifier.height(8.dp))
 
-        Button(onClick = onBackClick, modifier = Modifier.fillMaxWidth()) {
+        OutlinedButton(
+            onClick = onBackClick,
+            modifier = Modifier.weight(1f),
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = colors.secondary,
+                contentColor = colors.onSecondary
+            ),
+        ) {
             Text("Nazaj")
         }
 

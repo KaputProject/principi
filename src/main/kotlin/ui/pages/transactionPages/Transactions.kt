@@ -1,9 +1,6 @@
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -16,24 +13,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ui.components.cards.TransactionCard
 import ui.dataClasses.transaction.Transaction
-import ui.dataClasses.user.User
 
 @Composable
 fun Transactions(
     transactions: List<Transaction>,
-    onTransactionSelected: (Transaction ) -> Unit,
+    onTransactionSelected: (Transaction) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
 
-    Box(modifier = modifier.padding(start = 8.dp).background(MaterialTheme.colors.surface)) {
+    Box(
+        modifier = modifier
+            .background(MaterialTheme.colors.surface)
+            .padding(8.dp)
+    ) {
         if (transactions.isEmpty()) {
-            Text("Ni transakcij.", modifier = Modifier.padding(8.dp))
+            Text(
+                text = "Ni transakcij.",
+                modifier = Modifier.padding(16.dp),
+                color = MaterialTheme.colors.onSurface,
+                style = MaterialTheme.typography.body1
+            )
         } else {
-            Box(Modifier.fillMaxSize()) {
+            Box(modifier = Modifier.fillMaxSize()) {
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize().padding(end = 12.dp),
-                    state = listState
+                    state = listState,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(end = 12.dp)
                 ) {
                     items(transactions) { transaction ->
                         TransactionCard(
@@ -45,7 +53,9 @@ fun Transactions(
 
                 VerticalScrollbar(
                     adapter = rememberScrollbarAdapter(listState),
-                    modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight()
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .fillMaxHeight()
                 )
             }
         }

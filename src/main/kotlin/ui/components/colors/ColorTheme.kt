@@ -17,21 +17,27 @@ val OrangeSecondary = Color(0xFFFFB300)
 val BackgroundLight = Color(0xFFF5F5F5)
 val TextPrimary = Color(0xFF212121)
 val TextSecondary = Color(0xFF757575)
-val AppTypography = Typography(
-    h5 = TextStyle(
-        fontSize = 24.sp,
-        fontWeight = FontWeight.Bold,
-        color = TextPrimary
-    ),
-    body1 = TextStyle(
-        fontSize = 16.sp,
-        color = TextPrimary
-    ),
-    subtitle1 = TextStyle(
-        fontSize = 14.sp,
-        color = TextSecondary
+fun getAppTypography(darkTheme: Boolean): Typography {
+    val primaryText = if (darkTheme) Color(0xFFE0E0E0) else TextPrimary
+    val secondaryText = if (darkTheme) Color(0xFFAAAAAA) else TextSecondary
+
+    return Typography(
+        h5 = TextStyle(
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            color = primaryText
+        ),
+        body1 = TextStyle(
+            fontSize = 16.sp,
+            color = primaryText
+        ),
+        subtitle1 = TextStyle(
+            fontSize = 14.sp,
+            color = secondaryText
+        )
     )
-)
+}
+
 
 private val LightColorPalette = lightColors(
     primary = BluePrimary,
@@ -49,13 +55,14 @@ private val DarkColorPalette = darkColors(
     primary = BluePrimary,
     primaryVariant = BluePrimary,
     secondary = OrangeSecondary,
-    background = Color(0xFF121212),
-    surface = Color(0xFF1E1E1E),
-    onPrimary = Color.Black,
-    onSecondary = Color.White,
-    onBackground = Color.White,
-    onSurface = Color.White,
+    background = Color(0xFF0D0D0D), // temnejše ozadje za boljši kontrast
+    surface = Color(0xFF1A1A1A),     // rahlo svetlejša površina
+    onPrimary = Color.White,
+    onSecondary = Color.Black,
+    onBackground = Color(0xFFE0E0E0), // svetlo siva, ne čista bela (manj napora za oči)
+    onSurface = Color(0xFFD6D6D6),    // prav tako svetlo siva, bolj naravno kot #FFFFFF
 )
+
 
 @Composable
 fun AppTheme(
@@ -66,8 +73,8 @@ fun AppTheme(
 
     MaterialTheme(
         colors = colors,
-        typography = AppTypography,  // tukaj uporabi svoj typography
-        shapes = Shapes(),            // lahko definiraš svoje ali uporabiš default
+        typography = getAppTypography(darkTheme),
+        shapes = Shapes(),
         content = content
     )
 }

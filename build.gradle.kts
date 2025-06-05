@@ -27,7 +27,10 @@ repositories {
 dependencies {
     // 🖥️ UI: JetBrains Compose za Desktop
     implementation(compose.desktop.currentOs)
-//    implementation ("androidx.compose.material:material-icons-extended:1.6.1"
+
+
+
+
 
     // 🧪 Testiranje
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")

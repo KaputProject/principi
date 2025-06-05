@@ -10,18 +10,30 @@ import ui.dataClasses.locations.Location
 
 @Composable
 fun LocationCard(location: Location, onClick: () -> Unit) {
+    val colors = MaterialTheme.colors
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
             .clickable(onClick = onClick),
-        elevation = 4.dp
+        elevation = 4.dp,
+        backgroundColor = colors.surface,
+        shape = MaterialTheme.shapes.medium
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = location.name ?: "Neimenovana lokacija", style = MaterialTheme.typography.h6)
+            Text(
+                text = location.name ?: "Neimenovana lokacija",
+                style = MaterialTheme.typography.h6,
+                color = colors.onSurface
+            )
             location.address?.let {
                 Spacer(modifier = Modifier.height(4.dp))
-                Text("Naslov: $it")
+                Text(
+                    text = "Naslov: $it",
+                    style = MaterialTheme.typography.body2,
+                    color = colors.onSurface.copy(alpha = 0.7f)
+                )
             }
         }
     }

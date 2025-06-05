@@ -15,13 +15,15 @@ fun StatementCard(
     statement: Statement,
     onClick: () -> Unit
 ) {
+    val colors = MaterialTheme.colors
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 6.dp, horizontal = 12.dp)
             .clickable { onClick() },
         elevation = 8.dp,
-        backgroundColor = Color.White,
+        backgroundColor = colors.surface,
         shape = MaterialTheme.shapes.medium
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
@@ -29,14 +31,15 @@ fun StatementCard(
                 text = "Izpisek za mesec: ${statement.month}/${statement.year}",
                 style = MaterialTheme.typography.h6,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = colors.onSurface
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "IBAN: ${statement.account?.iban ?: "Neznan"}",
                 style = MaterialTheme.typography.body2,
-                color = Color.Black.copy(alpha = 0.7f)
+                color = colors.onSurface.copy(alpha = 0.7f)
             )
         }
     }
 }
+

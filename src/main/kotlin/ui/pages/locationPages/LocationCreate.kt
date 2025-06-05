@@ -2,6 +2,7 @@ package ui.pages.locationPages
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -12,9 +13,7 @@ import ui.dataClasses.user.User
 
 @Composable
 fun LocationCreate(
-    user: User,
-    onBackClick: () -> Unit,
-    onLocationCreated: (Location) -> Unit
+    user: User, onBackClick: () -> Unit, onLocationCreated: (Location) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     var name by remember { mutableStateOf("") }
@@ -30,17 +29,47 @@ fun LocationCreate(
         Text("Ustvari novo lokacijo", style = MaterialTheme.typography.h5)
         Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text("Ime") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(
+            value = name,
+            onValueChange = { name = it },
+            label = { Text("Ime") },
+            modifier = Modifier.fillMaxWidth()
+        )
         Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(value = identifier, onValueChange = { identifier = it }, label = { Text("Identifikator") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(
+            value = identifier,
+            onValueChange = { identifier = it },
+            label = { Text("Identifikator") },
+            modifier = Modifier.fillMaxWidth()
+        )
         Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(value = description, onValueChange = { description = it }, label = { Text("Opis") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(
+            value = description,
+            onValueChange = { description = it },
+            label = { Text("Opis") },
+            modifier = Modifier.fillMaxWidth()
+        )
         Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(value = address, onValueChange = { address = it }, label = { Text("Naslov") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(
+            value = address,
+            onValueChange = { address = it },
+            label = { Text("Naslov") },
+            modifier = Modifier.fillMaxWidth()
+        )
         Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(value = lat, onValueChange = { lat = it }, label = { Text("Zemljepisna širina") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(
+            value = lat,
+            onValueChange = { lat = it },
+            label = { Text("Zemljepisna širina") },
+            modifier = Modifier.fillMaxWidth()
+        )
         Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(value = lng, onValueChange = { lng = it }, label = { Text("Zemljepisna dolžina") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(
+            value = lng,
+            onValueChange = { lng = it },
+            label = { Text("Zemljepisna dolžina") },
+            modifier = Modifier.fillMaxWidth()
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -73,15 +102,19 @@ fun LocationCreate(
                         message = "Napaka pri ustvarjanju lokacije: ${it.message}"
                     }
                 }
-            },
-            modifier = Modifier.fillMaxWidth()
+            }, modifier = Modifier.fillMaxWidth()
         ) {
             Text("Ustvari")
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        Button(onClick = onBackClick, modifier = Modifier.fillMaxWidth()) {
+        Button(
+            onClick = onBackClick, modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.outlinedButtonColors(
+                contentColor = colors.secondary
+            ),
+        ) {
             Text("Nazaj")
         }
 

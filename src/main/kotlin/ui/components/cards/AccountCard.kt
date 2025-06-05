@@ -15,6 +15,8 @@ fun AccountCard(
     account: Account,
     onClick: () -> Unit
 ) {
+    val colors = MaterialTheme.colors
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -22,26 +24,27 @@ fun AccountCard(
             .clickable(onClick = onClick),
         elevation = 6.dp,
         shape = RoundedCornerShape(8.dp),
-        backgroundColor = Color.White // belo ozadje
+        backgroundColor = colors.surface
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
                 text = "IBAN: ${account.iban}",
                 style = MaterialTheme.typography.h6,
-                color = Color.Black // črn tekst
+                color = colors.onSurface
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = "Valuta: ${account.currency}",
                 style = MaterialTheme.typography.body2,
-                color = Color.Black.copy(alpha = 0.7f)
+                color = colors.onSurface.copy(alpha = 0.7f)
             )
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = "Stanje: ${account.balance}",
                 style = MaterialTheme.typography.body2,
-                color = Color.Black.copy(alpha = 0.7f)
+                color = colors.onSurface.copy(alpha = 0.7f)
             )
         }
     }
 }
+

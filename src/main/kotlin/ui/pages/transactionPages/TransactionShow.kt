@@ -1,8 +1,11 @@
 package ui.pages.transactionPages
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ui.dataClasses.transaction.Transaction
@@ -11,52 +14,74 @@ import ui.dataClasses.transaction.Transaction
 fun TransactionShow(
     transaction: Transaction,
     onBackClick: () -> Unit,
-    onEditClick: (Transaction) -> Unit // Dodano
+    onEditClick: (Transaction) -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .background(MaterialTheme.colors.surface)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Text("Transaction Details", style = MaterialTheme.typography.h5)
-        Spacer(modifier = Modifier.height(16.dp))
+        Column {
+            Text(
+                text = "Podrobnosti transakcije",
+                style = MaterialTheme.typography.h5,
+                color = MaterialTheme.colors.onBackground
+            )
+            Spacer(modifier = Modifier.height(16.dp))
 
-        Text("ID: ${transaction.id}")
-        Spacer(modifier = Modifier.height(8.dp))
+            InfoRow("ID", transaction.id)
+            InfoRow("Uporabnik", transaction.user.toString())
+            InfoRow("Račun", transaction.account.iban)
+            InfoRow("Lokacija", transaction.location?.name ?: "N/A")
+            InfoRow("Datum in čas", transaction.datetime)
+            InfoRow("Opis", transaction.description)
 
-        Text("User ID: ${transaction.user}")
-        Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Znesek: ${if (transaction.outgoing) "-" else "+"}${transaction.change}",
+                style = MaterialTheme.typography.body1,
+                color = if (transaction.outgoing) MaterialTheme.colors.error else MaterialTheme.colors.primary,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
 
-        Text("Account: ${transaction.account.iban}")
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text("Location: ${transaction.location?.name ?: "N/A"}")
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text("Date & Time: ${transaction.datetime}")
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text("Description: ${transaction.description}")
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text("Amount: ${if (transaction.outgoing) "-" else "+"}${transaction.change}")
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text("Reference: ${transaction.reference ?: "N/A"}")
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Button(
-            onClick = { onEditClick(transaction) },
-            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
-        ) {
-            Text("Uredi")
+            InfoRow("Sklic", transaction.reference ?: "N/A")
         }
 
-        Button(
-            onClick = onBackClick,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Nazaj")
+        Column {
+            Divider(Modifier.padding(vertical = 16.dp))
+            Button(
+                onClick = { onEditClick(transaction) },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Uredi")
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            OutlinedButton(
+                onClick = onBackClick,
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    contentColor = colors.secondary
+                ),
+            ) {
+                Text("Nazaj")
+            }
         }
+    }
+}
+
+@Composable
+private fun InfoRow(label: String, value: String) {
+    Column(modifier = Modifier.padding(vertical = 4.dp)) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.subtitle1,
+            color = MaterialTheme.colors.primary
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.body1,
+            color = MaterialTheme.colors.onBackground
+        )
     }
 }

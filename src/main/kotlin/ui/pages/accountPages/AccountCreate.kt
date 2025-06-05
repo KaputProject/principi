@@ -3,6 +3,7 @@ package ui.pages.accountPages
 import DropdownMenuCurrency
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -34,9 +35,7 @@ fun AccountCreate(user: User? = null, onBackClick: (() -> Unit)? = null) {
         Spacer(modifier = Modifier.height(8.dp))
 
         DropdownMenuCurrency(
-            selected = currency,
-            onSelect = { currency = it }
-        )
+            selected = currency, onSelect = { currency = it })
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -59,19 +58,13 @@ fun AccountCreate(user: User? = null, onBackClick: (() -> Unit)? = null) {
                     println("Balance: ${balance.toDoubleOrNull() ?: 0.0}")
                     val result = createAccount(
                         userId = user?.id ?: return@launch,   // Poskrbi, da user prihaja iz parametra funkcije
-                        iban = iban,
-                        currency = currency,
-                        balance = balance.toDoubleOrNull() ?: 0.0
+                        iban = iban, currency = currency, balance = balance.toDoubleOrNull() ?: 0.0
                     )
 
 
-                    message = result.fold(
-                        onSuccess = { it },
-                        onFailure = { "Napaka: ${it.message}" }
-                    )
+                    message = result.fold(onSuccess = { it }, onFailure = { "Napaka: ${it.message}" })
                 }
-            },
-            modifier = Modifier.fillMaxWidth()
+            }, modifier = Modifier.fillMaxWidth()
         ) {
             Text("Ustvari")
         }
@@ -80,7 +73,10 @@ fun AccountCreate(user: User? = null, onBackClick: (() -> Unit)? = null) {
             Spacer(modifier = Modifier.height(8.dp))
             Button(
                 onClick = it,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = colors.secondary
+                ),
             ) {
                 Text("Nazaj")
             }

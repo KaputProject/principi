@@ -27,7 +27,6 @@ fun App() {
 
     // Dodaj možnost preklopa teme (lahko tudi po sistemu)
     var darkModeEnabled by remember { mutableStateOf(false) }
-    var darkTheme by remember { mutableStateOf(false) } // <- novo stanje
 
     AppTheme(darkTheme = darkModeEnabled) {
         Column(
