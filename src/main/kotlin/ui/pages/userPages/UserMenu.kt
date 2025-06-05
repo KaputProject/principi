@@ -13,6 +13,7 @@ import ui.dataClasses.user.User
 import ui.dataClasses.statemant.Statement
 import ui.pages.statementPages.StatementEdit
 import ui.pages.statementPages.StatementShow
+import ui.pages.transactionPages.transactionCreate
 import ui.pages.transactionPages.TransactionEdit
 import ui.pages.transactionPages.TransactionShow
 
@@ -27,9 +28,11 @@ fun UserMenu(
     var transactions by remember { mutableStateOf<List<Transaction>>(emptyList()) }
     var statements by remember { mutableStateOf<List<Statement>>(emptyList()) }
     var selectedStatement by remember { mutableStateOf<Statement?>(null) }
-    var editingStatement by remember { mutableStateOf<Statement?>(null) }  // dodano za urejanje izpiska
+    var editingStatement by remember { mutableStateOf<Statement?>(null) }
     var selectedTransaction by remember { mutableStateOf<Transaction?>(null) }
     var editingTransaction by remember { mutableStateOf<Transaction?>(null) }
+
+    var creatingTransactionForStatement by remember { mutableStateOf<Statement?>(null) }
 
     LaunchedEffect(user.id) {
         try {
@@ -40,18 +43,17 @@ fun UserMenu(
         }
     }
 
-    // 1. Prikaz urejevalnika transakcije
     editingTransaction?.let { transaction ->
         TransactionEdit(
             initialTransaction = transaction,
             onBackClick = { editingTransaction = null },
             onTransactionUpdated = { updated ->
-                transactions = transactions.map { if (it._id == updated._id) updated else it }
+                transactions = transactions.map { if (it.id == updated.id) updated else it }
                 editingTransaction = null
                 selectedTransaction = null
             },
             onTransactionDeleted = {
-                transactions = transactions.filter { it._id != transaction._id }
+                transactions = transactions.filter { it.id != transaction.id }
                 editingTransaction = null
                 selectedTransaction = null
             }
@@ -59,7 +61,6 @@ fun UserMenu(
         return
     }
 
-    // 2. Prikaz urejevalnika izpiska
     editingStatement?.let { statement ->
         StatementEdit(
             initialStatement = statement,
@@ -73,17 +74,32 @@ fun UserMenu(
         return
     }
 
-    // 3. Prikaz izbranega izpiska
-    selectedStatement?.let { statement ->
-        StatementShow(
+    creatingTransactionForStatement?.let { statement ->
+        transactionCreate(
+            user = user,
             statement = statement,
-            onBackClick = { selectedStatement = null },
-            onEditClick = { editingStatement = it }  // Dodano za urejanje izpiska
+            onBackClick = { creatingTransactionForStatement = null },
+            onTransactionCreated = { newTransaction ->
+                transactions = transactions + newTransaction
+                creatingTransactionForStatement = null
+            }
         )
         return
     }
 
-    // 4. Prikaz izbrane transakcije
+    selectedStatement?.let { statement ->
+        StatementShow(
+            statement = statement,
+            onBackClick = { selectedStatement = null },
+            onEditClick = { editingStatement = it },
+            onCreateTransactionClick = { stmt ->
+                creatingTransactionForStatement = stmt
+                selectedStatement = null
+            }
+        )
+        return
+    }
+
     selectedTransaction?.let { transaction ->
         TransactionShow(
             transaction = transaction,
@@ -93,7 +109,6 @@ fun UserMenu(
         return
     }
 
-    // 5. Glavni meni uporabnika
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Text(">>> User Menu Page <<<", style = MaterialTheme.typography.h5)
         Spacer(modifier = Modifier.height(16.dp))
@@ -136,4 +151,5 @@ fun UserMenu(
         }
     }
 }
+
 

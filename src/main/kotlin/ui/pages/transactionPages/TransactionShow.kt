@@ -21,7 +21,7 @@ fun TransactionShow(
         Text("Transaction Details", style = MaterialTheme.typography.h5)
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text("ID: ${transaction._id}")
+        Text("ID: ${transaction.id}")
         Spacer(modifier = Modifier.height(8.dp))
 
         Text("User ID: ${transaction.user}")

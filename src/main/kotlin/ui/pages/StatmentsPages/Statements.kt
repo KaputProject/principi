@@ -13,7 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ui.components.cards.StatementCard
+import ui.components.cards.StatementCard   // <-- to je pomembno
 import ui.dataClasses.statemant.Statement
 
 @Composable
@@ -29,12 +29,14 @@ fun Statements(
             .background(MaterialTheme.colors.surface)
             .padding(end = 8.dp)
     ) {
-    if (statements.isEmpty()) {
+        if (statements.isEmpty()) {
             Text("Ni izpiskov.", modifier = Modifier.padding(8.dp))
         } else {
             Box(Modifier.fillMaxSize()) {
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize().padding(end = 12.dp),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(end = 12.dp),
                     state = listState
                 ) {
                     items(statements) { statement ->
@@ -47,10 +49,11 @@ fun Statements(
 
                 VerticalScrollbar(
                     adapter = rememberScrollbarAdapter(listState),
-                    modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight()
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .fillMaxHeight()
                 )
             }
         }
     }
 }
-

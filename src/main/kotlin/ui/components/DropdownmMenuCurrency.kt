@@ -1,6 +1,8 @@
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
@@ -27,27 +29,33 @@ fun DropdownMenuCurrency(
             onValueChange = {},
             label = { Text("Valuta", fontSize = 12.sp) },
             textStyle = TextStyle(fontSize = 14.sp),
-            readOnly = true,
+            readOnly = true,    // omogoči klik in da polje ni urejalno
             modifier = Modifier
                 .fillMaxWidth()
                 .onGloballyPositioned { coordinates ->
                     textFieldSize = coordinates.size.toSize()
                 }
-                .clickable { expanded = true }
                 .height(56.dp),
-            enabled = false,
+            enabled = true,     // omogoči klik
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 disabledTextColor = MaterialTheme.colors.onSurface,
                 disabledBorderColor = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled),
                 disabledLabelColor = MaterialTheme.colors.onSurface.copy(ContentAlpha.medium)
-            )
+            ),
+            trailingIcon = {
+                IconButton(onClick = { expanded = !expanded }) {
+                    Icon(
+                        imageVector = if (expanded) Icons.Filled.ArrowDropDown else Icons.Filled.ArrowDropDown,
+                        contentDescription = "Toggle dropdown"
+                    )
+                }
+            }
         )
 
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
-            modifier = Modifier
-                .width(with(LocalDensity.current) { textFieldSize.width.toDp() }) // 👈 ujemi širino TextFielda
+            modifier = Modifier.width(with(LocalDensity.current) { textFieldSize.width.toDp() })
         ) {
             currencies.forEach { currency ->
                 DropdownMenuItem(onClick = {
@@ -60,3 +68,4 @@ fun DropdownMenuCurrency(
         }
     }
 }
+

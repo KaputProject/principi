@@ -6,7 +6,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
@@ -21,16 +20,20 @@ fun Sidebar(currentPage: Int, onNavigate: (Int) -> Unit) {
     var passwordInput by remember { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
 
+    val colors = MaterialTheme.colors
+    val typography = MaterialTheme.typography
+
     Column(
-        Modifier
+        modifier = Modifier
             .fillMaxHeight()
-            .width(180.dp)
-            .background(Color(0xFFF2F2F2)),
+            .width(200.dp)
+            .background(colors.surface)
+            .padding(8.dp),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.Start
     ) {
         Column {
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(16.dp))
 
             SidebarButton("Users ${if (expandedSection == "users") "▲" else "▼"}") {
                 expandedSection = if (expandedSection == "users") null else "users"
@@ -42,33 +45,36 @@ fun Sidebar(currentPage: Int, onNavigate: (Int) -> Unit) {
                 }
             }
 
-
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(12.dp))
 
             SidebarButton("Scraper") { onNavigate(3) }
             SidebarButton("Generator") { onNavigate(4) }
         }
 
-        Box(Modifier.padding(12.dp).fillMaxWidth()) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
             if (AuthState.token == null) {
                 Column {
                     OutlinedTextField(
                         value = usernameInput,
                         onValueChange = { usernameInput = it },
-                        label = { Text("Username") },
+                        label = { Text("Username", style = typography.subtitle1) },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth()
                     )
-                    Spacer(Modifier.height(4.dp))
+                    Spacer(Modifier.height(6.dp))
                     OutlinedTextField(
                         value = passwordInput,
                         onValueChange = { passwordInput = it },
-                        label = { Text("Password") },
+                        label = { Text("Password", style = typography.subtitle1) },
                         singleLine = true,
                         visualTransformation = PasswordVisualTransformation(),
                         modifier = Modifier.fillMaxWidth()
                     )
-                    Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(10.dp))
                     Button(
                         onClick = {
                             coroutineScope.launch {
@@ -81,6 +87,11 @@ fun Sidebar(currentPage: Int, onNavigate: (Int) -> Unit) {
                                 }
                             }
                         },
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = colors.primary,
+                            contentColor = colors.onPrimary
+                        ),
+                        shape = MaterialTheme.shapes.medium,
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text("Login")
@@ -92,12 +103,21 @@ fun Sidebar(currentPage: Int, onNavigate: (Int) -> Unit) {
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Hello, ${AuthState.username ?: "Admin"}", modifier = Modifier.weight(1f))
+                    Text(
+                        "Hello, ${AuthState.username ?: "Admin"}",
+                        style = typography.body1,
+                        modifier = Modifier.weight(1f)
+                    )
                     Button(
                         onClick = {
                             AuthState.token = null
                             AuthState.username = null
-                        }
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = colors.secondary,
+                            contentColor = colors.onSecondary
+                        ),
+                        shape = MaterialTheme.shapes.medium
                     ) {
                         Text("Logout")
                     }

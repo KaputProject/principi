@@ -3,8 +3,8 @@ package ui.dataClasses.transaction
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class TransactionResponse(
+data class TransactionsResponse(
     val message: String,
-    val transaction: Transaction
+    val transactions: List<Transaction>
 )
 

@@ -66,7 +66,7 @@ fun TransactionEdit(
             onClick = {
                 coroutineScope.launch {
                     val result = updateTransaction(
-                        transactionId = initialTransaction._id,
+                        transactionId = initialTransaction.id,
                         description = description,
                         change = change.toDoubleOrNull() ?: 0.0,
                         datetime = datetime,
@@ -116,7 +116,7 @@ fun TransactionEdit(
                             showDeleteDialog = false
                             coroutineScope.launch {
                                 val result = deleteTransaction(
-                                    transactionId = initialTransaction._id,
+                                    transactionId = initialTransaction.id,
                                     userId = initialTransaction.user,
                                 )
 

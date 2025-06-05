@@ -11,8 +11,10 @@ import ui.dataClasses.statemant.Statement
 fun StatementShow(
     statement: Statement,
     onBackClick: () -> Unit,
-    onEditClick: (Statement) -> Unit  // Dodan callback za urejanje
+    onEditClick: (Statement) -> Unit,  // callback za urejanje
+    onCreateTransactionClick: (Statement) -> Unit  // nov callback za ustvarjanje transakcije
 ) {
+
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(16.dp)) {
@@ -45,15 +47,20 @@ fun StatementShow(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Button(onClick = onBackClick) {
+        Button(onClick = onBackClick, modifier = Modifier.fillMaxWidth()) {
             Text("Nazaj")
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        Button(onClick = { onEditClick(statement) }) {
+        Button(onClick = { onEditClick(statement) }, modifier = Modifier.fillMaxWidth()) {
             Text("Uredi izpisek")
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Button(onClick = { onCreateTransactionClick(statement) }, modifier = Modifier.fillMaxWidth()) {
+            Text("Ustvari transakcijo")
         }
     }
 }
-

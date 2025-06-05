@@ -9,8 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import ui.AuthState
 import ui.api.deleteUser
 import ui.api.updateUser
@@ -22,7 +20,6 @@ fun UserEdit(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val userId = initialUser.id ?: ""
-    val initialUserJson = remember(initialUser) { Json.encodeToString(initialUser) }
 
     var username by remember { mutableStateOf(initialUser.username ?: "") }
     var name by remember { mutableStateOf(initialUser.name ?: "") }
@@ -40,34 +37,28 @@ fun UserEdit(
             .padding(16.dp),
         verticalArrangement = Arrangement.Top
     ) {
-        Text("Edit ui.dataClasses.user.User", style = MaterialTheme.typography.h5)
-        Text("ui.dataClasses.user.User ID: $userId", style = MaterialTheme.typography.body2)
-
-        Spacer(Modifier.height(12.dp))
-
-        Text("Original ui.dataClasses.user.User JSON:", style = MaterialTheme.typography.subtitle2)
-        Text(initialUserJson, style = MaterialTheme.typography.body2)
+        Text("Uredi uporabnika", style = MaterialTheme.typography.h5)
 
         Spacer(Modifier.height(16.dp))
 
         OutlinedTextField(
             value = username,
             onValueChange = { username = it },
-            label = { Text("Username") },
+            label = { Text("Uporabniško ime") },
             modifier = Modifier.fillMaxWidth()
         )
 
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
-            label = { Text("Name") },
+            label = { Text("Ime") },
             modifier = Modifier.fillMaxWidth()
         )
 
         OutlinedTextField(
             value = surname,
             onValueChange = { surname = it },
-            label = { Text("Surname") },
+            label = { Text("Priimek") },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -80,8 +71,8 @@ fun UserEdit(
 
         OutlinedTextField(
             value = dateOfBirth,
-            onValueChange = { input -> dateOfBirth = input },
-            label = { Text("Date of Birth (d.M.yyyy)") },
+            onValueChange = { dateOfBirth = it },
+            label = { Text("Datum rojstva (d.M.yyyy)") },
             placeholder = { Text("7.10.2004") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -89,7 +80,7 @@ fun UserEdit(
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Password") },
+            label = { Text("Geslo") },
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation(),
             singleLine = true
@@ -98,7 +89,7 @@ fun UserEdit(
         OutlinedTextField(
             value = repeatPassword,
             onValueChange = { repeatPassword = it },
-            label = { Text("Repeat Password") },
+            label = { Text("Ponovi geslo") },
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation(),
             singleLine = true
@@ -110,17 +101,25 @@ fun UserEdit(
         ) {
             Checkbox(checked = isAdmin, onCheckedChange = { isAdmin = it })
             Spacer(Modifier.width(8.dp))
-            Text("Is Admin")
+            Text("Administrator")
         }
 
-        Spacer(Modifier.height(20.dp))
+        Spacer(Modifier.height(24.dp))
+
+        message?.let {
+            Text(
+                text = it,
+                color = if (it.contains("uspešno", true)) MaterialTheme.colors.primary else MaterialTheme.colors.error,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+        }
 
         Button(
             onClick = {
                 coroutineScope.launch {
                     message = null
                     if (password.isNotEmpty() && password != repeatPassword) {
-                        message = "Passwords do not match!"
+                        message = "Gesli se ne ujemata!"
                         return@launch
                     }
                     val token = AuthState.token
@@ -134,20 +133,21 @@ fun UserEdit(
                             dateOfBirth = dateOfBirth,
                             isAdmin = isAdmin,
                             userId = userId,
-                            )
+                        )
                     }
                     if (result != null) {
                         message = result.fold(
-                            onSuccess = { "ui.dataClasses.user.User updated successfully" },
-                            onFailure = { "Update failed: ${it.message}" }
+                            onSuccess = { "Uporabnik uspešno posodobljen." },
+                            onFailure = { "Posodobitev ni uspela: ${it.message}" }
                         )
                     }
                 }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Save")
+            Text("Shrani")
         }
+
         Spacer(Modifier.height(12.dp))
 
         Button(
@@ -156,22 +156,24 @@ fun UserEdit(
                     message = null
                     val result = deleteUser(userId)
                     message = result.fold(
-                        onSuccess = { "ui.dataClasses.user.User deleted successfully" },
-                        onFailure = { "Delete failed: ${it.message}" }
+                        onSuccess = { "Uporabnik uspešno izbrisan." },
+                        onFailure = { "Brisanje ni uspelo: ${it.message}" }
                     )
                 }
             },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.error)
         ) {
-            Text("Delete", color = MaterialTheme.colors.onError)
+            Text("Izbriši", color = MaterialTheme.colors.onError)
         }
+
+        Spacer(Modifier.height(12.dp))
+
         Button(
             onClick = onBackClick,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Nazaj")
         }
-
     }
 }

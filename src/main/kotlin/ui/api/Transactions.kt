@@ -1,14 +1,16 @@
 package ui.api
 
+import TransactionCreateRequest
 import io.github.cdimascio.dotenv.dotenv
+import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.serialization.json.Json
 import ui.AuthState
-import ui.dataClasses.transaction.Transaction
-import ui.dataClasses.transaction.TransactionResponse
-import ui.dataClasses.transaction.TransactionUpdateRequest
+import ui.dataClasses.account.AccountInfo
+import ui.dataClasses.locations.Location
+import ui.dataClasses.transaction.*
 import ui.pages.userPages.client
 
 private val dotenv = dotenv()
@@ -31,12 +33,12 @@ suspend fun getTransactions(userId: String): List<Transaction> {
             // Debug izpis celotnega JSON odgovora
             println("API response: $responseBody")
 
-            val transactionResponse = json.decodeFromString<TransactionResponse>(responseBody)
+            val transactionsResponse = json.decodeFromString<TransactionsResponse>(responseBody)
 
             // Debug izpis vseh transakcij kot seznam
-            println("Transactions fetched: ${transactionResponse.transactions}")
+            println("Transactions fetched: ${transactionsResponse.transactions}")
 
-            transactionResponse.transactions
+            transactionsResponse.transactions
         } else {
             println("API call failed with status: ${response.status}")
             emptyList()
@@ -80,6 +82,22 @@ suspend fun updateTransaction(
         }
     } catch (e: Exception) {
         Result.failure(e)
+    }
+}
+suspend fun createTransaction(request: TransactionCreate): TransactionResponse {
+    val response = client.post("$url/transactions") {
+        AuthState.token?.let { token ->
+            headers {
+                append("Authorization", "Bearer $token")
+            }
+        }
+        contentType(ContentType.Application.Json)
+        setBody(request)
+    }
+    if (response.status.isSuccess()) {
+        return response.body()
+    } else {
+        throw Exception("Napaka pri kreiranju transakcije: ${response.status}")
     }
 }
 

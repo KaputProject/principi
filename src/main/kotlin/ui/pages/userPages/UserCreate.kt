@@ -20,12 +20,19 @@ import androidx.compose.material.OutlinedTextField
 import ui.api.createUser
 
 val client = HttpClient(CIO) {
-    install(ContentNegotiation) { json() }
+    install(ContentNegotiation) {
+        json(
+            kotlinx.serialization.json.Json {
+                ignoreUnknownKeys = true
+            }
+        )
+    }
     install(Logging) {
         logger = Logger.DEFAULT
         level = LogLevel.ALL
     }
 }
+
 
 @Composable
 fun UserCreate() {
