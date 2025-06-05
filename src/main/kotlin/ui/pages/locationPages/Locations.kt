@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import ui.api.getLocations
 import ui.dataClasses.locations.Location
 import ui.dataClasses.user.User
-import ui.components.LocationCard
+import ui.components.cards.LocationCard
 
 @Composable
 fun Locations(

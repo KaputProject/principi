@@ -1,4 +1,4 @@
-package ui.components
+package ui.components.cards
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -21,14 +21,11 @@ fun StatementCard(
         elevation = 4.dp
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text("Mesec: ${statement.month}/${statement.year}")
-            Text("Datum od: ${statement.startDate ?: "Ni podatka"}")
-            Text("Datum do: ${statement.endDate ?: "Ni podatka"}")
+            Text("Izpisek za mesec: ${statement.month}/${statement.year}")
+            Text("IBAN: ${statement.account ?: "neznan"}")
+            Text("Obdobje: ${statement.startDate?.take(10)} - ${statement.endDate?.take(10)}")
             Text("Začetno stanje: ${statement.startBalance}")
             Text("Končno stanje: ${statement.endBalance}")
-            Text("Prihodek: ${statement.inflow}")
-            Text("Odhodek: ${statement.outflow}")
-            Text("Št. transakcij: ${statement.transactions.size}")
         }
     }
 }

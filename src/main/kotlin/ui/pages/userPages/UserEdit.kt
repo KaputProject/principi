@@ -16,7 +16,7 @@ import ui.api.deleteUser
 import ui.api.updateUser
 
 @Composable
-fun UserEditPage(
+fun UserEdit(
     initialUser: User = User(),
     onBackClick: () -> Unit
 ) {

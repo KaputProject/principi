@@ -21,8 +21,8 @@ import ui.pages.locationPages.LocationEdit
 import ui.pages.locationPages.Locations
 import ui.pages.locationPages.ShowLocation
 import ui.pages.userPages.UserCreate
-import ui.pages.userPages.UserEditPage
-import ui.pages.userPages.UserMenuPage
+import ui.pages.userPages.UserEdit
+import ui.pages.userPages.UserMenu
 import ui.pages.userPages.Users
 
 @Composable
@@ -62,13 +62,13 @@ fun App() {
 
 
 
-                        7 -> userToEdit?.let { UserEditPage(
+                        7 -> userToEdit?.let { UserEdit(
                             initialUser = it,
                             onBackClick = { currentPage = 8 }
                         ) } ?: Text("No user selected")
                         8 -> {
                             selectedUser?.let {
-                                UserMenuPage(
+                                UserMenu(
                                     user = it,
                                     onEditClick = { user ->
                                         userToEdit = user

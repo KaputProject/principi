@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import ui.api.users
-import ui.components.UserCard
+import ui.components.cards.UserCard
 
 @Composable
 fun Users(onNavigate: (User) -> Unit) {

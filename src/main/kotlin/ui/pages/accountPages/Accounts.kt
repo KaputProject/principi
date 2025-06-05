@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import ui.api.getAccounts
 import ui.dataClasses.account.Account
 import ui.dataClasses.user.User
-import ui.components.AccountCard
+import ui.components.cards.AccountCard
 
 @Composable
 fun Accounts(
