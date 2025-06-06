@@ -34,7 +34,9 @@ fun UserMenu(
     var editingTransaction by remember { mutableStateOf<Transaction?>(null) }
     var creatingTransactionForStatement by remember { mutableStateOf<Statement?>(null) }
 
-    LaunchedEffect(user.id) {
+    var reloadTrigger by remember { mutableStateOf(0) }
+
+    LaunchedEffect(user.id, reloadTrigger) {
         try {
             transactions = getTransactions(userId = user.id ?: "")
             statements = getStatements(userId = user.id ?: "")
@@ -42,6 +44,7 @@ fun UserMenu(
             println("Napaka pri pridobivanju podatkov: ${e.message}")
         }
     }
+
 
     editingTransaction?.let { transaction ->
         TransactionEdit(
@@ -80,9 +83,10 @@ fun UserMenu(
             statement = statement,
             onBackClick = { creatingTransactionForStatement = null },
             onTransactionCreated = { newTransaction ->
-                transactions = transactions + newTransaction
                 creatingTransactionForStatement = null
+                reloadTrigger++
             }
+
         )
         return
     }
