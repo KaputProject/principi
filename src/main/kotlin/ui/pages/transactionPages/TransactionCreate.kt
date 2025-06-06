@@ -17,7 +17,7 @@ import ui.dataClasses.statemant.Statement
 import ui.dataClasses.user.User
 
 @Composable
-fun TransactionCreate(  // Naj bo ime z veliko začetnico skladno z običaji
+fun TransactionCreate(
     user: User,
     statement: Statement,
     onBackClick: () -> Unit,
@@ -35,172 +35,132 @@ fun TransactionCreate(  // Naj bo ime z veliko začetnico skladno z običaji
 
     var message by remember { mutableStateOf<String?>(null) }
 
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text("Ustvari novo transakcijo", style = MaterialTheme.typography.h5)
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = accountIban,
-            onValueChange = { accountIban = it },
-            label = { Text("IBAN računa") },
-            modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colors.primary,
-                unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
-                textColor = MaterialTheme.colors.onSurface,
-                cursorColor = MaterialTheme.colors.primary
-            )
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedTextField(
-            value = locationId,
-            onValueChange = { locationId = it },
-            label = { Text("ID lokacije (neobvezno)") },
-            modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colors.primary,
-                unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
-                textColor = MaterialTheme.colors.onSurface,
-                cursorColor = MaterialTheme.colors.primary
-            )
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedTextField(
-            value = datetime,
-            onValueChange = { datetime = it },
-            label = { Text("Datum in čas (ISO 8601)") },
-            modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colors.primary,
-                unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
-                textColor = MaterialTheme.colors.onSurface,
-                cursorColor = MaterialTheme.colors.primary
-            )
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedTextField(
-            value = description,
-            onValueChange = { description = it },
-            label = { Text("Opis") },
-            modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colors.primary,
-                unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
-                textColor = MaterialTheme.colors.onSurface,
-                cursorColor = MaterialTheme.colors.primary
-            )
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedTextField(
-            value = change,
-            onValueChange = { change = it },
-            label = { Text("Znesek spremembe") },
-            modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colors.primary,
-                unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
-                textColor = MaterialTheme.colors.onSurface,
-                cursorColor = MaterialTheme.colors.primary
-            )
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Checkbox(
-                checked = outgoing,
-                onCheckedChange = { outgoing = it },
-                colors = CheckboxDefaults.colors(
-                    checkedColor = MaterialTheme.colors.primary,
-                    uncheckedColor = MaterialTheme.colors.onSurface.copy(alpha = 0.6f),
-                    checkmarkColor = MaterialTheme.colors.onPrimary
-                )
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("Odhodna transakcija", color = MaterialTheme.colors.onSurface)
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedTextField(
-            value = reference,
-            onValueChange = { reference = it },
-            label = { Text("Referenca (neobvezno)") },
-            modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colors.primary,
-                unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
-                textColor = MaterialTheme.colors.onSurface,
-                cursorColor = MaterialTheme.colors.primary
-            )
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(
-            onClick = {
-                coroutineScope.launch {
-                    try {
-                        val account = AccountInfo(
-                            iban = accountIban,
-                            _id = statement.account?._id ?: "",
-                        )
-                        val location: Location? = if (locationId.isNotBlank()) {
-                            Location(
-                                _id = locationId,
-                                name = "",
-                                identifier = "",
-                                description = "",
-                                address = "",
-                                lat = null,
-                                lng = null
-                            )
-                        } else null
-
-                        val transactionCreate = TransactionCreate(
-                            userId = user.id.toString(),
-                            account = account,
-                            location = location,
-                            datetime = datetime,
-                            description = description,
-                            change = change.toDoubleOrNull() ?: 0.0,
-                            outgoing = outgoing,
-                            reference = if (reference.isBlank()) null else reference
-                        )
-
-                        val response = createTransaction(transactionCreate)
-                        onTransactionCreated(response.transaction)
-                    } catch (e: Exception) {
-                        message = "Napaka pri ustvarjanju transakcije: ${e.message}"
-                    }
-                }
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Ustvari")
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedButton(
-            onClick = onBackClick,
-            modifier = Modifier.weight(1f),
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = colors.secondary,
-            ),
-        ) {
-            Text("Nazaj")
-        }
-
-        message?.let {
+    Box(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Text("Ustvari novo transakcijo", style = MaterialTheme.typography.h5)
             Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                it,
-                color = if (it.startsWith("Napaka")) MaterialTheme.colors.error else MaterialTheme.colors.primary
+
+            OutlinedTextField(
+                value = accountIban,
+                onValueChange = { accountIban = it },
+                label = { Text("IBAN računa") },
+                modifier = Modifier.fillMaxWidth()
             )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedTextField(
+                value = locationId,
+                onValueChange = { locationId = it },
+                label = { Text("ID lokacije (neobvezno)") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedTextField(
+                value = datetime,
+                onValueChange = { datetime = it },
+                label = { Text("Datum in čas (ISO 8601)") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedTextField(
+                value = description,
+                onValueChange = { description = it },
+                label = { Text("Opis") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedTextField(
+                value = change,
+                onValueChange = { change = it },
+                label = { Text("Znesek spremembe") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Checkbox(checked = outgoing, onCheckedChange = { outgoing = it })
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Odhodna transakcija")
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedTextField(
+                value = reference,
+                onValueChange = { reference = it },
+                label = { Text("Referenca (neobvezno)") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            message?.let {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    it,
+                    color = if (it.startsWith("Napaka")) MaterialTheme.colors.error else MaterialTheme.colors.primary
+                )
+            }
+
+            Spacer(modifier = Modifier.weight(1f)) // Potisne gumbe na dno
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Button(
+                    onClick = {
+                        coroutineScope.launch {
+                            try {
+                                val account = AccountInfo(
+                                    iban = accountIban,
+                                    _id = statement.account?._id ?: "",
+                                )
+                                val location: Location? = if (locationId.isNotBlank()) {
+                                    Location(
+                                        _id = locationId,
+                                        name = "",
+                                        identifier = "",
+                                        description = "",
+                                        address = "",
+                                        lat = null,
+                                        lng = null
+                                    )
+                                } else null
+
+                                val transactionCreate = TransactionCreate(
+                                    userId = user.id.toString(),
+                                    account = account,
+                                    location = location,
+                                    datetime = datetime,
+                                    description = description,
+                                    change = change.toDoubleOrNull() ?: 0.0,
+                                    outgoing = outgoing,
+                                    reference = if (reference.isBlank()) null else reference
+                                )
+
+                                val response = createTransaction(transactionCreate)
+                                onTransactionCreated(response.transaction)
+                            } catch (e: Exception) {
+                                message = "Napaka pri ustvarjanju transakcije: ${e.message}"
+                            }
+                        }
+                    },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("Ustvari")
+                }
+
+                OutlinedButton(
+                    onClick = onBackClick,
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = colors.secondary)
+                ) {
+                    Text("Nazaj")
+                }
+            }
         }
     }
 }
+
