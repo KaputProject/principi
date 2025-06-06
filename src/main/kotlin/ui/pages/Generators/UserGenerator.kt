@@ -19,7 +19,6 @@ import ui.components.cards.UserCard
 fun UserGenerator() {
     val faker = remember { Faker() }
     val coroutineScope = rememberCoroutineScope()
-
     var userCountInput by remember { mutableStateOf("") }
     var statusMessage by remember { mutableStateOf<String?>(null) }
     var isGenerating by remember { mutableStateOf(false) }
