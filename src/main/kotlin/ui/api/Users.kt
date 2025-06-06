@@ -44,7 +44,8 @@ suspend fun showUser(
                     append("Authorization", "Bearer $token")
                 }
             }
-            //setBody(mapOf("userId" to userId))
+            contentType(ContentType.Application.Json)
+            setBody(mapOf("userId" to userId))
         }
 
         if (response.status.isSuccess()) {
