@@ -101,11 +101,14 @@ fun UserMenu(
     }
 
     selectedTransaction?.let { transaction ->
-        TransactionShow(
-            transaction = transaction,
-            onBackClick = { selectedTransaction = null },
-            onEditClick = { editingTransaction = it }
-        )
+        user.id?.let {
+            TransactionShow(
+                transaction = transaction,
+                onBackClick = { selectedTransaction = null },
+                onEditClick = { editingTransaction = it },
+                userId = it
+            )
+        }
         return
     }
 
@@ -114,14 +117,14 @@ fun UserMenu(
         Text(
             text = "Uporabniški meni",
             style = MaterialTheme.typography.h4,
-            color = MaterialTheme.colors.primary
+            color = colors.primary
         )
         Spacer(modifier = Modifier.height(16.dp))
 
         Card(
             elevation = 4.dp,
             modifier = Modifier.fillMaxWidth(),
-            backgroundColor = MaterialTheme.colors.surface
+            backgroundColor = colors.surface
         ) {
             Row(
                 modifier = Modifier
@@ -204,12 +207,12 @@ fun InfoRow(label: String, value: String?) {
     Text(
         text = label,
         style = MaterialTheme.typography.h6,
-        color = MaterialTheme.colors.primary
+        color = colors.primary
     )
     Text(
         text = value ?: "Ni podatka",
         style = MaterialTheme.typography.body1.copy(fontSize = MaterialTheme.typography.body1.fontSize.times(1.2f)),
-        color = MaterialTheme.colors.onSurface
+        color = colors.onSurface
     )
     Spacer(modifier = Modifier.height(12.dp))
 }

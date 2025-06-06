@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 data class TransactionCreate(
     val userId: String,
     val account: AccountInfo,
-    val location: Location? = null,
+    val location: String? = null,
     val datetime: String,
     val description: String,
     val change: Double,

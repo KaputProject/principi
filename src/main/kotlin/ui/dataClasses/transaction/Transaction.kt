@@ -12,7 +12,7 @@ data class Transaction(
     val id: String,
     val user: String,
     val account: AccountInfo,
-    val location: Location? = null,
+    val location: String? = null,
     val datetime: String,
     val description: String,
     val change: Double,

@@ -9,6 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import ui.api.createTransaction
+import ui.api.getLocations
+import ui.components.cards.LocationCard
 import ui.dataClasses.transaction.Transaction
 import ui.dataClasses.transaction.TransactionCreate
 import ui.dataClasses.account.AccountInfo
@@ -32,8 +34,14 @@ fun TransactionCreate(
     var reference by remember { mutableStateOf("") }
     var accountIban by remember { mutableStateOf(statement.account?.iban ?: "") }
     var datetime by remember { mutableStateOf(statement.startDate ?: "") }
+    var selectedLocation by remember { mutableStateOf<Location?>(null) }
+    var showLocationSelector by remember { mutableStateOf(false) }
+    var locations by remember { mutableStateOf<List<Location>>(emptyList()) }
 
     var message by remember { mutableStateOf<String?>(null) }
+    LaunchedEffect(user.id) {
+        locations = getLocations(user.id.toString())
+    }
 
     Box(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -48,13 +56,25 @@ fun TransactionCreate(
             )
             Spacer(modifier = Modifier.height(8.dp))
 
-            OutlinedTextField(
-                value = locationId,
-                onValueChange = { locationId = it },
-                label = { Text("ID lokacije (neobvezno)") },
-                modifier = Modifier.fillMaxWidth()
-            )
+            Text(text = "Izbrana lokacija: ${selectedLocation?.name ?: "Ni izbrana"}")
             Spacer(modifier = Modifier.height(8.dp))
+
+            Button(onClick = { showLocationSelector = true }) {
+                Text("Izberi lokacijo")
+            }
+            if (showLocationSelector) {
+                Column {
+                    Text("Izberi lokacijo", style = MaterialTheme.typography.h6)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    locations.forEach { location ->
+                        LocationCard(location = location) {
+                            selectedLocation = location
+                            showLocationSelector = false
+                        }
+                    }
+                }
+            }
+
 
             OutlinedTextField(
                 value = datetime,
@@ -117,22 +137,11 @@ fun TransactionCreate(
                                     iban = accountIban,
                                     _id = statement.account?._id ?: "",
                                 )
-                                val location: Location? = if (locationId.isNotBlank()) {
-                                    Location(
-                                        _id = locationId,
-                                        name = "",
-                                        identifier = "",
-                                        description = "",
-                                        address = "",
-                                        lat = null,
-                                        lng = null
-                                    )
-                                } else null
-
+                                val locationId: String? = selectedLocation?._id
                                 val transactionCreate = TransactionCreate(
                                     userId = user.id.toString(),
                                     account = account,
-                                    location = location,
+                                    location = locationId,
                                     datetime = datetime,
                                     description = description,
                                     change = change.toDoubleOrNull() ?: 0.0,

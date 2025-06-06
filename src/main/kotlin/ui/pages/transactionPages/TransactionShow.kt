@@ -4,18 +4,33 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.colors
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import ui.api.showLocation
 import ui.dataClasses.transaction.Transaction
 
 @Composable
 fun TransactionShow(
     transaction: Transaction,
     onBackClick: () -> Unit,
-    onEditClick: (Transaction) -> Unit
+    onEditClick: (Transaction) -> Unit,
+    userId: String // Dodaj userId za klic showLocation
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    var locationName by remember { mutableStateOf<String?>(null) }
+
+    // Ko se transaction.location._id spremeni, naloži lokacijo
+    LaunchedEffect(transaction.location) {
+        val locId = transaction.location
+        if (locId != null) {
+            val result = showLocation(userId, locId)
+            locationName = result.getOrNull()?.name ?: "N/A"
+        } else {
+            locationName = "N/A"
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -27,21 +42,21 @@ fun TransactionShow(
             Text(
                 text = "Podrobnosti transakcije",
                 style = MaterialTheme.typography.h5,
-                color = MaterialTheme.colors.onBackground
+                color = colors.onBackground
             )
             Spacer(modifier = Modifier.height(16.dp))
 
             InfoRow("ID", transaction.id)
-            InfoRow("Uporabnik", transaction.user.toString())
+            InfoRow("Uporabnik", transaction.user)
             InfoRow("Račun", transaction.account.iban)
-            InfoRow("Lokacija", transaction.location?.name ?: "N/A")
+            InfoRow("Lokacija", locationName ?: "Nalaganje...")
             InfoRow("Datum in čas", transaction.datetime)
             InfoRow("Opis", transaction.description)
 
             Text(
                 text = "Znesek: ${if (transaction.outgoing) "-" else "+"}${transaction.change}",
                 style = MaterialTheme.typography.body1,
-                color = if (transaction.outgoing) MaterialTheme.colors.error else MaterialTheme.colors.primary,
+                color = if (transaction.outgoing) colors.error else colors.primary,
                 modifier = Modifier.padding(vertical = 8.dp)
             )
 
@@ -69,6 +84,7 @@ fun TransactionShow(
         }
     }
 }
+
 
 @Composable
 private fun InfoRow(label: String, value: String) {
