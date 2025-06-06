@@ -138,6 +138,10 @@ fun TransactionCreate(
                                     _id = statement.account?._id ?: "",
                                 )
                                 val locationId: String? = selectedLocation?._id
+
+                                // Parsiraj leto iz datetime (predpostavljam ISO 8601 format: "2025-06-06T15:23:00")
+                                val year = datetime.take(4).toIntOrNull() ?: java.time.LocalDate.now().year
+
                                 val transactionCreate = TransactionCreate(
                                     userId = user.id.toString(),
                                     account = account,
@@ -146,8 +150,12 @@ fun TransactionCreate(
                                     description = description,
                                     change = change.toDoubleOrNull() ?: 0.0,
                                     outgoing = outgoing,
-                                    reference = if (reference.isBlank()) null else reference
+                                    reference = if (reference.isBlank()) null else reference,
+                                    // Če tvoj TransactionCreate model podpira year, nastavi ga tukaj:
+                                    // year = year
                                 )
+
+                                // Če moraš poslati year še posebej (odvisno od API-ja), naredi to tukaj.
 
                                 val response = createTransaction(transactionCreate)
                                 onTransactionCreated(response.transaction)
@@ -155,6 +163,7 @@ fun TransactionCreate(
                                 message = "Napaka pri ustvarjanju transakcije: ${e.message}"
                             }
                         }
+
                     },
                     modifier = Modifier.weight(1f)
                 ) {

@@ -8,7 +8,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ui.api.showLocation
+import ui.api.showUser
 import ui.dataClasses.transaction.Transaction
+import ui.pages.userPages.InfoRow
+import ui.dataClasses.user.User
 
 @Composable
 fun TransactionShow(
@@ -19,17 +22,27 @@ fun TransactionShow(
 ) {
     val coroutineScope = rememberCoroutineScope()
     var locationName by remember { mutableStateOf<String?>(null) }
+    var user by remember { mutableStateOf<User?>(null) }
 
-    // Ko se transaction.location._id spremeni, naloži lokacijo
-    LaunchedEffect(transaction.location) {
-        val locId = transaction.location
-        if (locId != null) {
-            val result = showLocation(userId, locId)
-            locationName = result.getOrNull()?.name ?: "N/A"
-        } else {
+    LaunchedEffect(transaction.location, transaction.user) {
+        // Naloži lokacijo, če obstaja
+        transaction.location?.let { loc ->
+            val locationResult = showLocation(userId, loc._id)
+            locationName = locationResult.getOrNull()?.name ?: "N/A"
+        } ?: run {
             locationName = "N/A"
         }
+        val result = showUser(transaction.user)
+        if (result.isSuccess) {
+            user = result.getOrNull()
+            println("Uporabnik uspešno naložen: ${user?.name} ${user?.surname}")
+        } else {
+            println("Napaka pri nalaganju uporabnika: ${result.exceptionOrNull()}")
+        }
+
+
     }
+
 
     Column(
         modifier = Modifier
@@ -47,7 +60,9 @@ fun TransactionShow(
             Spacer(modifier = Modifier.height(16.dp))
 
             InfoRow("ID", transaction.id)
-            InfoRow("Uporabnik", transaction.user)
+            InfoRow("Uporabnik", user?.let { "${it.name} ${it.surname}" } ?: "Nalaganje...")
+            InfoRow("Email", user?.email ?: "N/A")
+            InfoRow("Uporabniško ime", user?.username ?: "N/A")
             InfoRow("Račun", transaction.account.iban)
             InfoRow("Lokacija", locationName ?: "Nalaganje...")
             InfoRow("Datum in čas", transaction.datetime)

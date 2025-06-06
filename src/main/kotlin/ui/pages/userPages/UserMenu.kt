@@ -95,7 +95,12 @@ fun UserMenu(
             onCreateTransactionClick = { stmt ->
                 creatingTransactionForStatement = stmt
                 selectedStatement = null
+            },
+            onTransactionClick = {
+                selectedTransaction = it.toTransaction()
+                selectedStatement = null
             }
+
         )
         return
     }
