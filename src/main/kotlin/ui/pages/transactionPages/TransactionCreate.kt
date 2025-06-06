@@ -1,5 +1,6 @@
 package ui.pages.transactionPages
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.colors
@@ -9,8 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import ui.api.createTransaction
+import ui.api.getAccounts
 import ui.api.getLocations
 import ui.components.cards.LocationCard
+import ui.dataClasses.account.Account
 import ui.dataClasses.transaction.Transaction
 import ui.dataClasses.transaction.TransactionCreate
 import ui.dataClasses.account.AccountInfo
@@ -21,7 +24,7 @@ import ui.dataClasses.user.User
 @Composable
 fun TransactionCreate(
     user: User,
-    statement: Statement,
+    statement: Statement? = null,
     onBackClick: () -> Unit,
     onTransactionCreated: (Transaction) -> Unit
 ) {
@@ -32,15 +35,19 @@ fun TransactionCreate(
     var change by remember { mutableStateOf("") }
     var outgoing by remember { mutableStateOf(false) }
     var reference by remember { mutableStateOf("") }
-    var accountIban by remember { mutableStateOf(statement.account?.iban ?: "") }
-    var datetime by remember { mutableStateOf(statement.startDate ?: "") }
+    var accountIban by remember { mutableStateOf(statement?.account?.iban ?: "") }
+    var datetime by remember { mutableStateOf(statement?.startDate ?: "") }
     var selectedLocation by remember { mutableStateOf<Location?>(null) }
     var showLocationSelector by remember { mutableStateOf(false) }
     var locations by remember { mutableStateOf<List<Location>>(emptyList()) }
+    var accounts by remember { mutableStateOf<List<Account>>(emptyList()) }
+    var expanded by remember { mutableStateOf(false) }
 
     var message by remember { mutableStateOf<String?>(null) }
     LaunchedEffect(user.id) {
         locations = getLocations(user.id.toString())
+        accounts = getAccounts(user.id.toString())
+
     }
 
     Box(modifier = Modifier.fillMaxSize().padding(16.dp)) {
@@ -48,12 +55,42 @@ fun TransactionCreate(
             Text("Ustvari novo transakcijo", style = MaterialTheme.typography.h5)
             Spacer(modifier = Modifier.height(16.dp))
 
-            OutlinedTextField(
-                value = accountIban,
-                onValueChange = { accountIban = it },
-                label = { Text("IBAN računa") },
-                modifier = Modifier.fillMaxWidth()
-            )
+            if (statement == null) {
+                Box {
+                    OutlinedTextField(
+                        value = accountIban,
+                        onValueChange = { accountIban = it },
+                        label = { Text("IBAN računa") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { expanded = true },
+                        readOnly = true
+                    )
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        accounts.forEach { account ->
+                            DropdownMenuItem(onClick = {
+                                accountIban = account.iban
+                                expanded = false
+                            }) {
+                                Text("${account.iban} (${account.currency}, ${account.balance})")
+                            }
+                        }
+                    }
+                }
+            } else {
+                OutlinedTextField(
+                    value = accountIban,
+                    onValueChange = { accountIban = it },
+                    label = { Text("IBAN računa") },
+                    modifier = Modifier.fillMaxWidth(),
+                    readOnly = true
+                )
+            }
+
+
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(text = "Izbrana lokacija: ${selectedLocation?.name ?: "Ni izbrana"}")
@@ -133,13 +170,18 @@ fun TransactionCreate(
                     onClick = {
                         coroutineScope.launch {
                             try {
+                                // Tukaj dodaj preverjanje
+                                if (accountIban.isBlank()) {
+                                    message = "Prosimo, izberi račun."
+                                    return@launch
+                                }
+
                                 val account = AccountInfo(
                                     iban = accountIban,
-                                    _id = statement.account?._id ?: "",
+                                    _id = statement?.account?._id ?: "",
                                 )
                                 val locationId: String? = selectedLocation?._id
 
-                                // Parsiraj leto iz datetime (predpostavljam ISO 8601 format: "2025-06-06T15:23:00")
                                 val year = datetime.take(4).toIntOrNull() ?: java.time.LocalDate.now().year
 
                                 val transactionCreate = TransactionCreate(
@@ -151,11 +193,7 @@ fun TransactionCreate(
                                     change = change.toDoubleOrNull() ?: 0.0,
                                     outgoing = outgoing,
                                     reference = if (reference.isBlank()) null else reference,
-                                    // Če tvoj TransactionCreate model podpira year, nastavi ga tukaj:
-                                    // year = year
                                 )
-
-                                // Če moraš poslati year še posebej (odvisno od API-ja), naredi to tukaj.
 
                                 val response = createTransaction(transactionCreate)
                                 onTransactionCreated(response.transaction)
@@ -163,12 +201,12 @@ fun TransactionCreate(
                                 message = "Napaka pri ustvarjanju transakcije: ${e.message}"
                             }
                         }
-
                     },
                     modifier = Modifier.weight(1f)
                 ) {
                     Text("Ustvari")
                 }
+
 
                 OutlinedButton(
                     onClick = onBackClick,

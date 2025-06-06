@@ -15,6 +15,7 @@ import ui.pages.locationPages.*
 import ui.pages.userPages.*
 import ui.pages.Generators.*
 import ui.pages.*
+import ui.pages.transactionPages.TransactionCreate
 
 @Composable
 fun App() {
@@ -89,7 +90,10 @@ fun App() {
                                 onLocationClick = {
                                     currentPage = 12
                                 },
-                                onBackClick = { currentPage = 2 }
+                                onBackClick = { currentPage = 2 },
+                                onCreateTransactionClick = {
+                                    currentPage = 17 // nova stran za ustvarjanje transakcije brez izpiska
+                                }
                             )
                         } ?: Text("Napaka: uporabnik ni izbran.", color = MaterialTheme.colors.error)
 
@@ -197,6 +201,16 @@ fun App() {
                             )
                         } ?: Text("Napaka: uporabnik ni izbran.", color = MaterialTheme.colors.error)
                         16 -> UserGenerator()
+                        17 -> selectedUser?.let { user ->
+                            TransactionCreate(
+                                user = user,
+                                statement = null, // brez izpiska
+                                onBackClick = { currentPage = 8 },
+                                onTransactionCreated = {
+                                    currentPage = 8
+                                }
+                            )
+                        } ?: Text("Napaka: uporabnik ni izbran.", color = MaterialTheme.colors.error)
 
                     }
                 }
