@@ -33,6 +33,7 @@ suspend fun login(username: String, password: String): String? {
         null
     }
 }
+
 suspend fun showUser(
     userId: String,
 ): Result<User> {
@@ -56,6 +57,7 @@ suspend fun showUser(
         Result.failure(e)
     }
 }
+
 suspend fun deleteUser(userId: String): Result<String> {
     return try {
         val response = client.delete("$url/users/$userId") {
@@ -74,6 +76,7 @@ suspend fun deleteUser(userId: String): Result<String> {
         Result.failure(e)
     }
 }
+
 suspend fun createUser(
     username: String, password: String, name: String,
     surname: String, email: String, dateOfBirth: String

@@ -13,6 +13,7 @@ import ui.dataClasses.user.User
 import ui.pages.accountPages.*
 import ui.pages.locationPages.*
 import ui.pages.userPages.*
+import ui.pages.Generators.*
 import ui.pages.*
 
 @Composable
@@ -57,7 +58,10 @@ fun App() {
                             currentPage = 8
                         })
                         3 -> Scraper()
-                        4 -> Generator()
+                        4 -> Generator(
+                            onGoToUserGenerator = { currentPage = 16 }
+                        )
+
                         6 -> selectedUser?.let {
                             AccountCreate(
                                 user = it,
@@ -192,6 +196,7 @@ fun App() {
                                 }
                             )
                         } ?: Text("Napaka: uporabnik ni izbran.", color = MaterialTheme.colors.error)
+                        16 -> UserGenerator()
 
                     }
                 }

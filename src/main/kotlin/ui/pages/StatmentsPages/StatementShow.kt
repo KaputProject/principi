@@ -10,14 +10,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ui.api.showTransaction
-import ui.components.cards.TransactionCard
 import ui.dataClasses.statemant.Statement
-import ui.dataClasses.transaction.Transaction
-
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
 import ui.components.cards.TransactionCardUser
-import ui.components.colors.OrangeSecondary
 import ui.dataClasses.transaction.TransactionUser
 
 @Composable
