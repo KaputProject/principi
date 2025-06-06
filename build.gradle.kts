@@ -27,9 +27,7 @@ repositories {
 dependencies {
     // 🖥️ UI: JetBrains Compose za Desktop
     implementation(compose.desktop.currentOs)
-
-
-
+    implementation("io.github.serpro69:kotlin-faker:2.0.0-rc.10")
 
 
     // 🧪 Testiranje
