@@ -24,8 +24,10 @@ fun UserMenu(
     onEditClick: (User) -> Unit,
     onAccountClick: (User) -> Unit,
     onLocationClick: (User) -> Unit,
-    onBackClick: () -> Unit
-) {
+    onBackClick: () -> Unit,
+    onCreateTransactionClick: () -> Unit,
+
+    ) {
     var transactions by remember { mutableStateOf<List<Transaction>>(emptyList()) }
     var statements by remember { mutableStateOf<List<Statement>>(emptyList()) }
     var selectedStatement by remember { mutableStateOf<Statement?>(null) }
@@ -193,8 +195,18 @@ fun UserMenu(
             }
 
         }
+        Spacer(modifier = Modifier.height(12.dp))
+        Button(
+            onClick = {
+                onCreateTransactionClick()
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Ustvari transakcijo brez izpiska")
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
+
 
         Row(modifier = Modifier.fillMaxSize()) {
             Statements(
