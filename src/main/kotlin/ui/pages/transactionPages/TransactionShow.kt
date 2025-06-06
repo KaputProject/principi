@@ -18,7 +18,7 @@ fun TransactionShow(
     transaction: Transaction,
     onBackClick: () -> Unit,
     onEditClick: (Transaction) -> Unit,
-    userId: String // Dodaj userId za klic showLocation
+    userId: String
 ) {
     val coroutineScope = rememberCoroutineScope()
     var locationName by remember { mutableStateOf<String?>(null) }
@@ -35,7 +35,7 @@ fun TransactionShow(
         val result = showUser(transaction.user)
         if (result.isSuccess) {
             user = result.getOrNull()
-            println("Uporabnik uspešno naložen: ${user?.name} ${user?.surname}")
+            println("Uporabnik uspešno naložen: ${transaction.user}")
         } else {
             println("Napaka pri nalaganju uporabnika: ${result.exceptionOrNull()}")
         }

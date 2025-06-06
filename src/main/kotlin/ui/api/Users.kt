@@ -43,6 +43,7 @@ suspend fun showUser(
                     append("Authorization", "Bearer $token")
                 }
             }
+            //setBody(mapOf("userId" to userId))
         }
 
         if (response.status.isSuccess()) {
