@@ -25,7 +25,8 @@ fun StatementShow(
     statement: Statement,
     onBackClick: () -> Unit,
     onEditClick: (Statement) -> Unit,
-    onCreateTransactionClick: (Statement) -> Unit
+    onCreateTransactionClick: (Statement) -> Unit,
+    onTransactionClick: (TransactionUser) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     val transactionState = remember { mutableStateOf<List<TransactionUser>>(emptyList()) }
@@ -42,6 +43,7 @@ fun StatementShow(
         transactionState.value = loadedTransactions
         loadingState.value = false
     }
+
 
     Column(
         modifier = Modifier
@@ -92,6 +94,7 @@ fun StatementShow(
                 }
             }
 
+
             Spacer(modifier = Modifier.height(16.dp))
             Divider()
             Spacer(modifier = Modifier.height(8.dp))
@@ -117,7 +120,7 @@ fun StatementShow(
                     items(transactionState.value) { transaction ->
                         TransactionCardUser(
                             transaction = transaction,
-                            onClick = { /* klik za več info */ }
+                            onClick = { onTransactionClick(transaction) }  // pass the clicked transaction here
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                     }

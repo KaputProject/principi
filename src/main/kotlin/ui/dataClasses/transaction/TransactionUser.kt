@@ -21,4 +21,21 @@ data class TransactionUser(
 
     @Serializable(with = FlexibleLongAsStringSerializer::class)
     val reference: String? = null
-)
+) {
+    fun toTransaction(): Transaction {
+        return Transaction(
+            id = id,
+            user = user.id.toString(),
+            account = account,
+            location = location,
+            datetime = datetime,
+            description = description,
+            change = change,
+            outgoing = outgoing,
+            reference = reference
+        )
+    }
+
+
+
+}

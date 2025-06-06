@@ -36,12 +36,14 @@ fun TransactionEdit(
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            OutlinedTextField(
-                value = description,
-                onValueChange = { description = it },
-                label = { Text("Opis") },
-                modifier = Modifier.fillMaxWidth()
-            )
+            description?.let {
+                OutlinedTextField(
+                    value = it,
+                    onValueChange = { description = it },
+                    label = { Text("Opis") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
             Spacer(modifier = Modifier.height(8.dp))
 
             OutlinedTextField(
@@ -85,29 +87,35 @@ fun TransactionEdit(
                 Button(
                     onClick = {
                         coroutineScope.launch {
-                            val result = updateTransaction(
-                                transactionId = initialTransaction.id,
-                                description = description,
-                                change = change.toDoubleOrNull() ?: 0.0,
-                                datetime = datetime,
-                                reference = reference,
-                                userId = initialTransaction.user.toString(),
-                            )
-
-                            result.onSuccess {
-                                onTransactionUpdated(
-                                    initialTransaction.copy(
-                                        description = description,
-                                        change = change.toDoubleOrNull() ?: initialTransaction.change,
-                                        datetime = datetime,
-                                        reference = if (reference.isBlank()) null else reference
-                                    )
+                            val result = description?.let {
+                                updateTransaction(
+                                    transactionId = initialTransaction.id,
+                                    description = it,
+                                    change = change.toDoubleOrNull() ?: 0.0,
+                                    datetime = datetime,
+                                    reference = reference,
+                                    userId = initialTransaction.user.toString(),
                                 )
-                                message = "Transakcija uspešno posodobljena."
                             }
 
-                            result.onFailure {
-                                message = "Napaka: ${it.message}"
+                            if (result != null) {
+                                result.onSuccess {
+                                    onTransactionUpdated(
+                                        initialTransaction.copy(
+                                            description = description,
+                                            change = change.toDoubleOrNull() ?: initialTransaction.change,
+                                            datetime = datetime,
+                                            reference = if (reference.isBlank()) null else reference
+                                        )
+                                    )
+                                    message = "Transakcija uspešno posodobljena."
+                                }
+                            }
+
+                            if (result != null) {
+                                result.onFailure {
+                                    message = "Napaka: ${it.message}"
+                                }
                             }
 
                             onBackClick()

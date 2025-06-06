@@ -1,15 +1,14 @@
 package ui.api
 
 import io.github.cdimascio.dotenv.dotenv
+import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.serialization.json.Json
 import ui.AuthState
-import ui.dataClasses.locations.LocationCreateRequest
-import ui.dataClasses.locations.Location
-import ui.dataClasses.locations.LocationResponse
-import ui.dataClasses.locations.LocationUpdateRequest
+import ui.dataClasses.locations.*
+import ui.dataClasses.transaction.TransactionUser
 import ui.pages.userPages.client
 
 private val dotenv = dotenv()
@@ -29,8 +28,8 @@ suspend fun getLocations(userId: String): List<Location> {
         }
         if (response.status.isSuccess()) {
             val responseBody = response.bodyAsText()
-            val locationResponse = json.decodeFromString<LocationResponse>(responseBody)
-            locationResponse.locations
+            val locationsResponse = json.decodeFromString<LocationsResponse>(responseBody)
+            locationsResponse.locations
         } else {
             emptyList()
         }
@@ -39,7 +38,30 @@ suspend fun getLocations(userId: String): List<Location> {
     }
 }
 
+suspend fun showLocation(
+    userId: String,
+    locationId: String,
+): Result<Location> {
+    return try {
+        val response = client.get("$url/locations/$locationId") {
+            AuthState.token?.let { token ->
+                headers {
+                    append("Authorization", "Bearer $token")
+                }
+            }
+            setBody(mapOf("userId" to userId))
+        }
 
+        if (response.status.isSuccess()) {
+            val location = response.body<Location>()
+            Result.success(location)
+        } else {
+            Result.failure(Exception("Server error: ${response.bodyAsText()}"))
+        }
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+}
 
 
 suspend fun updateLocation(
@@ -81,14 +103,9 @@ suspend fun updateLocation(
         Result.failure(e)
     }
 }
+
 suspend fun createLocation(
-    userId: String,
-    name: String,
-    identifier: String,
-    description: String,
-    address: String,
-    lat: Double?,
-    lng: Double?
+    userId: String, name: String, identifier: String, description: String, address: String, lat: Double?, lng: Double?
 ): Result<String> {
     return try {
         val body = LocationCreateRequest(

@@ -7,8 +7,10 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import ui.pages.userPages.client
 import io.github.cdimascio.dotenv.dotenv
+import io.ktor.client.call.*
 import ui.AuthState
 import kotlinx.serialization.json.*
+import ui.dataClasses.locations.Location
 
 private val dotenv = dotenv()
 private val url = dotenv["API_URL"] ?: "http://localhost:5000"
@@ -31,7 +33,29 @@ suspend fun login(username: String, password: String): String? {
         null
     }
 }
+suspend fun showUser(
+    userId: String,
+): Result<User> {
+    return try {
+        val response = client.get("$url/users/$userId") {
+            AuthState.token?.let { token ->
+                headers {
+                    append("Authorization", "Bearer $token")
+                }
+            }
+            //setBody(mapOf("userId" to userId))
+        }
 
+        if (response.status.isSuccess()) {
+            val user = response.body<User>()
+            Result.success(user)
+        } else {
+            Result.failure(Exception("Server error: ${response.bodyAsText()}"))
+        }
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+}
 suspend fun deleteUser(userId: String): Result<String> {
     return try {
         val response = client.delete("$url/users/$userId") {

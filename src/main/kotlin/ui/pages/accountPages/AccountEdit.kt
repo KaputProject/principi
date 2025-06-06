@@ -7,10 +7,11 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
 import ui.api.updateAccount
 import ui.dataClasses.account.Account
 import ui.dataClasses.user.User
+import kotlinx.coroutines.launch
+
 import ui.enums.Currency
 
 import androidx.compose.foundation.layout.Box
