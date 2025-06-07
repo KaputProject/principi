@@ -17,15 +17,16 @@ import androidx.compose.ui.window.AwtWindow
 import classes.PdfParser
 import classes.StatementParameters
 import com.google.gson.GsonBuilder
+import exchange.ExchangeRatesApi
 import google.MapSearch
 import google.Place
 import io.github.cdimascio.dotenv.dotenv
-import java.awt.FileDialog
-import java.awt.Frame
-import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.awt.FileDialog
+import java.awt.Frame
+import java.io.File
 
 @Composable
 fun Scraper() {
@@ -35,21 +36,22 @@ fun Scraper() {
     var filePath by remember { mutableStateOf<String?>(null) }
     var openFileDialog by remember { mutableStateOf(false) }
 
-    val parser = remember { PdfParser() }
-
     var mapQuery by remember { mutableStateOf("") }
-    var places by remember { mutableStateOf<List<Place>>(emptyList()) }
-    var isLoading by remember { mutableStateOf(false) }
+    var exchangeBase by remember { mutableStateOf("EUR") }
+
+    val coroutineScope = rememberCoroutineScope()
+    val parser = remember { PdfParser() }
+    val gson = remember { GsonBuilder().setPrettyPrinting().create() }
 
     val dotenv = dotenv {
         directory = "src/main/resources"
         ignoreIfMissing = true
     }
-    val apiKey = dotenv["GOOGLE_API_KEY"] ?: System.getenv("GOOGLE_API_KEY") ?: error("API ključ ni nastavljen.")
 
-    val coroutineScope = rememberCoroutineScope()
-    val mapSearch = remember { MapSearch(apiKey) }
-    val gson = GsonBuilder().setPrettyPrinting().create()
+    val googleApiKey = dotenv["GOOGLE_API_KEY"] ?: System.getenv("GOOGLE_API_KEY") ?: error("GOOGLE_API_KEY is not set.")
+    val mapSearch = remember { MapSearch(googleApiKey) }
+
+    val exchangeRatesApi = remember { ExchangeRatesApi() }
 
     Column(
         modifier = Modifier
@@ -58,9 +60,9 @@ fun Scraper() {
             .verticalScroll(rememberScrollState())
     ) {
         Text("PDF parser test", fontSize = 22.sp, fontWeight = FontWeight.Bold)
-
         Spacer(Modifier.height(16.dp))
 
+        // PDF Params
         Card(
             shape = RoundedCornerShape(12.dp),
             elevation = 4.dp,
@@ -95,10 +97,10 @@ fun Scraper() {
             Text("Naloži PDF in razčleni")
         }
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(24.dp))
 
+        // Google Maps
         Text("Google Maps test", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-
         Spacer(Modifier.height(12.dp))
 
         OutlinedTextField(
@@ -111,20 +113,45 @@ fun Scraper() {
         Button(
             onClick = {
                 coroutineScope.launch {
-                    val result = withContext(Dispatchers.IO) {
-                        mapSearch.search(mapQuery)
-                    }
-
-                    consoleOutput = gson.toJson(result)
+                    val results = withContext(Dispatchers.IO) { mapSearch.search(mapQuery) }
+                    consoleOutput = gson.toJson(results)
                 }
             }
         ) {
             Text("Išči")
         }
 
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(24.dp))
 
+        // Exchange Rates
+        Text("Exchange Rates", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+        Spacer(Modifier.height(12.dp))
+
+        OutlinedTextField(
+            value = exchangeBase,
+            onValueChange = { exchangeBase = it },
+            label = { Text("Valuta baze (npr. EUR, USD)") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Button(
+            onClick = {
+                coroutineScope.launch {
+                    val rates = withContext(Dispatchers.IO) {
+                        exchangeRatesApi.get(exchangeBase.uppercase())
+                    }
+                    consoleOutput = gson.toJson(rates)
+                }
+            }
+        ) {
+            Text("Pridobi tečaje")
+        }
+
+        Spacer(Modifier.height(24.dp))
+
+        // Result Output
         Text("Rezultat:", fontWeight = FontWeight.SemiBold)
+        Spacer(Modifier.height(8.dp))
 
         OutlinedTextField(
             value = consoleOutput,
@@ -139,37 +166,28 @@ fun Scraper() {
         Spacer(Modifier.height(12.dp))
     }
 
-    if (openFileDialog) {
-        FilePicker { file ->
+    LaunchedEffect(openFileDialog) {
+        if (openFileDialog) {
             openFileDialog = false
-            if (file != null) {
-                filePath = file.absolutePath
-
-                val partners = partnersText.split(",").map { it.trim() }.filter { it.isNotBlank() }
-                val parameters = StatementParameters(file = filePath!!, user = user, partners = partners)
-
-                val result = parser.parse(parameters)
-
-                consoleOutput = gson.toJson(result)
-            } else {
-                consoleOutput += "\nIzbira PDF datoteke je bila preklicana."
+            FilePicker { file ->
+                if (file != null) {
+                    filePath = file.absolutePath
+                    val partners = partnersText.split(",").map { it.trim() }.filter { it.isNotBlank() }
+                    val parameters = StatementParameters(file = filePath!!, user = user, partners = partners)
+                    val result = parser.parse(parameters)
+                    consoleOutput = gson.toJson(result)
+                } else {
+                    consoleOutput += "\nNapaka pri izbiri PDF."
+                }
             }
         }
     }
 }
 
-@Composable
 fun FilePicker(onFileSelected: (File?) -> Unit) {
-    AwtWindow(
-        create = {
-            object : FileDialog(null as Frame?, "Izberi PDF", FileDialog.LOAD) {
-                init {
-                    isVisible = true
-                    val selected = file?.let { File(directory, it) }
-                    onFileSelected(selected)
-                }
-            }
-        },
-        dispose = {}
-    )
+    FileDialog(null as Frame?, "Izberi PDF", FileDialog.LOAD).apply {
+        isVisible = true
+        val selected = file?.let { File(directory, it) }
+        onFileSelected(selected)
+    }
 }
