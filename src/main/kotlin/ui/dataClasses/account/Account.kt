@@ -1,7 +1,6 @@
 package ui.dataClasses.account
 
 import kotlinx.serialization.Serializable
-import ui.dataClasses.statemant.Statement
 
 @Serializable
 data class Account(

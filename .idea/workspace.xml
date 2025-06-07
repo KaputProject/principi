@@ -4,19 +4,58 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="40ba06bf-35e7-4ece-a269-eff7de42ce77" name="Changes" comment="" />
+    <list default="true" id="40ba06bf-35e7-4ece-a269-eff7de42ce77" name="Changes" comment="SCRUM-149 delujoca filtreranja">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/pages/Generators/TransactionGenerator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/pages/Generators/TransactionGenerator.kt" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Gradle.desktop.executor": "Run",
+    "git-widget-placeholder": "SCRUM-149-filtreranje-podatkov-v-GUI",
     "node.js.selected.package.tslint": "(autodetect)"
   }
 }]]></component>
   <component name="TaskManager">
+    <task id="LOCAL-00001" summary="SCRUM-149">
+      <option name="closed" value="true" />
+      <created>1749295899893</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1749295899893</updated>
+    </task>
+    <task id="LOCAL-00002" summary="SCRUM-149 delujoca filtreranja">
+      <option name="closed" value="true" />
+      <created>1749298001969</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1749298001969</updated>
+    </task>
+    <task id="LOCAL-00003" summary="SCRUM-149 delujoca filtreranja">
+      <option name="closed" value="true" />
+      <created>1749298888924</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1749298888924</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="SCRUM-147 izdelan generator za lokacije racune in ne testiran za transactione" />
+    <MESSAGE value="SCRUM-149" />
+    <MESSAGE value="SCRUM-149 delujoca filtreranja" />
+    <option name="LAST_COMMIT_MESSAGE" value="SCRUM-149 delujoca filtreranja" />
   </component>
 </project>

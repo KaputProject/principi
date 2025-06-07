@@ -2,8 +2,8 @@ package ui.dataClasses.statemant
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import ui.dataClasses.user.User
 import ui.dataClasses.account.Account
+import ui.dataClasses.user.User
 
 @Serializable
 data class Statement(

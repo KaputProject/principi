@@ -1,6 +1,5 @@
 package ui.pages.userPages
 
-//import TransactionGenerator
 import Transactions
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -8,11 +7,13 @@ import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ui.api.getTransactions
+import ui.api.getAccounts
 import ui.api.getStatements
+import ui.api.getTransactions
+import ui.dataClasses.account.Account
+import ui.dataClasses.statemant.Statement
 import ui.dataClasses.transaction.Transaction
 import ui.dataClasses.user.User
-import ui.dataClasses.statemant.Statement
 import ui.pages.Generators.AccountGenerator
 import ui.pages.Generators.LocationGenerator
 import ui.pages.Generators.TransactionGenerator
@@ -30,8 +31,7 @@ fun UserMenu(
     onLocationClick: (User) -> Unit,
     onBackClick: () -> Unit,
     onCreateTransactionClick: () -> Unit,
-
-    ) {
+) {
     var transactions by remember { mutableStateOf<List<Transaction>>(emptyList()) }
     var statements by remember { mutableStateOf<List<Statement>>(emptyList()) }
     var selectedStatement by remember { mutableStateOf<Statement?>(null) }
@@ -42,7 +42,11 @@ fun UserMenu(
 
     var generatingLocations by remember { mutableStateOf(false) }
     var generatingAccounts by remember { mutableStateOf(false) }
-    var generatingTransactions by remember { mutableStateOf(false) }  // NOVO stanje
+    var generatingTransactions by remember { mutableStateOf(false) }
+
+    var accounts by remember { mutableStateOf<List<Account>>(emptyList()) }
+    var selectedAccount by remember { mutableStateOf<Account?>(null) }
+    var expandedAccountsDropdown by remember { mutableStateOf(false) }
 
     var reloadTrigger by remember { mutableStateOf(0) }
 
@@ -50,11 +54,19 @@ fun UserMenu(
         try {
             transactions = getTransactions(userId = user.id ?: "")
             statements = getStatements(userId = user.id ?: "")
+            accounts = getAccounts(userId = user.id ?: "")
         } catch (e: Exception) {
             println("Napaka pri pridobivanju podatkov: ${e.message}")
         }
     }
 
+    val filteredStatements = selectedAccount?.let { acc ->
+        statements.filter { it.account?._id == acc._id }
+    } ?: statements
+
+    val filteredTransactions = selectedAccount?.let { acc ->
+        transactions.filter { it.account._id == acc._id }
+    } ?: transactions
 
     editingTransaction?.let { transaction ->
         TransactionEdit(
@@ -86,6 +98,7 @@ fun UserMenu(
         )
         return
     }
+
     if (generatingLocations) {
         LocationGenerator(userId = user.id ?: "")
         return
@@ -99,12 +112,10 @@ fun UserMenu(
     if (generatingTransactions) {
         TransactionGenerator(
             userId = user.id ?: "",
-            onBackClick = { generatingTransactions = false } // Dodaj parameter
+            onBackClick = { generatingTransactions = false }
         )
-
         return
     }
-
 
     creatingTransactionForStatement?.let { statement ->
         TransactionCreate(
@@ -115,7 +126,6 @@ fun UserMenu(
                 creatingTransactionForStatement = null
                 reloadTrigger++
             }
-
         )
         return
     }
@@ -133,7 +143,6 @@ fun UserMenu(
                 selectedTransaction = it.toTransaction()
                 selectedStatement = null
             }
-
         )
         return
     }
@@ -149,7 +158,7 @@ fun UserMenu(
         }
         return
     }
-    // UI
+
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Text(
             text = "Uporabniški meni",
@@ -185,9 +194,38 @@ fun UserMenu(
             }
         }
 
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // Dropdown za izbiro računa
+        Text(text = "Izberi račun za filtriranje:", style = MaterialTheme.typography.h6)
+        Box {
+            OutlinedButton(onClick = { expandedAccountsDropdown = true }) {
+                Text(text = selectedAccount?.iban ?: "Vsi računi")
+            }
+            DropdownMenu(
+                expanded = expandedAccountsDropdown,
+                onDismissRequest = { expandedAccountsDropdown = false }
+            ) {
+                DropdownMenuItem(onClick = {
+                    selectedAccount = null
+                    expandedAccountsDropdown = false
+                }) {
+                    Text("Vsi računi")
+                }
+                accounts.forEach { account ->
+                    DropdownMenuItem(onClick = {
+                        selectedAccount = account
+                        expandedAccountsDropdown = false
+                    }) {
+                        Text(account.iban)
+                    }
+                }
+            }
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
 
+        // Gumbi (uredi, računi, lokacije, nazaj itd.)
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -219,19 +257,17 @@ fun UserMenu(
             ) {
                 Text("Nazaj")
             }
-
         }
+
         Spacer(modifier = Modifier.height(12.dp))
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ){
+        ) {
             Button(
-                onClick = {
-                    onCreateTransactionClick()
-                },
+                onClick = { onCreateTransactionClick() },
                 modifier = Modifier.weight(1f)
-
             ) {
                 Text("Ustvari transakcijo brez izpiska")
             }
@@ -256,14 +292,16 @@ fun UserMenu(
         }
 
         Spacer(modifier = Modifier.height(24.dp))
+
+        // Izpis izpiskov in transakcij (filtriranih)
         Row(modifier = Modifier.fillMaxSize()) {
             Statements(
-                statements = statements,
+                statements = filteredStatements,
                 onStatementSelected = { selectedStatement = it },
                 modifier = Modifier.weight(1f).fillMaxHeight()
             )
             Transactions(
-                transactions = transactions,
+                transactions = filteredTransactions,
                 onTransactionSelected = { selectedTransaction = it },
                 modifier = Modifier.weight(1f).fillMaxHeight()
             )
@@ -285,4 +323,3 @@ fun InfoRow(label: String, value: String?) {
     )
     Spacer(modifier = Modifier.height(12.dp))
 }
-

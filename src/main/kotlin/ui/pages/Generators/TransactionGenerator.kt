@@ -22,11 +22,15 @@ import java.time.format.DateTimeFormatter
 import kotlin.random.Random
 
 @Composable
-fun TransactionGenerator(userId: String, onBackClick : () -> Unit) {
+fun TransactionGenerator(userId: String, onBackClick: () -> Unit) {
     val faker = remember { Faker() }
     val coroutineScope = rememberCoroutineScope()
 
     var transactionCountInput by remember { mutableStateOf("") }
+    var minAmountInput by remember { mutableStateOf("1.0") }
+    var maxAmountInput by remember { mutableStateOf("500.0") }
+    var outgoingProbability by remember { mutableStateOf(0.5f) }
+
     var statusMessage by remember { mutableStateOf<String?>(null) }
     var isGenerating by remember { mutableStateOf(false) }
     var generatedTransactions by remember { mutableStateOf(listOf<TransactionResponse>()) }
@@ -53,7 +57,33 @@ fun TransactionGenerator(userId: String, onBackClick : () -> Unit) {
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedTextField(
+                value = minAmountInput,
+                onValueChange = { if (it.all { c -> c.isDigit() || c == '.' }) minAmountInput = it },
+                label = { Text("Minimalni znesek") },
+                modifier = Modifier.weight(1f)
+            )
+            OutlinedTextField(
+                value = maxAmountInput,
+                onValueChange = { if (it.all { c -> c.isDigit() || c == '.' }) maxAmountInput = it },
+                label = { Text("Maksimalni znesek") },
+                modifier = Modifier.weight(1f)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text("Verjetnost outgoing transakcije: ${(outgoingProbability * 100).toInt()}%")
+        Slider(
+            value = outgoingProbability,
+            onValueChange = { outgoingProbability = it },
+            valueRange = 0f..1f
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         if (accounts.isNotEmpty()) {
             var expanded by remember { mutableStateOf(false) }
@@ -85,8 +115,15 @@ fun TransactionGenerator(userId: String, onBackClick : () -> Unit) {
         Button(
             onClick = {
                 val count = transactionCountInput.toIntOrNull() ?: 0
+                val minAmount = minAmountInput.toDoubleOrNull() ?: 1.0
+                val maxAmount = maxAmountInput.toDoubleOrNull() ?: 500.0
+
                 if (count <= 0) {
                     statusMessage = "Vnesite veljavno število."
+                    return@Button
+                }
+                if (minAmount > maxAmount) {
+                    statusMessage = "Minimalni znesek ne sme biti večji od maksimalnega."
                     return@Button
                 }
                 if (selectedAccount == null) {
@@ -105,8 +142,8 @@ fun TransactionGenerator(userId: String, onBackClick : () -> Unit) {
                     var failedCount = 0
 
                     repeat(count) {
-                        val amount = Random.nextDouble(1.0, 500.0)
-                        val outgoing = Random.nextBoolean()
+                        val amount = Random.nextDouble(minAmount, maxAmount).roundToTwoDecimals()
+                        val outgoing = Random.nextFloat() < outgoingProbability
                         val now = LocalDateTime.now().minusDays(Random.nextLong(0, 30))
                         val formattedDate = now.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
 
@@ -164,6 +201,7 @@ fun TransactionGenerator(userId: String, onBackClick : () -> Unit) {
                 }
             }
         }
+
         Button(
             onClick = onBackClick,
             modifier = Modifier.fillMaxWidth()
@@ -172,3 +210,7 @@ fun TransactionGenerator(userId: String, onBackClick : () -> Unit) {
         }
     }
 }
+// helper funkcija
+fun Double.roundToTwoDecimals(): Double = String.format("%.2f", this).toDouble()
+
+

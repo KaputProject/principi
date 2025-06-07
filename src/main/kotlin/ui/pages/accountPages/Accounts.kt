@@ -12,9 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import ui.api.getAccounts
+import ui.components.cards.AccountCard
 import ui.dataClasses.account.Account
 import ui.dataClasses.user.User
-import ui.components.cards.AccountCard
 
 @Composable
 fun Accounts(
@@ -69,7 +69,7 @@ fun Accounts(
             errorMessage != null -> {
                 Text(
                     text = errorMessage ?: "",
-                    color = MaterialTheme.colors.error,
+                    color = colors.error,
                     modifier = Modifier.padding(16.dp)
                 )
             }

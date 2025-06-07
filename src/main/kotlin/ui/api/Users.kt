@@ -1,16 +1,18 @@
 package ui.api
 
-import ui.dataClasses.user.UserUpdateRequest
-import ui.dataClasses.user.User
+import io.github.cdimascio.dotenv.dotenv
+import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import ui.pages.userPages.client
-import io.github.cdimascio.dotenv.dotenv
-import io.ktor.client.call.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import ui.AuthState
-import kotlinx.serialization.json.*
-import ui.dataClasses.locations.Location
+import ui.dataClasses.user.User
+import ui.dataClasses.user.UserUpdateRequest
+import ui.pages.userPages.client
 
 private val dotenv = dotenv()
 private val url = dotenv["API_URL"] ?: "http://localhost:5000"

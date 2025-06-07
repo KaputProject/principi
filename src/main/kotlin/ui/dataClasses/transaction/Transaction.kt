@@ -3,9 +3,9 @@ package ui.dataClasses.transaction
 import LocationAsStringOrObjectSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import ui.components.FlexibleLongAsStringSerializer
 import ui.dataClasses.account.AccountInfo
 import ui.dataClasses.locations.Location
-import ui.components.FlexibleLongAsStringSerializer
 
 @Serializable
 data class Transaction(
@@ -22,5 +22,4 @@ data class Transaction(
 
     @Serializable(with = FlexibleLongAsStringSerializer::class)
     val reference: String? = null
-) {
-}
+)

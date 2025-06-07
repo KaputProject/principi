@@ -1,11 +1,8 @@
 package ui.pages.userPages
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.colors
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,17 +44,62 @@ fun UserEdit(
 
             Spacer(Modifier.height(16.dp))
 
-            OutlinedTextField(value = username, onValueChange = { username = it }, label = { Text("Uporabniško ime") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text("Ime") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = surname, onValueChange = { surname = it }, label = { Text("Priimek") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Email") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = dateOfBirth, onValueChange = { dateOfBirth = it }, label = { Text("Datum rojstva (d.M.yyyy)") }, placeholder = { Text("7.10.2004") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = identifier, onValueChange = { identifier = it }, label = { Text("Identifikator") }, modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(
+                value = username,
+                onValueChange = { username = it },
+                label = { Text("Uporabniško ime") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
+                value = name,
+                onValueChange = { name = it },
+                label = { Text("Ime") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
+                value = surname,
+                onValueChange = { surname = it },
+                label = { Text("Priimek") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Email") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
+                value = dateOfBirth,
+                onValueChange = { dateOfBirth = it },
+                label = { Text("Datum rojstva (d.M.yyyy)") },
+                placeholder = { Text("7.10.2004") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
+                value = identifier,
+                onValueChange = { identifier = it },
+                label = { Text("Identifikator") },
+                modifier = Modifier.fillMaxWidth()
+            )
 
             Spacer(Modifier.height(16.dp))
 
-            OutlinedTextField(value = password, onValueChange = { password = it }, label = { Text("Geslo") }, modifier = Modifier.fillMaxWidth(), visualTransformation = PasswordVisualTransformation(), singleLine = true)
-            OutlinedTextField(value = repeatPassword, onValueChange = { repeatPassword = it }, label = { Text("Ponovi geslo") }, modifier = Modifier.fillMaxWidth(), visualTransformation = PasswordVisualTransformation(), singleLine = true)
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text("Geslo") },
+                modifier = Modifier.fillMaxWidth(),
+                visualTransformation = PasswordVisualTransformation(),
+                singleLine = true
+            )
+            OutlinedTextField(
+                value = repeatPassword,
+                onValueChange = { repeatPassword = it },
+                label = { Text("Ponovi geslo") },
+                modifier = Modifier.fillMaxWidth(),
+                visualTransformation = PasswordVisualTransformation(),
+                singleLine = true
+            )
 
             Row(
                 Modifier.padding(top = 8.dp),
@@ -72,7 +114,11 @@ fun UserEdit(
                 Spacer(Modifier.height(16.dp))
                 Text(
                     text = it,
-                    color = if (it.contains("uspešno", true)) MaterialTheme.colors.primary else MaterialTheme.colors.error
+                    color = if (it.contains(
+                            "uspešno",
+                            true
+                        )
+                    ) colors.primary else colors.error
                 )
             }
 
@@ -129,9 +175,9 @@ fun UserEdit(
                         }
                     },
                     modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.error)
+                    colors = ButtonDefaults.buttonColors(backgroundColor = colors.error)
                 ) {
-                    Text("Izbriši", color = MaterialTheme.colors.onError)
+                    Text("Izbriši", color = colors.onError)
                 }
 
                 OutlinedButton(

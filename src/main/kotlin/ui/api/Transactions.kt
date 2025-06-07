@@ -1,6 +1,5 @@
 package ui.api
 
-import TransactionCreateRequest
 import io.github.cdimascio.dotenv.dotenv
 import io.ktor.client.call.*
 import io.ktor.client.request.*
@@ -8,8 +7,6 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.serialization.json.Json
 import ui.AuthState
-import ui.dataClasses.account.AccountInfo
-import ui.dataClasses.locations.Location
 import ui.dataClasses.transaction.*
 import ui.pages.userPages.client
 
