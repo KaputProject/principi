@@ -1,6 +1,6 @@
 package ui.pages.userPages
 
-import TransactionGenerator
+//import TransactionGenerator
 import Transactions
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -139,19 +139,19 @@ fun UserMenu(
         }
         return
     }
-    if (generatingTransactions) {
-        TransactionGenerator(
-            userId = user.id ?: "",
-            onBackClick = { generatingTransactions = false },
-            onGenerated = {
-                generatingTransactions = false
-                reloadTrigger++ // osveži podatke
-            },
-            accounts = user.accounts,
-            locations = user.locations
-        )
-        return
-    }
+//    if (generatingTransactions) {
+//        TransactionGenerator(
+//            userId = user.id ?: "",
+//            onBackClick = { generatingTransactions = false },
+//            onGenerated = {
+//                generatingTransactions = false
+//                reloadTrigger++ // osveži podatke
+//            },
+//            accounts = user.accounts,
+//            locations = user.locations
+//        )
+//        return
+//    }
     // UI
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Text(
@@ -254,17 +254,11 @@ fun UserMenu(
                 onClick = { generatingTransactions = true },
                 modifier = Modifier.weight(1f)
             ) {
-                Text("Generiraj transakcije")  // Tvoj novi gumb
+                Text("Generiraj transakcije")
             }
         }
 
-        }
-
-
-
         Spacer(modifier = Modifier.height(24.dp))
-
-
         Row(modifier = Modifier.fillMaxSize()) {
             Statements(
                 statements = statements,
