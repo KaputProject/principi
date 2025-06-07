@@ -22,4 +22,5 @@ data class Transaction(
 
     @Serializable(with = FlexibleLongAsStringSerializer::class)
     val reference: String? = null
-)
+) {
+}

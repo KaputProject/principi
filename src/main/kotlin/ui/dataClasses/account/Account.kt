@@ -11,5 +11,4 @@ data class Account(
     val currency: String,
     val balance: Double,
     val statements: List<String>,
-    val __v: Int
 )

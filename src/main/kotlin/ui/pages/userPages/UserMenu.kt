@@ -1,5 +1,6 @@
 package ui.pages.userPages
 
+//import TransactionGenerator
 import Transactions
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -12,6 +13,9 @@ import ui.api.getStatements
 import ui.dataClasses.transaction.Transaction
 import ui.dataClasses.user.User
 import ui.dataClasses.statemant.Statement
+import ui.pages.Generators.AccountGenerator
+import ui.pages.Generators.LocationGenerator
+import ui.pages.Generators.TransactionGenerator
 import ui.pages.statementPages.StatementEdit
 import ui.pages.statementPages.StatementShow
 import ui.pages.transactionPages.TransactionCreate
@@ -35,6 +39,10 @@ fun UserMenu(
     var selectedTransaction by remember { mutableStateOf<Transaction?>(null) }
     var editingTransaction by remember { mutableStateOf<Transaction?>(null) }
     var creatingTransactionForStatement by remember { mutableStateOf<Statement?>(null) }
+
+    var generatingLocations by remember { mutableStateOf(false) }
+    var generatingAccounts by remember { mutableStateOf(false) }
+    var generatingTransactions by remember { mutableStateOf(false) }  // NOVO stanje
 
     var reloadTrigger by remember { mutableStateOf(0) }
 
@@ -78,6 +86,25 @@ fun UserMenu(
         )
         return
     }
+    if (generatingLocations) {
+        LocationGenerator(userId = user.id ?: "")
+        return
+    }
+
+    if (generatingAccounts) {
+        AccountGenerator(userId = user.id ?: "")
+        return
+    }
+
+    if (generatingTransactions) {
+        TransactionGenerator(
+            userId = user.id ?: "",
+            onBackClick = { generatingTransactions = false } // Dodaj parameter
+        )
+
+        return
+    }
+
 
     creatingTransactionForStatement?.let { statement ->
         TransactionCreate(
@@ -122,7 +149,6 @@ fun UserMenu(
         }
         return
     }
-
     // UI
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Text(
@@ -196,18 +222,40 @@ fun UserMenu(
 
         }
         Spacer(modifier = Modifier.height(12.dp))
-        Button(
-            onClick = {
-                onCreateTransactionClick()
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Ustvari transakcijo brez izpiska")
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ){
+            Button(
+                onClick = {
+                    onCreateTransactionClick()
+                },
+                modifier = Modifier.weight(1f)
+
+            ) {
+                Text("Ustvari transakcijo brez izpiska")
+            }
+            Button(
+                onClick = { generatingLocations = true },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("Generiraj lokacije")
+            }
+            Button(
+                onClick = { generatingAccounts = true },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("Generiraj račune")
+            }
+            Button(
+                onClick = { generatingTransactions = true },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("Generiraj transakcije")
+            }
         }
 
         Spacer(modifier = Modifier.height(24.dp))
-
-
         Row(modifier = Modifier.fillMaxSize()) {
             Statements(
                 statements = statements,

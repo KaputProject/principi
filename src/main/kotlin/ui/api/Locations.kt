@@ -41,7 +41,7 @@ suspend fun getLocations(userId: String): List<Location> {
 suspend fun showLocation(
     userId: String,
     locationId: String,
-): Result<Location> {
+): Result<LocationPopulated> {
     return try {
         val response = client.get("$url/locations/$locationId") {
             AuthState.token?.let { token ->
@@ -53,7 +53,7 @@ suspend fun showLocation(
         }
 
         if (response.status.isSuccess()) {
-            val location = response.body<Location>()
+            val location = response.body<LocationPopulated>()
             Result.success(location)
         } else {
             Result.failure(Exception("Server error: ${response.bodyAsText()}"))
