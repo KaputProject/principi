@@ -39,8 +39,6 @@ fun TransactionShow(
         } else {
             println("Napaka pri nalaganju uporabnika: ${result.exceptionOrNull()}")
         }
-
-
     }
 
 
