@@ -15,6 +15,7 @@ import ui.dataClasses.user.User
 import ui.dataClasses.statemant.Statement
 import ui.pages.Generators.AccountGenerator
 import ui.pages.Generators.LocationGenerator
+import ui.pages.Generators.TransactionGenerator
 import ui.pages.statementPages.StatementEdit
 import ui.pages.statementPages.StatementShow
 import ui.pages.transactionPages.TransactionCreate
@@ -95,6 +96,15 @@ fun UserMenu(
         return
     }
 
+    if (generatingTransactions) {
+        TransactionGenerator(
+            userId = user.id ?: "",
+            onBackClick = { generatingTransactions = false } // Dodaj parameter
+        )
+
+        return
+    }
+
 
     creatingTransactionForStatement?.let { statement ->
         TransactionCreate(
@@ -139,19 +149,6 @@ fun UserMenu(
         }
         return
     }
-//    if (generatingTransactions) {
-//        TransactionGenerator(
-//            userId = user.id ?: "",
-//            onBackClick = { generatingTransactions = false },
-//            onGenerated = {
-//                generatingTransactions = false
-//                reloadTrigger++ // osveži podatke
-//            },
-//            accounts = user.accounts,
-//            locations = user.locations
-//        )
-//        return
-//    }
     // UI
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Text(
