@@ -3,6 +3,7 @@ package ui.api
 import ui.dataClasses.account.AccountCreateRequest
 import UpdateAccountRequest
 import io.github.cdimascio.dotenv.dotenv
+import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
@@ -10,6 +11,7 @@ import kotlinx.serialization.json.Json
 import ui.AuthState
 import ui.dataClasses.account.Account
 import ui.dataClasses.account.AccountsResponse
+import ui.dataClasses.locations.Location
 import ui.pages.userPages.client
 
 private val dotenv = dotenv()
@@ -68,6 +70,31 @@ suspend fun createAccount(
 
         if (response.status.isSuccess()) {
             Result.success("Account successfully created.")
+        } else {
+            Result.failure(Exception("Server error: ${response.bodyAsText()}"))
+        }
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+}
+
+suspend fun showAccount(
+    userId: String,
+    accountId: String,
+): Result<Account> {
+    return try {
+        val response = client.get("$url/accounts/$accountId") {
+            AuthState.token?.let { token ->
+                headers {
+                    append("Authorization", "Bearer $token")
+                }
+            }
+            setBody(mapOf("userId" to userId))
+        }
+
+        if (response.status.isSuccess()) {
+            val accounts = response.body<Account>()
+            Result.success(accounts)
         } else {
             Result.failure(Exception("Server error: ${response.bodyAsText()}"))
         }

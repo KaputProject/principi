@@ -20,6 +20,8 @@ import ui.dataClasses.account.AccountInfo
 import ui.dataClasses.locations.Location
 import ui.dataClasses.statemant.Statement
 import ui.dataClasses.user.User
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun TransactionCreate(
@@ -116,7 +118,7 @@ fun TransactionCreate(
             OutlinedTextField(
                 value = datetime,
                 onValueChange = { datetime = it },
-                label = { Text("Datum in čas (ISO 8601)") },
+                label = { Text("Datum (YYYY-MM-DD)") },
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -176,24 +178,40 @@ fun TransactionCreate(
                                     return@launch
                                 }
 
+                                val selectedAccount = accounts.find { it.iban == accountIban }
+
+                                if (selectedAccount == null) {
+                                    message = "Napaka: izbran račun ne obstaja."
+                                    return@launch
+                                }
+
                                 val account = AccountInfo(
-                                    iban = accountIban,
-                                    _id = statement?.account?._id ?: "",
+                                    iban = selectedAccount.iban,
+                                    _id = selectedAccount._id
                                 )
+
                                 val locationId: String? = selectedLocation?._id
 
                                 val year = datetime.take(4).toIntOrNull() ?: java.time.LocalDate.now().year
+                                val inputDate = try {
+                                    LocalDate.parse(datetime) // privzema ISO format npr. 2025-06-07
+                                } catch (e: Exception) {
+                                    message = "Nepravilen datum (pričakovan format: YYYY-MM-DD)"
+                                    return@launch
+                                }
+                                val formattedDate = inputDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
 
                                 val transactionCreate = TransactionCreate(
                                     userId = user.id.toString(),
                                     account = account,
                                     location = locationId,
-                                    datetime = datetime,
+                                    datetime = formattedDate, // <-- to zamenjamo
                                     description = description,
                                     change = change.toDoubleOrNull() ?: 0.0,
                                     outgoing = outgoing,
                                     reference = if (reference.isBlank()) null else reference,
                                 )
+
 
                                 val response = createTransaction(transactionCreate)
                                 onTransactionCreated(response.transaction)
