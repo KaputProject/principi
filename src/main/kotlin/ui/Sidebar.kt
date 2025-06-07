@@ -48,7 +48,7 @@ fun Sidebar(currentPage: Int, onNavigate: (Int) -> Unit) {
             Spacer(Modifier.height(12.dp))
 
             SidebarButton("Scraper") { onNavigate(3) }
-            SidebarButton("Generator") { onNavigate(4) }
+            //SidebarButton("Generator") { onNavigate(4) }
         }
 
         Box(

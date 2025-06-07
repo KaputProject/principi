@@ -9,12 +9,14 @@ import ui.Sidebar
 import ui.components.colors.AppTheme
 import ui.dataClasses.account.Account
 import ui.dataClasses.locations.Location
+import ui.dataClasses.statemant.Statement
 import ui.dataClasses.user.User
 import ui.pages.accountPages.*
 import ui.pages.locationPages.*
 import ui.pages.userPages.*
 import ui.pages.Generators.*
 import ui.pages.*
+import ui.pages.statementPages.StatementShow
 import ui.pages.transactionPages.TransactionCreate
 
 @Composable
@@ -26,6 +28,7 @@ fun App() {
     var accountToEdit by remember { mutableStateOf<Account?>(null) }
     var selectedLocation by remember { mutableStateOf<Location?>(null) }
     var locationToEdit by remember { mutableStateOf<Location?>(null) }
+    var selectedStatement by remember { mutableStateOf<Statement?>(null) }
 
     // Dodaj možnost preklopa teme (lahko tudi po sistemu)
     var darkModeEnabled by remember { mutableStateOf(false) }
@@ -54,10 +57,15 @@ fun App() {
                 ) {
                     when (currentPage) {
                         1 -> UserCreate()
-                        2 -> Users(onNavigate = { clickedUser ->
-                            selectedUser = clickedUser
-                            currentPage = 8
-                        })
+                        2 -> Users(
+                            onNavigate = { clickedUser ->
+                                selectedUser = clickedUser
+                                currentPage = 8
+                            },
+                            onGoToUserGenerator = {
+                                currentPage = 16
+                            }
+                        )
                         3 -> Scraper()
                         4 -> Generator(
                             onGoToUserGenerator = { currentPage = 16 }
@@ -120,9 +128,12 @@ fun App() {
                                     accountToEdit = account
                                     currentPage = 11
                                 },
+                                onStatementClick = { statement ->
+                                    selectedStatement = statement
+                                    currentPage = 18
+                                }
                             )
                         } ?: Text("Napaka: račun ni izbran.", color = MaterialTheme.colors.error)
-
                         11 -> accountToEdit?.let { account ->
                             selectedUser?.let { user ->
                                 AccountEdit(
@@ -211,6 +222,21 @@ fun App() {
                                 }
                             )
                         } ?: Text("Napaka: uporabnik ni izbran.", color = MaterialTheme.colors.error)
+                        18 -> selectedStatement?.let { statement ->
+                            StatementShow(
+                                statement = statement,
+                                onBackClick = { currentPage = 10 },  // nazaj na podrobnosti računa
+                                onEditClick = { editedStatement ->
+                                    // logika za urejanje izpiska (če imaš)
+                                },
+                                onCreateTransactionClick = { stmt ->
+                                    // logika za ustvarjanje transakcije za ta izpisek (če imaš)
+                                },
+                                onTransactionClick = { transaction ->
+                                    // logika za klik na transakcijo (npr. prikaz detajlov transakcije)
+                                }
+                            )
+                        } ?: Text("Napaka: izpisek ni izbran.", color = MaterialTheme.colors.error)
 
                     }
                 }

@@ -25,6 +25,7 @@ fun Locations(
 ) {
     val coroutineScope = rememberCoroutineScope()
     var locations by remember { mutableStateOf<List<Location>>(emptyList()) }
+    var filterText by remember { mutableStateOf("") }
 
     LaunchedEffect(initialUser) {
         coroutineScope.launch {
@@ -32,6 +33,13 @@ fun Locations(
             println(">>> Initial user ID: ${initialUser.id}")
             locations = allLocations
         }
+    }
+
+    val filteredLocations = locations.filter { location ->
+        val filterLower = filterText.lowercase()
+        (location.name.lowercase().contains(filterLower)) ||
+                (location.address?.lowercase()?.contains(filterLower) ?: false) ||
+                (location.identifier?.lowercase()?.contains(filterLower) ?: false)
     }
 
     // Scroll state za LazyColumn
@@ -48,8 +56,17 @@ fun Locations(
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (locations.isEmpty()) {
-            Text("Ni lokacij za tega uporabnika.")
+        OutlinedTextField(
+            value = filterText,
+            onValueChange = { filterText = it },
+            label = { Text("Filter (ime, naslov, identifikator)") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        if (filteredLocations.isEmpty()) {
+            Text("Ni lokacij, ki ustrezajo iskanju.")
         } else {
             Box(
                 modifier = Modifier
@@ -60,7 +77,7 @@ fun Locations(
                     state = listState,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    items(locations) { location ->
+                    items(filteredLocations) { location ->
                         LocationCard(
                             location = location,
                             onClick = { onNavigate(location) }
@@ -97,3 +114,4 @@ fun Locations(
         }
     }
 }
+
