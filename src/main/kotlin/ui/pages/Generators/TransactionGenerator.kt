@@ -142,7 +142,7 @@ fun TransactionGenerator(userId: String, onBackClick: () -> Unit) {
                     var failedCount = 0
 
                     repeat(count) {
-                        val amount = Random.nextDouble(minAmount, maxAmount)
+                        val amount = Random.nextDouble(minAmount, maxAmount).roundToTwoDecimals()
                         val outgoing = Random.nextFloat() < outgoingProbability
                         val now = LocalDateTime.now().minusDays(Random.nextLong(0, 30))
                         val formattedDate = now.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
@@ -210,3 +210,7 @@ fun TransactionGenerator(userId: String, onBackClick: () -> Unit) {
         }
     }
 }
+// helper funkcija
+fun Double.roundToTwoDecimals(): Double = String.format("%.2f", this).toDouble()
+
+

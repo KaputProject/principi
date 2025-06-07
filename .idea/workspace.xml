@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="40ba06bf-35e7-4ece-a269-eff7de42ce77" name="Changes" comment="SCRUM-149 delujoca filtreranja">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/pages/Scraper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/pages/Scraper.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/pages/Generators/TransactionGenerator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/pages/Generators/TransactionGenerator.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,7 +41,15 @@
       <option name="project" value="LOCAL" />
       <updated>1749298001969</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="SCRUM-149 delujoca filtreranja">
+      <option name="closed" value="true" />
+      <created>1749298888924</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1749298888924</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
