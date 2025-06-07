@@ -1,8 +1,11 @@
 package ui.pages.locationPages
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.MaterialTheme.colors
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -18,7 +21,7 @@ fun ShowLocation(
         Text("Podrobnosti lokacije", style = MaterialTheme.typography.h5)
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text("Ime: ${location.name ?: "Ni podatka"}")
+        Text("Ime: ${location.name}")
         Text("Identifikator: ${location.identifier ?: "Ni podatka"}")
         Text("Opis: ${location.description ?: "Ni podatka"}")
         Text("Naslov: ${location.address ?: "Ni podatka"}")

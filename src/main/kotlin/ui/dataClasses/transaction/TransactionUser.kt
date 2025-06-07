@@ -2,9 +2,9 @@ package ui.dataClasses.transaction
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import ui.components.FlexibleLongAsStringSerializer
 import ui.dataClasses.account.AccountInfo
 import ui.dataClasses.locations.Location
-import ui.components.FlexibleLongAsStringSerializer
 import ui.dataClasses.user.User
 
 @Serializable

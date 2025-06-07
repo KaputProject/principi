@@ -12,9 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import ui.api.getLocations
+import ui.components.cards.LocationCard
 import ui.dataClasses.locations.Location
 import ui.dataClasses.user.User
-import ui.components.cards.LocationCard
 
 @Composable
 fun Locations(

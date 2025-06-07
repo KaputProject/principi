@@ -1,8 +1,7 @@
 package ui.dataClasses.transaction
 
-import ui.dataClasses.account.AccountInfo
-import ui.dataClasses.locations.Location
 import kotlinx.serialization.Serializable
+import ui.dataClasses.account.AccountInfo
 
 @Serializable
 data class TransactionCreate(

@@ -8,7 +8,6 @@ import io.ktor.http.*
 import kotlinx.serialization.json.Json
 import ui.AuthState
 import ui.dataClasses.locations.*
-import ui.dataClasses.transaction.TransactionUser
 import ui.pages.userPages.client
 
 private val dotenv = dotenv()

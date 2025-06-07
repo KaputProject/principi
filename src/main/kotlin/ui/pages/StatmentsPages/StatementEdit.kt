@@ -7,8 +7,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import ui.dataClasses.statemant.Statement
 import ui.api.updateStatement
+import ui.dataClasses.statemant.Statement
 
 @Composable
 fun StatementEdit(
@@ -161,7 +161,7 @@ fun StatementEdit(
 
         message?.let {
             Spacer(modifier = Modifier.height(16.dp))
-            Text(it, color = if (it.startsWith("Napaka")) MaterialTheme.colors.error else MaterialTheme.colors.primary)
+            Text(it, color = if (it.startsWith("Napaka")) colors.error else colors.primary)
         }
     }
 }

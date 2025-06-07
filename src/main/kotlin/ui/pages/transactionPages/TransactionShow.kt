@@ -10,8 +10,8 @@ import androidx.compose.ui.unit.dp
 import ui.api.showLocation
 import ui.api.showUser
 import ui.dataClasses.transaction.Transaction
-import ui.pages.userPages.InfoRow
 import ui.dataClasses.user.User
+import ui.pages.userPages.InfoRow
 
 @Composable
 fun TransactionShow(
@@ -45,7 +45,7 @@ fun TransactionShow(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colors.surface)
+            .background(colors.surface)
             .padding(16.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
@@ -105,12 +105,12 @@ private fun InfoRow(label: String, value: String) {
         Text(
             text = label,
             style = MaterialTheme.typography.subtitle1,
-            color = MaterialTheme.colors.primary
+            color = colors.primary
         )
         Text(
             text = value,
             style = MaterialTheme.typography.body1,
-            color = MaterialTheme.colors.onBackground
+            color = colors.onBackground
         )
     }
 }

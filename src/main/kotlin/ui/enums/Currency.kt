@@ -1,4 +1,5 @@
 package ui.enums
+
 import kotlinx.serialization.Serializable
 
 @Serializable

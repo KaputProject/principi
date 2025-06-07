@@ -46,6 +46,7 @@ suspend fun getStatements(userId: String): List<Statement> {
         emptyList()
     }
 }
+
 suspend fun updateStatement(
     userId: String,
     statementId: String,

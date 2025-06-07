@@ -1,25 +1,20 @@
 package ui.pages
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.AwtWindow
 import classes.PdfParser
 import classes.StatementParameters
 import com.google.gson.GsonBuilder
 import exchange.ExchangeRatesApi
 import google.MapSearch
-import google.Place
 import io.github.cdimascio.dotenv.dotenv
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -48,7 +43,9 @@ fun Scraper() {
         ignoreIfMissing = true
     }
 
-    val googleApiKey = dotenv["GOOGLE_API_KEY"] ?: System.getenv("GOOGLE_API_KEY") ?: error("GOOGLE_API_KEY is not set.")
+    val googleApiKey = dotenv["GOOGLE_API_KEY"]
+        ?: System.getenv("GOOGLE_API_KEY")
+        ?: error("GOOGLE_API_KEY is not set.")
     val mapSearch = remember { MapSearch(googleApiKey) }
 
     val exchangeRatesApi = remember { ExchangeRatesApi() }
@@ -62,15 +59,17 @@ fun Scraper() {
         Text("PDF parser test", fontSize = 22.sp, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(16.dp))
 
-        // PDF Params
+        // PDF Parameters Card
         Card(
-            shape = RoundedCornerShape(12.dp),
-            elevation = 4.dp,
-            modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
+            shape = MaterialTheme.shapes.medium,
+            elevation = 6.dp,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 20.dp)
         ) {
-            Column(Modifier.padding(16.dp)) {
-                Text("Parametri PDF:", fontWeight = FontWeight.SemiBold)
-                Spacer(Modifier.height(8.dp))
+            Column(Modifier.padding(20.dp)) {
+                Text("Parametri PDF:", fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
+                Spacer(Modifier.height(12.dp))
 
                 OutlinedTextField(
                     value = user,
@@ -79,7 +78,7 @@ fun Scraper() {
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(12.dp))
 
                 OutlinedTextField(
                     value = partnersText,
@@ -87,81 +86,130 @@ fun Scraper() {
                     label = { Text("Partnerji (ločeni z vejico)") },
                     modifier = Modifier.fillMaxWidth()
                 )
-            }
-        }
-
-        Button(
-            onClick = { openFileDialog = true },
-            modifier = Modifier.align(Alignment.Start)
-        ) {
-            Text("Naloži PDF in razčleni")
-        }
-
-        Spacer(Modifier.height(24.dp))
-
-        // Google Maps
-        Text("Google Maps test", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-        Spacer(Modifier.height(12.dp))
-
-        OutlinedTextField(
-            value = mapQuery,
-            onValueChange = { mapQuery = it },
-            label = { Text("Iskalni niz (npr. Restavracija Mango)") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Button(
-            onClick = {
-                coroutineScope.launch {
-                    val results = withContext(Dispatchers.IO) { mapSearch.search(mapQuery) }
-                    consoleOutput = gson.toJson(results)
+                Button(
+                    onClick = { openFileDialog = true },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
+                ) {
+                    Text("Naloži PDF in razčleni", color = Color.White)
                 }
             }
-        ) {
-            Text("Išči")
         }
-
-        Spacer(Modifier.height(24.dp))
-
-        // Exchange Rates
-        Text("Exchange Rates", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-        Spacer(Modifier.height(12.dp))
-
-        OutlinedTextField(
-            value = exchangeBase,
-            onValueChange = { exchangeBase = it },
-            label = { Text("Valuta baze (npr. EUR, USD)") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Button(
-            onClick = {
-                coroutineScope.launch {
-                    val rates = withContext(Dispatchers.IO) {
-                        exchangeRatesApi.get(exchangeBase.uppercase())
-                    }
-                    consoleOutput = gson.toJson(rates)
-                }
-            }
-        ) {
-            Text("Pridobi tečaje")
-        }
-
-        Spacer(Modifier.height(24.dp))
-
-        // Result Output
-        Text("Rezultat:", fontWeight = FontWeight.SemiBold)
-        Spacer(Modifier.height(8.dp))
-
-        OutlinedTextField(
-            value = consoleOutput,
-            onValueChange = { consoleOutput = it },
+        // Google Maps Card
+        Card(
+            shape = MaterialTheme.shapes.medium,
+            elevation = 6.dp,
             modifier = Modifier
                 .fillMaxWidth()
-                .heightIn(min = 200.dp),
-            maxLines = 20,
-            textStyle = MaterialTheme.typography.body2
-        )
+                .padding(bottom = 20.dp)
+        ) {
+            Column(Modifier.padding(20.dp)) {
+                Text("Google Maps test", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Spacer(Modifier.height(12.dp))
+
+                OutlinedTextField(
+                    value = mapQuery,
+                    onValueChange = { mapQuery = it },
+                    label = { Text("Iskalni niz (npr. Restavracija Mango)") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(Modifier.height(8.dp))
+
+                Button(
+                    onClick = {
+                        coroutineScope.launch {
+                            val results = withContext(Dispatchers.IO) { mapSearch.search(mapQuery) }
+                            consoleOutput = gson.toJson(results)
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
+                ) {
+                    Text("Išči", color = Color.White)
+                }
+            }
+        }
+
+        // Exchange Rates Card
+        Card(
+            shape = MaterialTheme.shapes.medium,
+            elevation = 6.dp,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 20.dp)
+        ) {
+            Column(Modifier.padding(20.dp)) {
+                Text("Exchange Rates", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Spacer(Modifier.height(12.dp))
+
+                OutlinedTextField(
+                    value = exchangeBase,
+                    onValueChange = { exchangeBase = it },
+                    label = { Text("Valuta baze (npr. EUR, USD)") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(Modifier.height(8.dp))
+
+                Button(
+                    onClick = {
+                        coroutineScope.launch {
+                            val rates = withContext(Dispatchers.IO) {
+                                exchangeRatesApi.get(exchangeBase.uppercase())
+                            }
+                            consoleOutput = gson.toJson(rates)
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
+                ) {
+                    Text("Pridobi tečaje", color = Color.White)
+                }
+            }
+        }
+
+        // Rezultat Card
+        Card(
+            shape = MaterialTheme.shapes.medium,
+            elevation = 6.dp,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(Modifier.padding(20.dp)) {
+                Text("Rezultat:", fontWeight = FontWeight.SemiBold)
+                Spacer(Modifier.height(8.dp))
+
+                OutlinedTextField(
+                    value = consoleOutput,
+                    onValueChange = { consoleOutput = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(400.dp),
+                    maxLines = 20,
+                    textStyle = MaterialTheme.typography.body2,
+                    readOnly = false,
+                    enabled = true,
+                )
+
+                Spacer(Modifier.height(12.dp))
+
+                OutlinedButton(
+                    onClick = {
+                        user = ""
+                        partnersText = ""
+                        consoleOutput = "Čakam na podatke..."
+                        filePath = null
+                        mapQuery = ""
+                        exchangeBase = "EUR"
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Počisti")
+                }
+            }
+        }
 
         Spacer(Modifier.height(12.dp))
     }

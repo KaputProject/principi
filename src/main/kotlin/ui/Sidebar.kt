@@ -9,7 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import ui.AuthState
 import ui.api.login
 import ui.components.SidebarButton
 
@@ -24,11 +23,7 @@ fun Sidebar(currentPage: Int, onNavigate: (Int) -> Unit) {
     val typography = MaterialTheme.typography
 
     Column(
-        modifier = Modifier
-            .fillMaxHeight()
-            .width(200.dp)
-            .background(colors.surface)
-            .padding(8.dp),
+        modifier = Modifier.fillMaxHeight().width(200.dp).background(colors.surface).padding(8.dp),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.Start
     ) {
@@ -52,9 +47,7 @@ fun Sidebar(currentPage: Int, onNavigate: (Int) -> Unit) {
         }
 
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
+            modifier = Modifier.fillMaxWidth().padding(8.dp)
         ) {
             if (AuthState.token == null) {
                 Column {
@@ -86,13 +79,9 @@ fun Sidebar(currentPage: Int, onNavigate: (Int) -> Unit) {
                                     passwordInput = ""
                                 }
                             }
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = colors.primary,
-                            contentColor = colors.onPrimary
-                        ),
-                        shape = MaterialTheme.shapes.medium,
-                        modifier = Modifier.fillMaxWidth()
+                        }, colors = ButtonDefaults.buttonColors(
+                            backgroundColor = colors.primary, contentColor = colors.onPrimary
+                        ), shape = MaterialTheme.shapes.medium, modifier = Modifier.fillMaxWidth()
                     ) {
                         Text("Login")
                     }
@@ -112,12 +101,9 @@ fun Sidebar(currentPage: Int, onNavigate: (Int) -> Unit) {
                         onClick = {
                             AuthState.token = null
                             AuthState.username = null
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = colors.secondary,
-                            contentColor = colors.onSecondary
-                        ),
-                        shape = MaterialTheme.shapes.medium
+                        }, colors = ButtonDefaults.buttonColors(
+                            backgroundColor = colors.secondary, contentColor = colors.onSecondary
+                        ), shape = MaterialTheme.shapes.medium
                     ) {
                         Text("Logout")
                     }

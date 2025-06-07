@@ -1,6 +1,5 @@
 package ui.api
 
-import ui.dataClasses.account.AccountCreateRequest
 import UpdateAccountRequest
 import io.github.cdimascio.dotenv.dotenv
 import io.ktor.client.call.*
@@ -10,8 +9,8 @@ import io.ktor.http.*
 import kotlinx.serialization.json.Json
 import ui.AuthState
 import ui.dataClasses.account.Account
+import ui.dataClasses.account.AccountCreateRequest
 import ui.dataClasses.account.AccountsResponse
-import ui.dataClasses.locations.Location
 import ui.pages.userPages.client
 
 private val dotenv = dotenv()

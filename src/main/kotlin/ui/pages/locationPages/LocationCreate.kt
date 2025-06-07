@@ -120,7 +120,7 @@ fun LocationCreate(
 
         message?.let {
             Spacer(modifier = Modifier.height(16.dp))
-            Text(it, color = if (it.startsWith("Napaka")) MaterialTheme.colors.error else MaterialTheme.colors.primary)
+            Text(it, color = if (it.startsWith("Napaka")) colors.error else colors.primary)
         }
     }
 }

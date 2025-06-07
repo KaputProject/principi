@@ -4,14 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="40ba06bf-35e7-4ece-a269-eff7de42ce77" name="Changes" comment="SCRUM-149">
+    <list default="true" id="40ba06bf-35e7-4ece-a269-eff7de42ce77" name="Changes" comment="SCRUM-149 delujoca filtreranja">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/App.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/App.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/Sidebar.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/Sidebar.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/pages/accountPages/AccountShow.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/pages/accountPages/AccountShow.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/pages/locationPages/Locations.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/pages/locationPages/Locations.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/pages/userPages/UserMenu.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/pages/userPages/UserMenu.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/pages/userPages/Users.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/pages/userPages/Users.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/pages/Scraper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/pages/Scraper.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,12 +33,21 @@
       <option name="project" value="LOCAL" />
       <updated>1749295899893</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="SCRUM-149 delujoca filtreranja">
+      <option name="closed" value="true" />
+      <created>1749298001969</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1749298001969</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="SCRUM-147 izdelan generator za lokacije racune in ne testiran za transactione" />
     <MESSAGE value="SCRUM-149" />
-    <option name="LAST_COMMIT_MESSAGE" value="SCRUM-149" />
+    <MESSAGE value="SCRUM-149 delujoca filtreranja" />
+    <option name="LAST_COMMIT_MESSAGE" value="SCRUM-149 delujoca filtreranja" />
   </component>
 </project>

@@ -1,24 +1,17 @@
 package ui.pages.accountPages
 
 import DropdownMenuCurrency
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import ui.api.updateAccount
-import ui.dataClasses.account.Account
-import ui.dataClasses.user.User
-import kotlinx.coroutines.launch
-
-import ui.enums.Currency
-
-import androidx.compose.foundation.layout.Box
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import ui.api.deleteAccount
+import ui.api.updateAccount
+import ui.dataClasses.account.Account
+import ui.dataClasses.user.User
 
 @Composable
 fun AccountEdit(
@@ -101,9 +94,9 @@ fun AccountEdit(
         Button(
             onClick = { showDeleteDialog = true },
             modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.error)
+            colors = ButtonDefaults.buttonColors(backgroundColor = colors.error)
         ) {
-            Text("Izbriši račun", color = MaterialTheme.colors.onError)
+            Text("Izbriši račun", color = colors.onError)
         }
         if (showDeleteDialog) {
             AlertDialog(
@@ -157,7 +150,7 @@ fun AccountEdit(
 
         message?.let {
             Spacer(modifier = Modifier.height(16.dp))
-            Text(it, color = if (it.startsWith("Napaka")) MaterialTheme.colors.error else MaterialTheme.colors.primary)
+            Text(it, color = if (it.startsWith("Napaka")) colors.error else colors.primary)
         }
     }
 }

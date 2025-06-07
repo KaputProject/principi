@@ -17,7 +17,7 @@ fun ShowAccount(
     account: Account,
     onBackClick: () -> Unit,
     onEditClick: (Account) -> Unit,
-    onStatementClick:(Statement)-> Unit
+    onStatementClick: (Statement) -> Unit
 
 ) {
     var statements by remember { mutableStateOf<List<Statement>>(emptyList()) }

@@ -7,8 +7,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import ui.api.updateLocation
 import ui.api.deleteLocation
+import ui.api.updateLocation
 import ui.dataClasses.locations.Location
 import ui.dataClasses.user.User
 
@@ -20,7 +20,7 @@ fun LocationEdit(
     onLocationUpdated: (Location) -> Unit,
     onLocationDeleted: () -> Unit
 ) {
-    var name by remember { mutableStateOf(initialLocation.name ?: "") }
+    var name by remember { mutableStateOf(initialLocation.name) }
     var identifier by remember { mutableStateOf(initialLocation.identifier ?: "") }
     var description by remember { mutableStateOf(initialLocation.description ?: "") }
     var address by remember { mutableStateOf(initialLocation.address ?: "") }
@@ -120,9 +120,9 @@ fun LocationEdit(
         Button(
             onClick = { showDeleteDialog = true },
             modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.error)
+            colors = ButtonDefaults.buttonColors(backgroundColor = colors.error)
         ) {
-            Text("Izbriši lokacijo", color = MaterialTheme.colors.onError)
+            Text("Izbriši lokacijo", color = colors.onError)
         }
 
         if (showDeleteDialog) {
@@ -137,11 +137,11 @@ fun LocationEdit(
                             val result = deleteLocation(
                                 initialLocation._id, userId = user.id.toString()
                             )
-                            if (result?.isSuccess == true) {
+                            if (result.isSuccess == true) {
                                 message = "Lokacija uspešno izbrisana."
                                 onLocationDeleted()
                             } else {
-                                message = "Napaka pri brisanju: ${result?.exceptionOrNull()?.message}"
+                                message = "Napaka pri brisanju: ${result.exceptionOrNull()?.message}"
                             }
                         }
                     }) { Text("Da, izbriši") }
@@ -164,7 +164,7 @@ fun LocationEdit(
 
         message?.let {
             Spacer(modifier = Modifier.height(16.dp))
-            Text(it, color = if (it.startsWith("Napaka")) MaterialTheme.colors.error else MaterialTheme.colors.primary)
+            Text(it, color = if (it.startsWith("Napaka")) colors.error else colors.primary)
         }
     }
 }

@@ -8,12 +8,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ui.api.getAccounts
-import ui.api.getTransactions
 import ui.api.getStatements
+import ui.api.getTransactions
 import ui.dataClasses.account.Account
+import ui.dataClasses.statemant.Statement
 import ui.dataClasses.transaction.Transaction
 import ui.dataClasses.user.User
-import ui.dataClasses.statemant.Statement
 import ui.pages.Generators.AccountGenerator
 import ui.pages.Generators.LocationGenerator
 import ui.pages.Generators.TransactionGenerator

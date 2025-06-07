@@ -7,8 +7,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import ui.api.updateTransaction
 import ui.api.deleteTransaction
+import ui.api.updateTransaction
 import ui.dataClasses.transaction.Transaction
 
 @Composable
@@ -32,7 +32,7 @@ fun TransactionEdit(
             Text(
                 "Uredi transakcijo",
                 style = MaterialTheme.typography.h5,
-                color = MaterialTheme.colors.onSurface
+                color = colors.onSurface
             )
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -73,7 +73,7 @@ fun TransactionEdit(
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     it,
-                    color = if (it.startsWith("Napaka")) MaterialTheme.colors.error else MaterialTheme.colors.primary,
+                    color = if (it.startsWith("Napaka")) colors.error else colors.primary,
                     style = MaterialTheme.typography.body1
                 )
             }
@@ -122,17 +122,17 @@ fun TransactionEdit(
                         }
                     },
                     modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
+                    colors = ButtonDefaults.buttonColors(backgroundColor = colors.primary)
                 ) {
-                    Text("Shrani", color = MaterialTheme.colors.onPrimary)
+                    Text("Shrani", color = colors.onPrimary)
                 }
 
                 Button(
                     onClick = { showDeleteDialog = true },
                     modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.error)
+                    colors = ButtonDefaults.buttonColors(backgroundColor = colors.error)
                 ) {
-                    Text("Izbriši", color = MaterialTheme.colors.onError)
+                    Text("Izbriši", color = colors.onError)
                 }
 
                 OutlinedButton(
@@ -160,27 +160,27 @@ fun TransactionEdit(
                                     userId = initialTransaction.user,
                                 )
 
-                                message = result?.fold(
+                                message = result.fold(
                                     onSuccess = { "Transakcija uspešno izbrisana." },
                                     onFailure = { "Napaka pri brisanju: ${it.message}" }
                                 )
 
-                                if (result?.isSuccess == true) {
+                                if (result.isSuccess == true) {
                                     onTransactionDeleted()
                                 }
                             }
                         }
                     ) {
-                        Text("Da, izbriši", color = MaterialTheme.colors.primary)
+                        Text("Da, izbriši", color = colors.primary)
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { showDeleteDialog = false }) {
-                        Text("Prekliči", color = MaterialTheme.colors.primary)
+                        Text("Prekliči", color = colors.primary)
                     }
                 },
-                backgroundColor = MaterialTheme.colors.surface,
-                contentColor = MaterialTheme.colors.onSurface
+                backgroundColor = colors.surface,
+                contentColor = colors.onSurface
             )
         }
     }

@@ -1,19 +1,20 @@
 package ui.pages.userPages
 
-import ui.dataClasses.user.User
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import ui.api.users
 import ui.components.cards.UserCard
-import androidx.compose.material.*
-import androidx.compose.ui.Alignment
+import ui.dataClasses.user.User
 
 
 @Composable

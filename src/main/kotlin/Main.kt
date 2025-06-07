@@ -43,8 +43,6 @@ fun main() {
 }
 
 
-
-
 fun exchangeRateTest() {
     val exchangeRates = ExchangeRatesApi().get("EUR")
 

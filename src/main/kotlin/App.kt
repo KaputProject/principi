@@ -66,6 +66,7 @@ fun App() {
                                 currentPage = 16
                             }
                         )
+
                         3 -> Scraper()
                         4 -> Generator(
                             onGoToUserGenerator = { currentPage = 16 }
@@ -134,6 +135,7 @@ fun App() {
                                 }
                             )
                         } ?: Text("Napaka: račun ni izbran.", color = MaterialTheme.colors.error)
+
                         11 -> accountToEdit?.let { account ->
                             selectedUser?.let { user ->
                                 AccountEdit(
@@ -211,6 +213,7 @@ fun App() {
                                 }
                             )
                         } ?: Text("Napaka: uporabnik ni izbran.", color = MaterialTheme.colors.error)
+
                         16 -> UserGenerator()
                         17 -> selectedUser?.let { user ->
                             TransactionCreate(
@@ -222,6 +225,7 @@ fun App() {
                                 }
                             )
                         } ?: Text("Napaka: uporabnik ni izbran.", color = MaterialTheme.colors.error)
+
                         18 -> selectedStatement?.let { statement ->
                             StatementShow(
                                 statement = statement,

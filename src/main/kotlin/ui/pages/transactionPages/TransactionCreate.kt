@@ -14,11 +14,11 @@ import ui.api.getAccounts
 import ui.api.getLocations
 import ui.components.cards.LocationCard
 import ui.dataClasses.account.Account
-import ui.dataClasses.transaction.Transaction
-import ui.dataClasses.transaction.TransactionCreate
 import ui.dataClasses.account.AccountInfo
 import ui.dataClasses.locations.Location
 import ui.dataClasses.statemant.Statement
+import ui.dataClasses.transaction.Transaction
+import ui.dataClasses.transaction.TransactionCreate
 import ui.dataClasses.user.User
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -158,7 +158,7 @@ fun TransactionCreate(
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     it,
-                    color = if (it.startsWith("Napaka")) MaterialTheme.colors.error else MaterialTheme.colors.primary
+                    color = if (it.startsWith("Napaka")) colors.error else colors.primary
                 )
             }
 
@@ -192,7 +192,7 @@ fun TransactionCreate(
 
                                 val locationId: String? = selectedLocation?._id
 
-                                val year = datetime.take(4).toIntOrNull() ?: java.time.LocalDate.now().year
+                                val year = datetime.take(4).toIntOrNull() ?: LocalDate.now().year
                                 val inputDate = try {
                                     LocalDate.parse(datetime) // privzema ISO format npr. 2025-06-07
                                 } catch (e: Exception) {

@@ -7,6 +7,7 @@ data class AccountInfo(
     val iban: String,
     val _id: String? = null
 )
+
 fun Account.toAccountInfo(): AccountInfo {
     return AccountInfo(
         iban = this.iban,

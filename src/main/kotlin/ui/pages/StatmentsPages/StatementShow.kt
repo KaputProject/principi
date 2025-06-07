@@ -4,16 +4,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ui.api.showTransaction
-import ui.dataClasses.statemant.Statement
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.foundation.rememberScrollState
 import ui.components.cards.TransactionCardUser
+import ui.dataClasses.statemant.Statement
 import ui.dataClasses.transaction.TransactionUser
 
 @Composable
@@ -44,7 +44,7 @@ fun StatementShow(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colors.surface)
+            .background(colors.surface)
             .padding(16.dp)
     ) {
         // Glavni scrollabilen del postavimo v Column z modifierjem weight(1f), da zasede prostor nad gumbi
@@ -58,7 +58,7 @@ fun StatementShow(
             Text(
                 text = " Izpisek št. ${statement.id ?: "-"} ",
                 style = MaterialTheme.typography.h5,
-                color = MaterialTheme.colors.primary
+                color = colors.primary
             )
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -98,7 +98,7 @@ fun StatementShow(
             Text(
                 text = "Transakcije v tem izpisku:",
                 style = MaterialTheme.typography.subtitle1,
-                color = MaterialTheme.colors.primary
+                color = colors.primary
             )
             Spacer(modifier = Modifier.height(4.dp))
 
@@ -106,7 +106,7 @@ fun StatementShow(
                 Text(
                     "- Ni transakcij.",
                     style = MaterialTheme.typography.body2,
-                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.6f)
+                    color = colors.onSurface.copy(alpha = 0.6f)
                 )
             } else {
                 // Zamenjajmo Column + verticalScroll z LazyColumn in weight(1f)
@@ -160,20 +160,18 @@ fun StatementShow(
 }
 
 
-
-
 @Composable
 private fun InfoRow(label: String, value: String) {
     Column(modifier = Modifier.padding(vertical = 4.dp)) {
         Text(
             text = label,
             style = MaterialTheme.typography.subtitle2,
-            color = MaterialTheme.colors.primary
+            color = colors.primary
         )
         Text(
             text = value,
             style = MaterialTheme.typography.body1,
-            color = MaterialTheme.colors.onBackground
+            color = colors.onBackground
         )
     }
 }
