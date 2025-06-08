@@ -1,6 +1,7 @@
 package pdfFileTransfer
 
 import classes.PdfParser
+import classes.PdfParserOtp
 import classes.Statement
 import classes.StatementParameters
 import io.ktor.http.*
@@ -108,7 +109,7 @@ class PdfFileTransfer {
                         null
                     }
 
-                    val parser = PdfParser()
+                    val parser = PdfParserOtp()
                     val statement1 = parameters?.let { it1 -> parser.parse(it1) }
                     val response = if (savedFilePath != null && metadataJson != null) {
 

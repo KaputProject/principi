@@ -1,4 +1,4 @@
-package ui.pages.locationPages
+ package ui.pages.locationPages
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*

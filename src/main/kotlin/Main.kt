@@ -32,15 +32,28 @@ import java.time.format.DateTimeFormatter
  *  }
  */
 
+//    val server = PdfFileTransfer()
+//    server.startServer()
+//pdfTest() //dela
+//mapsTest() //dela
+//exchangeRateTest() //dela
 fun main() {
-    //pdfTest() //dela
-    //mapsTest() //dela
-    //exchangeRateTest() //dela
-    val server = PdfFileTransfer()
-    server.startServer()
+    val parser = PdfParserOtp1()
+    val parameters = StatementParameters(
+        file = "src/main/resources/uploads/202500333200360_203_20968188 (2).pdf",
+        user = "KRAMAR ENEJ",
+        partners = listOf("LUKA K.", "KRAMAR ANDREJ", "ZPIZ", "LANE K.", "Roobet")
+    )
 
-
+    val statement = parser.parse(parameters)
+    println("IBAN: ${statement.iban}")
+    println("Start balance: ${statement.startBalance}")
+    println("Transactions parsed: ${statement.transactions.size}")
+    statement.transactions.take(5).forEach {
+        println(it)
+    }
 }
+
 
 
 fun exchangeRateTest() {
