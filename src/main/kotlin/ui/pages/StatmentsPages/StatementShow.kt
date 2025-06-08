@@ -11,6 +11,8 @@ import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
+import ui.api.deleteStatement
 import ui.api.showTransaction
 import ui.components.cards.TransactionCardUser
 import ui.dataClasses.statemant.Statement
@@ -27,7 +29,8 @@ fun StatementShow(
     val coroutineScope = rememberCoroutineScope()
     val transactionState = remember { mutableStateOf<List<TransactionUser>>(emptyList()) }
     val loadingState = remember { mutableStateOf(true) }
-    val scrollState = rememberScrollState()  // Scroll state za scrollable Column
+    val scrollState = rememberScrollState()
+    var message by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(statement.transactions) {
         loadingState.value = true
@@ -39,7 +42,6 @@ fun StatementShow(
         transactionState.value = loadedTransactions
         loadingState.value = false
     }
-
 
     Column(
         modifier = Modifier
@@ -125,8 +127,17 @@ fun StatementShow(
 
             Divider(Modifier.padding(vertical = 16.dp))
         }
+        message?.let {
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = it,
+                color = if (it.contains("uspešno", ignoreCase = true)) colors.primary else colors.error,
+                style = MaterialTheme.typography.body2
+            )
+        }
 
-        // Tukaj so gumbi na dnu
+        Spacer(Modifier.height(16.dp))
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -145,6 +156,31 @@ fun StatementShow(
                 Text("Uredi izpisek")
             }
 
+            Button(
+                onClick = {
+                    coroutineScope.launch {
+                        message = null
+                        val result = deleteStatement(statement.user?.id ?: "", statement.id ?: "")
+                        message = result.fold(
+                            onSuccess = {
+                                onBackClick()
+                                "Izpisek uspešno izbrisan."
+                            },
+                            onFailure = {
+                                "Napaka pri brisanju: ${it.message}"
+                            }
+                        )
+                    }
+                },
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = MaterialTheme.colors.error,
+                    contentColor = MaterialTheme.colors.onError
+                )
+            ) {
+                Text("Izbriši izpisek")
+            }
+
             OutlinedButton(
                 onClick = onBackClick,
                 modifier = Modifier.weight(1f),
@@ -158,7 +194,6 @@ fun StatementShow(
         }
     }
 }
-
 
 @Composable
 private fun InfoRow(label: String, value: String) {
