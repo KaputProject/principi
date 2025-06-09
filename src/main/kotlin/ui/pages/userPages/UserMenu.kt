@@ -21,6 +21,8 @@ import ui.pages.statementPages.StatementEdit
 import ui.pages.statementPages.StatementShow
 import ui.pages.transactionPages.TransactionCreate
 import ui.pages.transactionPages.TransactionEdit
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import ui.pages.transactionPages.TransactionShow
 
 @Composable
@@ -159,7 +161,14 @@ fun UserMenu(
         return
     }
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+    val scrollState = rememberScrollState()
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState) // <-- Dodan scroll
+            .padding(16.dp)
+    ) {
         Text(
             text = "Uporabniški meni",
             style = MaterialTheme.typography.h4,
@@ -294,17 +303,24 @@ fun UserMenu(
         Spacer(modifier = Modifier.height(24.dp))
 
         // Izpis izpiskov in transakcij (filtriranih)
-        Row(modifier = Modifier.fillMaxSize()) {
+        Row(modifier = Modifier.fillMaxWidth()) {
+            val maxContentHeight = 600.dp
+
             Statements(
                 statements = filteredStatements,
                 onStatementSelected = { selectedStatement = it },
-                modifier = Modifier.weight(1f).fillMaxHeight()
+                modifier = Modifier
+                    .weight(1f)
+                    .heightIn(max = maxContentHeight)
             )
             Transactions(
                 transactions = filteredTransactions,
                 onTransactionSelected = { selectedTransaction = it },
-                modifier = Modifier.weight(1f).fillMaxHeight()
+                modifier = Modifier
+                    .weight(1f)
+                    .heightIn(max = maxContentHeight)
             )
+
         }
     }
 }
