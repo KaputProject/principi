@@ -1,8 +1,10 @@
 package ui.pages.userPages
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -47,13 +49,15 @@ fun UserCreate() {
 
     val coroutineScope = rememberCoroutineScope()
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Card(
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()), // Dodan scroll
+            verticalArrangement = Arrangement.Top
+        ) {
+            // Ostala vsebina (ostane enaka) ...
+
+            Card(
             shape = RoundedCornerShape(16.dp),
             elevation = 8.dp,
             modifier = Modifier

@@ -1,13 +1,9 @@
-package ui.pages.Generators
-
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.serpro69.kfaker.Faker
@@ -19,7 +15,7 @@ import ui.enums.Currency
 import kotlin.random.Random
 
 @Composable
-fun AccountGenerator(userId: String) {
+fun AccountGenerator(userId: String, onBackClick: () -> Unit) {
     val faker = remember { Faker() }
     val coroutineScope = rememberCoroutineScope()
     var accountCountInput by remember { mutableStateOf("") }
@@ -27,95 +23,116 @@ fun AccountGenerator(userId: String) {
     var isGenerating by remember { mutableStateOf(false) }
     var generatedAccounts by remember { mutableStateOf(listOf<Account>()) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Text("Generiraj račune", style = MaterialTheme.typography.h4)
-        Spacer(modifier = Modifier.height(24.dp))
-
-        OutlinedTextField(
-            value = accountCountInput,
-            onValueChange = { if (it.all(Char::isDigit)) accountCountInput = it },
-            label = { Text("Koliko računov želite generirati?") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Button(
-            onClick = {
-                val count = accountCountInput.toIntOrNull() ?: 0
-                if (count <= 0) {
-                    statusMessage = "Vnesite veljavno pozitivno število."
-                    return@Button
-                }
-                isGenerating = true
-                statusMessage = null
-                generatedAccounts = emptyList()
-
-                coroutineScope.launch {
-                    val newAccounts = mutableListOf<Account>()
-                    var successCount = 0
-                    var failedCount = 0
-
-                    for (i in 1..count) {
-                        val iban = "SI56${Random.nextInt(100000000, 999999999)}"
-                        val currency1 = Currency.entries.toTypedArray().random()
-                        val balance = Random.nextDouble(100.0, 10000.0)
-                        val statements: List<String> = listOf("")
-                        val result = createAccount(
-                            userId = userId,
-                            iban = iban,
-                            currency = currency1.toString(),
-                            balance = balance
-                        )
-
-                        if (result.isSuccess) {
-                            successCount++
-                            newAccounts.add(
-                                Account(
-                                    user = userId,
-                                    statements = statements,
-                                    _id = "",
-                                    iban = iban,
-                                    currency = currency1.toString(),
-                                    balance = balance,
-                                )
-                            )
-                        } else {
-                            failedCount++
-                        }
-                    }
-
-                    generatedAccounts = newAccounts
-                    statusMessage = "Generacija zaključena. Uspešno: $successCount, Neuspešno: $failedCount"
-                    isGenerating = false
-                }
-            },
-            enabled = !isGenerating,
-            modifier = Modifier.fillMaxWidth()
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 80.dp) // Dovolj prostora za gumb
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp)
         ) {
-            Text(if (isGenerating) "Generiram..." else "Generiraj")
-        }
+            Text("Generiraj račune", style = MaterialTheme.typography.h4)
+            Spacer(modifier = Modifier.height(24.dp))
 
-        Spacer(modifier = Modifier.height(16.dp))
+            OutlinedTextField(
+                value = accountCountInput,
+                onValueChange = { if (it.all(Char::isDigit)) accountCountInput = it },
+                label = { Text("Koliko računov želite generirati?") },
+                modifier = Modifier.fillMaxWidth()
+            )
 
-        statusMessage?.let {
-            Text(text = it, style = MaterialTheme.typography.body1)
-        }
+            Spacer(modifier = Modifier.height(24.dp))
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Button(
+                onClick = {
+                    val count = accountCountInput.toIntOrNull() ?: 0
+                    if (count <= 0) {
+                        statusMessage = "Vnesite veljavno pozitivno število."
+                        return@Button
+                    }
+                    isGenerating = true
+                    statusMessage = null
+                    generatedAccounts = emptyList()
 
-        if (generatedAccounts.isNotEmpty()) {
-            Text("Generirani računi:", style = MaterialTheme.typography.h6)
-            Spacer(modifier = Modifier.height(8.dp))
+                    coroutineScope.launch {
+                        val newAccounts = mutableListOf<Account>()
+                        var successCount = 0
+                        var failedCount = 0
 
-            LazyColumn {
-                items(generatedAccounts) { account ->
+                        for (i in 1..count) {
+                            val iban = "SI56${Random.nextInt(100000000, 999999999)}"
+                            val currency1 = Currency.entries.random()
+                            val balance = Random.nextDouble(100.0, 10000.0)
+                            val statements: List<String> = listOf("")
+
+                            val result = createAccount(
+                                userId = userId,
+                                iban = iban,
+                                currency = currency1.toString(),
+                                balance = balance
+                            )
+
+                            if (result.isSuccess) {
+                                successCount++
+                                newAccounts.add(
+                                    Account(
+                                        user = userId,
+                                        statements = statements,
+                                        _id = "",
+                                        iban = iban,
+                                        currency = currency1.toString(),
+                                        balance = balance,
+                                    )
+                                )
+                            } else {
+                                failedCount++
+                            }
+                        }
+
+                        generatedAccounts = newAccounts
+                        statusMessage = "Generacija zaključena. Uspešno: $successCount, Neuspešno: $failedCount"
+                        isGenerating = false
+                    }
+                },
+                enabled = !isGenerating,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(if (isGenerating) "Generiram..." else "Generiraj")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            statusMessage?.let {
+                Text(text = it, style = MaterialTheme.typography.body1)
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            if (generatedAccounts.isNotEmpty()) {
+                Text("Generirani računi:", style = MaterialTheme.typography.h6)
+                Spacer(modifier = Modifier.height(8.dp))
+
+                generatedAccounts.forEach { account ->
                     AccountCard(account = account, onClick = {})
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        // Fixed gumb na dnu zaslona
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Button(
+                onClick = onBackClick,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Nazaj")
             }
         }
     }

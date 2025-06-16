@@ -1,5 +1,6 @@
 package ui.pages.userPages
 
+import AccountGenerator
 import Transactions
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -14,7 +15,6 @@ import ui.dataClasses.account.Account
 import ui.dataClasses.statemant.Statement
 import ui.dataClasses.transaction.Transaction
 import ui.dataClasses.user.User
-import ui.pages.Generators.AccountGenerator
 import ui.pages.Generators.LocationGenerator
 import ui.pages.Generators.TransactionGenerator
 import ui.pages.statementPages.StatementEdit
@@ -102,12 +102,18 @@ fun UserMenu(
     }
 
     if (generatingLocations) {
-        LocationGenerator(userId = user.id ?: "")
+        LocationGenerator(
+            userId = user.id ?: "",
+            onBackClick = { generatingLocations = false }
+        )
         return
     }
 
     if (generatingAccounts) {
-        AccountGenerator(userId = user.id ?: "")
+        AccountGenerator(
+            userId = user.id ?: "",
+            onBackClick ={ generatingAccounts = false }
+        )
         return
     }
 

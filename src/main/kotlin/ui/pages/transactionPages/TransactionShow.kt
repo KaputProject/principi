@@ -1,17 +1,43 @@
 package ui.pages.transactionPages
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import ui.api.showLocation
 import ui.api.showUser
 import ui.dataClasses.transaction.Transaction
 import ui.dataClasses.user.User
 import ui.pages.userPages.InfoRow
+
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+
+import androidx.compose.ui.Alignment
+
+@Composable
+fun InfoRow(label: String, value: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = label,
+            modifier = Modifier.weight(1f),
+            style = MaterialTheme.typography.body1.copy(fontWeight = FontWeight.SemiBold)
+        )
+        Text(
+            text = value,
+            modifier = Modifier.weight(1f),
+            style = MaterialTheme.typography.body1,
+        )
+    }
+}
 
 @Composable
 fun TransactionShow(
@@ -25,7 +51,6 @@ fun TransactionShow(
     var user by remember { mutableStateOf<User?>(null) }
 
     LaunchedEffect(transaction.location, transaction.user) {
-        // Naloži lokacijo, če obstaja
         transaction.location?.let { loc ->
             val locationResult = showLocation(userId, loc._id)
             locationName = locationResult.getOrNull()?.name ?: "N/A"
@@ -35,27 +60,26 @@ fun TransactionShow(
         val result = showUser(transaction.user)
         if (result.isSuccess) {
             user = result.getOrNull()
-            println("Uporabnik uspešno naložen: ${transaction.user}")
-        } else {
-            println("Napaka pri nalaganju uporabnika: ${result.exceptionOrNull()}")
         }
     }
 
-
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(colors.surface)
-            .padding(16.dp),
-        verticalArrangement = Arrangement.SpaceBetween
+            .padding(horizontal = 24.dp, vertical = 32.dp)
     ) {
-        Column {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.TopStart)
+                .verticalScroll(rememberScrollState())
+        ) {
             Text(
                 text = "Podrobnosti transakcije",
-                style = MaterialTheme.typography.h5,
-                color = colors.onBackground
+                style = MaterialTheme.typography.h4.copy(fontWeight = FontWeight.Bold),
+                color = MaterialTheme.colors.onBackground
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             InfoRow("ID", transaction.id)
             InfoRow("Uporabnik", user?.let { "${it.name} ${it.surname}" } ?: "Nalaganje...")
@@ -66,51 +90,68 @@ fun TransactionShow(
             InfoRow("Datum in čas", transaction.datetime)
             InfoRow("Opis", transaction.description)
 
-            Text(
-                text = "Znesek: ${if (transaction.outgoing) "-" else "+"}${transaction.change}",
-                style = MaterialTheme.typography.body1,
-                color = if (transaction.outgoing) colors.error else colors.primary,
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Posebno za znesek, da je stil drugačen
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Znesek",
+                    modifier = Modifier.weight(1f),
+                    style = MaterialTheme.typography.body1.copy(fontWeight = FontWeight.SemiBold)
+                )
+                Text(
+                    text = "${if (transaction.outgoing) "-" else "+"}${transaction.change}",
+                    modifier = Modifier.weight(1f),
+                    style = MaterialTheme.typography.h6.copy(
+                        color = if (transaction.outgoing) MaterialTheme.colors.error else MaterialTheme.colors.primary,
+                        fontWeight = FontWeight.Bold
+                    )
+                )
+            }
 
             InfoRow("Sklic", transaction.reference ?: "N/A")
+
+            Spacer(modifier = Modifier.height(80.dp)) // prostor za gumbe spodaj
         }
 
-        Column {
-            Divider(Modifier.padding(vertical = 16.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+        ) {
+            Divider(Modifier.padding(vertical = 12.dp))
+
             Button(
                 onClick = { onEditClick(transaction) },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                shape = MaterialTheme.shapes.medium
             ) {
-                Text("Uredi")
+                Text("Uredi", fontSize = 18.sp)
             }
-            Spacer(modifier = Modifier.height(8.dp))
+
+            Spacer(modifier = Modifier.height(12.dp))
+
             OutlinedButton(
                 onClick = onBackClick,
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = colors.secondary,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = MaterialTheme.colors.secondary
                 ),
+                shape = MaterialTheme.shapes.medium,
+                border = ButtonDefaults.outlinedBorder
             ) {
-                Text("Nazaj")
+                Text("Nazaj", fontSize = 18.sp)
             }
         }
     }
 }
 
-
-@Composable
-private fun InfoRow(label: String, value: String) {
-    Column(modifier = Modifier.padding(vertical = 4.dp)) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.subtitle1,
-            color = colors.primary
-        )
-        Text(
-            text = value,
-            style = MaterialTheme.typography.body1,
-            color = colors.onBackground
-        )
-    }
-}
