@@ -22,6 +22,8 @@ import ui.dataClasses.transaction.TransactionCreate
 import ui.dataClasses.user.User
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 
 @Composable
 fun TransactionCreate(
@@ -53,7 +55,12 @@ fun TransactionCreate(
     }
 
     Box(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()), // Dodan scroll
+            verticalArrangement = Arrangement.Top
+        ) {
             Text("Ustvari novo transakcijo", style = MaterialTheme.typography.h5)
             Spacer(modifier = Modifier.height(16.dp))
 

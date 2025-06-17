@@ -214,7 +214,9 @@ fun App() {
                             )
                         } ?: Text("Napaka: uporabnik ni izbran.", color = MaterialTheme.colors.error)
 
-                        16 -> UserGenerator()
+                        16 -> UserGenerator(
+                            onBackClick ={currentPage = 2 }
+                        )
                         17 -> selectedUser?.let { user ->
                             TransactionCreate(
                                 user = user,

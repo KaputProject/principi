@@ -1,6 +1,8 @@
 package ui.pages.statementPages
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.runtime.*
@@ -29,7 +31,12 @@ fun StatementEdit(
         println("Initial Statement ID: ${initialStatement.id}")
     }
 
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()), // Dodan scroll
+        verticalArrangement = Arrangement.Top
+    ) {
         Text("Uredi izpisek", style = MaterialTheme.typography.h5)
         Spacer(modifier = Modifier.height(16.dp))
 

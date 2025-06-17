@@ -13,6 +13,8 @@ import ui.AuthState
 import ui.api.deleteUser
 import ui.api.updateUser
 import ui.dataClasses.user.User
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 
 @Composable
 fun UserEdit(
@@ -37,9 +39,13 @@ fun UserEdit(
 
     Box(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()), // Dodan scroll
             verticalArrangement = Arrangement.Top
         ) {
+            // Ostala vsebina (ostane enaka) ...
+
             Text("Uredi uporabnika", style = MaterialTheme.typography.h5)
 
             Spacer(Modifier.height(16.dp))

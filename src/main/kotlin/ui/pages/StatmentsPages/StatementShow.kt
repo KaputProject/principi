@@ -49,7 +49,6 @@ fun StatementShow(
             .background(colors.surface)
             .padding(16.dp)
     ) {
-        // Glavni scrollabilen del postavimo v Column z modifierjem weight(1f), da zasede prostor nad gumbi
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -111,14 +110,13 @@ fun StatementShow(
                     color = colors.onSurface.copy(alpha = 0.6f)
                 )
             } else {
-                // Zamenjajmo Column + verticalScroll z LazyColumn in weight(1f)
                 LazyColumn(
                     modifier = Modifier.weight(1f)
                 ) {
                     items(transactionState.value) { transaction ->
                         TransactionCardUser(
                             transaction = transaction,
-                            onClick = { onTransactionClick(transaction) }  // pass the clicked transaction here
+                            onClick = { onTransactionClick(transaction) }
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                     }
