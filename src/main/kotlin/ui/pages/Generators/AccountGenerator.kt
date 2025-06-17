@@ -60,9 +60,9 @@ fun AccountGenerator(userId: String, onBackClick: () -> Unit) {
                         var failedCount = 0
 
                         for (i in 1..count) {
-                            val iban = "SI56${Random.nextInt(100000000, 999999999)}"
+                            val iban = "SI56 ${Random.nextInt(1000, 9999)} ${Random.nextInt(1000, 9999)} ${Random.nextInt(1000, 9999)} ${Random.nextInt(100, 999)}"
                             val currency1 = Currency.entries.random()
-                            val balance = Random.nextDouble(100.0, 10000.0)
+                            val balance = Random.nextDouble(0.0, 10000.0)
                             val statements: List<String> = listOf("")
 
                             val result = createAccount(
