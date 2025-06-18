@@ -1,3 +1,4 @@
 # principi
 
-Test
+## dokumentacija 
+- [dokumentacija](https://github.com/KaputProject/principi/wiki)
